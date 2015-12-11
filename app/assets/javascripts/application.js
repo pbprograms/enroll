@@ -33,6 +33,18 @@
 //= require bootstrap-slider
 //= require_tree .
 
+// check time until logout
+function check_time_until_logout(){
+  $.ajax({
+    url: '/check_time_until_logout',
+    type: 'GET',
+    success: function(response){
+    },
+    error: function(response){
+    }
+  });
+}
+setTimeout(check_time_until_logout, 870000);
 
 function applyFloatLabels() {
   $('input.floatlabel').floatlabel({
