@@ -123,11 +123,11 @@ module Subscribers
             new_people << [existing_person, relationship, [verified_family_member.id]]
           else
             new_member = Person.new(
-              first_name: verified_family_member.person.name_first,
-              last_name: verified_family_member.person.name_last,
-              middle_name: verified_family_member.person.name_middle,
-              name_pfx: verified_family_member.person.name_pfx,
-              name_sfx: verified_family_member.person.name_sfx,
+              first_name: verified_family_member.person.name_first.present? ? verified_family_member.person.name_first.strip : nil,
+              last_name: verified_family_member.person.name_last.present? ? verified_family_member.person.name_last.strip : nil,
+              middle_name: verified_family_member.person.name_middle.present? ? verified_family_member.person.name_middle.strip : nil,
+              name_pfx: verified_family_member.person.name_pfx.present? ? verified_family_member.person.name_pfx.strip : nil,
+              name_sfx: verified_family_member.person.name_sfx.present? ? verified_family_member.person.name_sfx.strip : nil,
               dob: verified_family_member.person_demographics.birth_date,
               ssn: verified_family_member.person_demographics.ssn == "999999999" ? "" : verified_family_member.person_demographics.ssn ,
               gender: verified_family_member.person_demographics.sex.split('#').last

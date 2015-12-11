@@ -1,9 +1,10 @@
 module Forms
   class PersonSignup
     include ActiveModel::Validations
+    include PeopleNames
     attr_accessor :id
     attr_accessor :person
-    attr_accessor :first_name, :last_name, :email, :dob
+    attr_accessor :email, :dob
 
     validates_presence_of :dob
     validates_presence_of :first_name

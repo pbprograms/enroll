@@ -207,9 +207,9 @@ module Factories
           if user.person.first_name.downcase == first_name.downcase and
             user.person.last_name.downcase == last_name.downcase # if user enters lowercase during matching.
             person = user.person
-            person.update(name_sfx: name_sfx,
-                          middle_name: middle_name,
-                          name_pfx: name_pfx,
+            person.update(name_sfx: name_sfx.present? ? name_sfx.strip : nil,
+                          middle_name: middle_name.present? ? middle_name.strip : nil,
+                          name_pfx: name_pfx.present? ? name_pfx.strip : nil,
                           ssn: ssn,
                           dob: dob,
                           gender: gender)
@@ -220,11 +220,11 @@ module Factories
         else
           person, is_new = Person.create(
             user: user,
-            name_pfx: name_pfx,
-            first_name: first_name,
-            middle_name: middle_name,
-            last_name: last_name,
-            name_sfx: name_sfx,
+            name_pfx: name_pfx.present? ? name_pfx.strip : nil,
+            first_name: first_name.present? ? first_name.strip : nil,
+            middle_name: middle_name.present? ? middle_name.strip : nil,
+            last_name: last_name.present? ? last_name.strip : nil,
+            name_sfx: name_sfx.present? ? name_sfx.strip : nil,
             ssn: ssn,
             no_ssn: no_ssn,
             dob: dob,

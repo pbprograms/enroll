@@ -48,7 +48,7 @@ module Forms
       broker_agency_profile = @organization.broker_agency_profile
 #      broker_role = broker_agency_profile.broker_agency_contacts.first.broker_role
 #      broker_agency_profile.primary_broker_role = broker_role
-      @person = @current_user.person.present? ? @current_user.person : @current_user.build_person(first_name: @params[:first_name], last_name: @params[:last_name])
+      @person = @current_user.person.present? ? @current_user.person : @current_user.build_person(first_name: @params[:first_name].strip, last_name: @params[:last_name].strip)
 #      @person.broker_agency_contact = broker_agency_profile
 #      broker_role.broker_agency_profile = broker_agency_profile
       @current_user.roles << BROKER unless @current_user.roles.include?(BROKER)

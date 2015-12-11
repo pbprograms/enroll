@@ -107,12 +107,12 @@ class PeopleController < ApplicationController
       enroll_parms[:user] = current_user
       enroll_parms[:employer_profile] = @employer_profile
       enroll_parms[:ssn] = @person.ssn
-      enroll_parms[:last_name] = @person.last_name
-      enroll_parms[:first_name] = @person.first_name
+      enroll_parms[:last_name] = @person.last_name.strip
+      enroll_parms[:first_name] = @person.first_name.strip
       enroll_parms[:gender] = @person.gender
       enroll_parms[:dob] = @person.dob
-      enroll_parms[:name_sfx] = @person.name_sfx
-      enroll_parms[:name_pfx] = @person.name_pfx
+      enroll_parms[:name_sfx] = @person.name_sfx.strip
+      enroll_parms[:name_pfx] = @person.name_pfx.strip
       enroll_parms[:hired_on] = params[:hired_on]
 
       @employee_role, @family = Factories::EnrollmentFactory.add_employee_role(enroll_parms)

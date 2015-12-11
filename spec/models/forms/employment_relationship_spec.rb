@@ -36,11 +36,11 @@ describe Forms::EmploymentRelationship do
   end
 
   describe "given additional data needed by the employee_role factory" do
-    let(:first_name) { double } 
-    let(:last_name) { double } 
-    let(:middle_name) { double } 
-    let(:name_pfx) { double } 
-    let(:name_sfx) { double } 
+    let(:first_name) { "first_name " }
+    let(:last_name) { "last_name" }
+    let(:middle_name) { "middle_name" }
+    let(:name_pfx) { "name_pfx" }
+    let(:name_sfx) { "name_sfx" }
     let(:gender) { double }
 
     subject { Forms::EmploymentRelationship.new({
@@ -53,12 +53,12 @@ describe Forms::EmploymentRelationship do
     }) }
 
     it "should provide names and gender" do
-       expect(subject.first_name).to eq first_name
-       expect(subject.last_name).to eq last_name
-       expect(subject.middle_name).to eq middle_name
-       expect(subject.name_pfx).to eq name_pfx
-       expect(subject.name_sfx).to eq name_sfx
-       expect(subject.gender).to eq gender
+      expect(subject.first_name).to eq first_name.strip
+      expect(subject.last_name).to eq last_name
+      expect(subject.middle_name).to eq middle_name
+      expect(subject.name_pfx).to eq name_pfx
+      expect(subject.name_sfx).to eq name_sfx
+      expect(subject.gender).to eq gender
     end
   end
 end

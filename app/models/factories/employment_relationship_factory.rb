@@ -10,11 +10,11 @@ module Factories
       employer = census_employee.employer_profile
       ::Forms::EmploymentRelationship.new({
         :employer_name => employer.legal_name,
-        :first_name => employee_candidate.first_name,
-        :last_name => employee_candidate.last_name,
-        :middle_name => employee_candidate.middle_name,
-        :name_pfx => employee_candidate.name_pfx,
-        :name_sfx => employee_candidate.name_sfx,
+        :first_name => employee_candidate.first_name.present? ? employee_candidate.first_name.strip : nil,
+        :last_name => employee_candidate.last_name.present? ? employee_candidate.last_name.strip : nil,
+        :middle_name => employee_candidate.middle_name.present? ? employee_candidate.middle_name.strip : nil,
+        :name_pfx => employee_candidate.name_pfx.present? ? employee_candidate.name_pfx.strip : nil,
+        :name_sfx => employee_candidate.name_sfx.present? ? employee_candidate.name_sfx.strip : nil,
         :gender => employee_candidate.gender,
         :census_employee_id => census_employee.id,
         :hired_on => hired_on,

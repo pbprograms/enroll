@@ -154,10 +154,10 @@ class CensusEmployeeImport
   def assign_census_employee_attributes(member, record)
     member.employer_assigned_family_id = record[:employer_assigned_family_id] if record[:employer_assigned_family_id]
     member.ssn = record[:ssn].to_s if record[:ssn]
-    member.first_name = record[:first_name].to_s if record[:first_name]
-    member.last_name = record[:last_name].to_s if record[:last_name]
-    member.middle_name = record[:middle_name].to_s if record[:middle_name]
-    member.name_sfx = record[:name_sfx].to_s if record[:name_sfx]
+    member.first_name = record[:first_name].strip.to_s if record[:first_name]
+    member.last_name = record[:last_name].strip.to_s if record[:last_name]
+    member.middle_name = record[:middle_name].strip.to_s if record[:middle_name]
+    member.name_sfx = record[:name_sfx].strip.to_s if record[:name_sfx]
     member.dob = record[:dob] if record[:dob]
     member.hired_on = record[:hire_date] if record[:hire_date]
     if ["0", "false"].include? record[:is_business_owner].to_s

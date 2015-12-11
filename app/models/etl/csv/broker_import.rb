@@ -118,10 +118,10 @@ module Etl::Csv
 
       person.assign_attributes(
           {
-            first_name: record[:provider_name][:first_name],
-            middle_name: record[:provider_name][:middle_name],
-            last_name: record[:provider_name][:last_name],
-            name_sfx: record[:provider_name][:name_suffix],
+            first_name: record[:provider_name][:first_name].present? ? record[:provider_name][:first_name].strip : nil,
+            middle_name: record[:provider_name][:middle_name].present? ? record[:provider_name][:middle_name].strip : nil,
+            last_name: record[:provider_name][:last_name].present? ? record[:provider_name][:last_name].strip : nil,
+            name_sfx: record[:provider_name][:name_suffix].present? ? record[:provider_name][:name_suffix].strip : nil,
             phones: phones,
             emails: emails
           }
