@@ -27,6 +27,7 @@ module VlpDoc
       doc_params = params.require(source).permit(*vlp_doc_params_list)
       vlp_doc_attribute = doc_params[:consumer_role][:vlp_documents_attributes]["0"]
       document = consumer_role.find_document(vlp_doc_attribute[:subject])
+      vlp_docs_clean
       document.update_attributes(vlp_doc_attribute)
       if source == 'person'
         add_document_errors_to_consumer_role(consumer_role, document)
@@ -44,5 +45,17 @@ module VlpDoc
     if [::ConsumerRole::NATURALIZED_CITIZEN_STATUS, ::ConsumerRole::ALIEN_LAWFULLY_PRESENT_STATUS].include? consumer_role.try(:person).try(:citizen_status)
       consumer_role.try(:vlp_documents).try(:last).try(:subject)
     end
+  end
+
+  private
+
+  def vlp_docs_clean
+    existing_documents = @person.consumer_role.vlp_documents
+    person_consumer_role=Person.find(@person.id).consumer_role
+    person_consumer_role.vlp_documents =[]
+    person_consumer_role.save
+    person_consumer_role=Person.find(@person.id).consumer_role
+    person_consumer_role.vlp_documents = existing_documents.uniq
+    person_consumer_role.save
   end
 end
