@@ -168,6 +168,7 @@ Rails.application.routes.draw do
     end
     resources :inboxes, only: [:new, :create, :show, :destroy]
     resources :employer_profiles do
+      get 'wizard', on: :collection
       get 'new'
       get 'my_account'
       get 'show_profile'
