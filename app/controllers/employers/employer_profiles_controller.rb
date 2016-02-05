@@ -8,7 +8,12 @@ class Employers::EmployerProfilesController < ApplicationController
   before_action :check_employer_staff_role, only: [:new]
   skip_before_action :verify_authenticity_token, only: [:show], if: :check_origin?
 
-  layout "two_column", except: [:new]
+  layout "wizard", only: [:wizard]
+
+  def wizard
+    @step = params[:step]
+    @progress_step = params[:progress_step]
+  end
 
   def index
     if params[:broker_agency_id].blank?

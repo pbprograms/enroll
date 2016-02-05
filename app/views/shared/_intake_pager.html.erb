@@ -1,0 +1,16 @@
+<div class="step-pager">
+  <nav>
+    <ul class="pager">
+      <li class="back">
+        <%= link_to wizard_employers_employer_profiles_path(step: (@step.to_i - 1), progress_step: @progress_step) do %>
+          <span aria-hidden="true">&larr;</span> Back
+        <% end %>
+      </li>
+      <li class="skip">
+        <%= link_to wizard_employers_employer_profiles_path(step: (@step.to_i + 1), progress_step: @progress_step) do %>
+          <span aria-hidden="skip">&rarr;</span> Skip
+        <% end %>
+      </li>
+    </ul>
+  </nav>
+</div>
