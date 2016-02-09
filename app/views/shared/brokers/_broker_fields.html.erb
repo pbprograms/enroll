@@ -29,7 +29,15 @@
               </tr>
               <tr>
                 <th>Languages:</th>
-                <td><%= broker_or_staff_role.broker_agency_profile.languages_spoken.to_sentence %></td>
+                <td>
+                  <% languages = [] %>
+                  <% broker_or_staff_role.broker_agency_profile.languages_spoken.map do |lang| %>
+                  <% language = LanguageList::LanguageInfo.find(lang) %>
+
+                  <% languages << language.name.inspect.gsub!(/^\"|\"?$/, '') %>
+                  <% end %>
+                  <%= languages.to_sentence %>
+                </td>
               </tr>
               <tr>
                 <th>Office Locations:</th>
