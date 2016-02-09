@@ -64,7 +64,8 @@ module Forms
         :legal_name => legal_name,
         :dba => dba,
         :employer_profile => ::EmployerProfile.new({
-          :entity_kind => entity_kind
+          :entity_kind => entity_kind,
+          :fte_count => fte_count,
         }),
         :office_locations => office_locations
       )
@@ -72,7 +73,7 @@ module Forms
 
     def update_organization(org)
       if !org.employer_profile.present?
-        org.create_employer_profile({:entity_kind => entity_kind})
+        org.create_employer_profile({:entity_kind => entity_kind, :fte_count => fte_count})
         org.save!
       end
     end

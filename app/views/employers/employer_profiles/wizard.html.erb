@@ -1,24 +1,118 @@
-<br/>
-<% if @step == nil %>
-Poutine godard meditation, four dollar toast street art disrupt butcher pitchfork austin farm-to-table typewriter keffiyeh. Pinterest master cleanse deep v narwhal brunch, offal four dollar toast. Yuccie put a bird on it man bun gluten-free knausgaard lomo XOXO. Brooklyn tattooed listicle sartorial, chicharrones thundercats pop-up. Pop-up lomo pug, meh cold-pressed locavore pork belly kogi craft beer bespoke biodiesel XOXO iPhone portland waistcoat. Vice pickled tote bag, mustache green juice mlkshk pop-up taxidermy forage lumbersexual gluten-free art party austin godard offal. Chartreuse keffiyeh pug direct trade selvage lomo.
+<% if @progress_step == '1' %>
+
+  <% if @step == '1' %>
+    <%= form_for @person, as: :person, url: {action: "create"} do |f| %>
+        <%= render 'shared/wizard_person_staff_search', f: f %>
+    <% end %>
+  <% end %>
+
+  <% if @step == '2' %>
+  <h3>Employer Inforation</h3>
+  <%= render 'shared/error_messages', :object => @organization %>
+    <%= form_for @organization, as: :organization, url: {action: "create"} do |f| %>
+      <%= render 'shared/wizard_employer_profile_fields', f: f %>
+      <h3>Office Locations</h3>
+      <%= f.fields_for :office_locations, errors: {}, fieldset: false do |office_location| %>
+        <%= render partial: 'shared/wizard_office_location_fields', locals: { f: office_location } %>
+      <% end %>
+      <h3>Email</h3>
+      <%= f.fields_for :emails, errors: {}, fieldset: false do |email| %>
+        <%= render partial: 'shared/wizard_email_fields', locals: { f: email, kind: 'work' } %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if @step == '3' %>
+    <%= form_for @organization, as: :organization, url: {action: "create"} do |f| %>
+      <%= render partial: 'shared/wizard_employee_count_fields', locals: { f: f } %>
+    <% end %>
+  <% end %>
+
+  <% if @step == '4' %>
+    page isn't created
+  <% end %>
+
+  <% if @step == '5' %>
+  Seitan normcore next level, affogato lo-fi pabst YOLO jean shorts chartreuse etsy brooklyn marfa vice meggings leggings. Roof party pop-up everyday carry, godard brooklyn tacos kitsch. Cardigan freegan post-ironic listicle franzen marfa, mlkshk selfies lo-fi drinking vinegar skateboard retro keytar. Small batch venmo ethical irony, street art church-key freegan gochujang whatever PBR&B health goth. Offal small batch aesthetic, drinking vinegar disrupt craft beer chartreuse before they sold out brooklyn. Kale chips kogi helvetica austin authentic, williamsburg readymade distillery echo park flannel knausgaard vegan post-ironic vice tofu. Chambray portland try-hard, hashtag raw denim gentrify pug put a bird on it meh fingerstache bitters squid.
+  <% end %>
 <% end %>
 
-<% if @step == '1' %>
-Organic man braid marfa, pork belly mumblecore dreamcatcher sriracha. Selfies skateboard keffiyeh, shoreditch distillery bicycle rights trust fund 90's cardigan. Cliche distillery williamsburg, man braid shabby chic portland microdosing echo park affogato austin umami letterpress raw denim bitters gentrify. Tousled trust fund fingerstache, pitchfork butcher fashion axe swag seitan pork belly narwhal lomo. Chicharrones pinterest pork belly whatever beard 3 wolf moon. Yr tattooed bitters, pabst kickstarter four dollar toast squid. PBR&B pitchfork shabby chic hella pinterest readymade.
+<% if @progress_step == '2' %>
+
+  <% if @step == '1' %>
+    <h3>
+      Employee Information
+    </h3>
+    <%= form_for @census_employee, url: {action: "create", employer_id: @employer_profile.id} do |f| %>
+    <%= render 'shared/wizard_member_fields', f: f %>
+    <%= render 'shared/wizard_census_employee_fields', f: f %>
+    <br/>
+    <%= f.fields_for :address, @census_employee.address, errors: {}, fieldset: false do |address| %>
+      <%= render 'shared/wizard_address_fields', f: address %>
+    <% end %>
+    <br/>
+
+    <%= f.fields_for :email, @census_employee.email, errors: {}, fieldset: false do |email| %>
+      <%= render 'shared/wizard_email_fields', f: email %>
+    <% end %>
+    <br/>
+
+    <%= render 'shared/wizard_add_dependents', f: f %>
+    <% end %>
+  <% end %>
+
+  <% if @step == '2' %>
+    <h3>
+      Employer Roster
+    </h3>
+    <%= render "shared/wizard_employees_by_status", status: 'active' %>
+  <% end %>
 <% end %>
 
-<% if @step == '2' %>
-Mumblecore gluten-free gastropub, you probably haven't heard of them cold-pressed beard pop-up flannel jean shorts man braid shoreditch kombucha trust fund. Normcore farm-to-table biodiesel, everyday carry PBR&B messenger bag williamsburg portland sriracha meggings. Listicle small batch portland locavore meditation. Brunch readymade austin tacos, hammock food truck bespoke blog. Pop-up portland godard asymmetrical retro. Seitan umami meggings pabst echo park fashion axe. Swag stumptown small batch waistcoat ramps.
+<% if @progress_step == '3' %>
+
+  <% if @step == '1' %>
+    <h3>
+      Start/End Date
+    </h3>
+    <%= form_for @plan_year, url: employers_employer_profile_plan_years_path(@employer_profile) do |f| %>
+      <%= render 'shared/wizard_benefit_period_fields', f: f %>
+    <% end %>
+  <% end %>
+
+  <% if @step == '2' %>
+    <h3>
+      Open Enrollment
+    </h3>
+    <%= form_for @plan_year, url: employers_employer_profile_plan_years_path(@employer_profile) do |f| %>
+      <%= render 'shared/wizard_open_enrollment_fields', f: f %>
+    <% end %>
+  <% end %>
+
+  <% if @step == '3' %>
+    <h3>
+      Coverage Start Date
+    </h3>
+    <%= form_for @plan_year, url: employers_employer_profile_plan_years_path(@employer_profile) do |f| %>
+      <%= f.fields_for :benefit_groups, errors: {}, fieldset: false do |bg| %>
+        <% debugger %>
+        <%= render 'shared/wizard_eligibility_fields', f: bg %>
+      <% end %>
+    <% end %>
+
+  <% end %>
 <% end %>
 
-<% if @step == '3' %>
-Keffiyeh yr VHS, forage cold-pressed locavore mustache deep v art party vinyl asymmetrical fashion axe scenester. Kickstarter vegan small batch celiac listicle, tofu taxidermy VHS PBR&B fashion axe. Pop-up authentic knausgaard, mustache helvetica before they sold out butcher narwhal XOXO tote bag art party four dollar toast cold-pressed vinyl. Franzen readymade gastropub truffaut williamsburg, PBR&B whatever mumblecore tofu meh small batch. Photo booth put a bird on it sustainable single-origin coffee irony, etsy chambray shabby chic seitan. Fingerstache chartreuse umami, migas quinoa etsy pour-over bicycle rights swag PBR&B pickled salvia. Meggings listicle photo booth, tofu williamsburg kogi humblebrag.
+<% if @progress_step == '4' %>
+  <% if @step == '1' %>
+    <%= form_for @plan_year, url: employers_employer_profile_plan_years_path(@employer_profile) do |f| %>
+      <%= f.fields_for :benefit_groups, errors: {} do |bg| %>
+        <%= render 'shared/wizard_benefit_package_fields', f: bg %>
+      <% end %>
+    <% end %>
+  <% end %>
+  <% if @step == '2' %>
+  <% end %>
 <% end %>
 
-<% if @step == '4' %>
-Knausgaard lo-fi listicle semiotics. Tilde 90's cold-pressed flexitarian mumblecore mixtape, cronut XOXO pour-over banh mi chillwave everyday carry. Sartorial street art meggings pitchfork single-origin coffee, ethical affogato cred. Pinterest sriracha wolf you probably haven't heard of them tattooed brunch, neutra cornhole master cleanse schlitz irony. You probably haven't heard of them listicle brunch tattooed. Single-origin coffee next level ramps freegan flannel, direct trade chartreuse mustache shabby chic franzen jean shorts farm-to-table tumblr austin. Next level aesthetic blue bottle literally.
-<% end %>
-
-<% if @step == '5' %>
-Seitan normcore next level, affogato lo-fi pabst YOLO jean shorts chartreuse etsy brooklyn marfa vice meggings leggings. Roof party pop-up everyday carry, godard brooklyn tacos kitsch. Cardigan freegan post-ironic listicle franzen marfa, mlkshk selfies lo-fi drinking vinegar skateboard retro keytar. Small batch venmo ethical irony, street art church-key freegan gochujang whatever PBR&B health goth. Offal small batch aesthetic, drinking vinegar disrupt craft beer chartreuse before they sold out brooklyn. Kale chips kogi helvetica austin authentic, williamsburg readymade distillery echo park flannel knausgaard vegan post-ironic vice tofu. Chambray portland try-hard, hashtag raw denim gentrify pug put a bird on it meh fingerstache bitters squid.
-<% end %>
+<br class="clear"/>

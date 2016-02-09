@@ -8,11 +8,21 @@ class Employers::EmployerProfilesController < ApplicationController
   before_action :check_employer_staff_role, only: [:new]
   skip_before_action :verify_authenticity_token, only: [:show], if: :check_origin?
 
-  layout "wizard", only: [:wizard]
+  layout "wizard"
+
 
   def wizard
     @step = params[:step]
     @progress_step = params[:progress_step]
+    @organization = Forms::EmployerProfile.new
+    @person = Forms::EmployerProfile.new
+    @employer_profile = EmployerProfile.last
+    @census_employee = CensusEmployee.new
+    @census_employees = CensusEmployee.all
+    @plan_year = PlanYear.new
+
+    @plan_year.benefit_groups = [BenefitGroup.new]
+
   end
 
   def index

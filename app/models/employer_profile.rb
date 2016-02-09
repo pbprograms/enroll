@@ -14,7 +14,10 @@ class EmployerProfile
   attr_accessor :broker_role_id
 
   field :entity_kind, type: String
-  field :sic_code, type: String
+  field :fte_count, type: String
+  field :pte_count, type: String
+  field :msp_count, type: String
+
 
   # Workflow attributes
   field :aasm_state, type: String, default: "applicant"
@@ -166,7 +169,7 @@ class EmployerProfile
   end
 
   def find_plan_year_by_effective_date(target_date)
-    (plan_years.published + plan_years.renewing_published_state).detect do |py| 
+    (plan_years.published + plan_years.renewing_published_state).detect do |py|
       (py.start_on.beginning_of_day..py.end_on.end_of_day).cover?(target_date)
     end
   end
@@ -371,7 +374,7 @@ class EmployerProfile
       transitions from: [:registered, :eligible, :ineligible, :suspended, :binder_paid, :enrolled], to: :applicant
     end
 
-    event :force_enroll, :after => :record_transition do 
+    event :force_enroll, :after => :record_transition do
       transitions from: [:applicant, :eligible, :registered], to: :enrolled
     end
   end

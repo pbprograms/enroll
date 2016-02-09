@@ -1,0 +1,13 @@
+<h3>Benefit Package Information</h3>
+<div class="row row-form-wrapper no-buffer">
+  <div class="col-xs-12 form-group form-group-lg">
+    <!-- Offset :  -->
+    <% title_value = f.object.title.present? ? f.object.title : "#{TimeKeeper.date_of_record.year} Employer Benefits" %>
+    <%= f.text_field :title, class: "form-control", required: true %>
+  </div>
+</div>
+<script type="text/javascript" charset="utf-8">
+$('.floatlabel').floatlabel({
+    slideInput: false
+});
+</script>

@@ -1,7 +1,7 @@
 <ul class="nav nav-pills nav-justified">
-  <li role="presentation" class="<% if @progress_step == '1'%>active<% end %>"><%= link_to 'Register', wizard_employers_employer_profiles_path(progress_step: 1) %></li>
-  <li role="presentation" class="<% if @progress_step == '2'%>active<% end %>"><%= link_to 'Employees', wizard_employers_employer_profiles_path(progress_step: 2) %></li>
-  <li role="presentation" class="<% if @progress_step == '3'%>active<% end %>"><%= link_to 'Benefit Period', wizard_employers_employer_profiles_path(progress_step: 3) %></li>
-  <li role="presentation" class="<% if @progress_step == '4'%>active<% end %>"><%= link_to 'Benefit Package', wizard_employers_employer_profiles_path(progress_step: 4) %></li>
-  <li role="presentation" class="<% if @progress_step == '5'%>active<% end %>"><%= link_to 'Submit Application', wizard_employers_employer_profiles_path(progress_step: 5) %></li>
+  <li role="presentation" class="<% if @progress_step == '1'%>active<% end %>"><%= link_to 'Register', wizard_employers_employer_profiles_path(progress_step: 1, step: 1) %></li>
+  <li role="presentation" class="<% if @progress_step == '2'%>active<% end %>"><%= link_to 'Employees', wizard_employers_employer_profiles_path(progress_step: 2, step: 1) %></li>
+  <li role="presentation" class="<% if @progress_step == '3'%>active<% end %>"><%= link_to 'Benefit Period', wizard_employers_employer_profiles_path(progress_step: 3, step: 1) %></li>
+  <li role="presentation" class="<% if @progress_step == '4'%>active<% end %>"><%= link_to 'Benefit Package', wizard_employers_employer_profiles_path(progress_step: 4, step: 1) %></li>
+  <li role="presentation" class="<% if @progress_step == '5'%>active<% end %>"><%= link_to 'Submit Application', wizard_employers_employer_profiles_path(progress_step: 5, step: 1) %></li>
 </ul>
