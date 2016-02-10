@@ -61,7 +61,8 @@
 
           <td style="text-transform: capitalize;"><%= census_employee.aasm_state.humanize %></td>
           <td><%= enrollment_state(census_employee) %></td>
-          <td></td>
+          <td><%= renewal_enrollment_state(census_employee) %></td>
+
           <td class="table-functions">
             <!--<i class="fa fa-times-circle-o fa-2x"></i>-->
             <% if census_employee.employment_terminated? %>
@@ -74,7 +75,6 @@
             <i class="fa fa-trash-o fa-2x"></i>
             <% end %>
 
-            <td><%= renewal_enrollment_state(census_employee) %></td>
 
 
 
