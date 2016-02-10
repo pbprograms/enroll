@@ -14,6 +14,17 @@ module Employers::EmployerHelper
     end
   end
 
+  def renewal_enrollment_state(census_employee=nil)
+    return "" if census_employee.blank?
+
+    enrollment_state = census_employee.renewal_benefit_group_assignment.try(:aasm_state)
+    if enrollment_state.present? and enrollment_state != "initialized"
+      enrollment_state.humanize
+    else
+      ""
+    end
+  end
+
   def render_plan_offerings(benefit_group)
 
     return "1 Plan Only" if benefit_group.single_plan_type?
