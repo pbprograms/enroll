@@ -13,7 +13,16 @@
     <div class="col-xs-9">
       <div class="panel">
         <div class="panel-heading">
-          <h3><%= carrier.legal_name %></h3>
+          <h3>
+            <% case carrier.legal_name %>
+            <% when 'United Health Care' %>
+              UnitedHealthCare
+            <% when 'Kaiser' %>
+              Kaiser Permanente
+            <% else %>
+              <%= carrier.legal_name %>
+            <% end %>
+          </h3>
         </div>
       </div>
     </div>

@@ -46,7 +46,7 @@ class UserMailer < ApplicationMailer
   end
 
   def generic_consumer_welcome(first_name, hbx_id, email)
-    message = mail({to: email, subject: "DC HealthLink", from: 'no-reply@individual.dchealthlink.com'}) do |format|
+    message = mail({to: email, subject: "DC Health Link", from: 'no-reply@individual.dchealthlink.com'}) do |format|
       format.html {render "generic_consumer", locals: {first_name: first_name, hbx_id: hbx_id}}
     end
   end

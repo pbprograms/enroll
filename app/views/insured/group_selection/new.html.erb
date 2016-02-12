@@ -102,9 +102,29 @@
                     Health
                   </label>
                 </div>
-                <% if can_shop_shop?(@person) %>
-                  <% if can_shop_both_markets?(@person) %>
-                    <% if @employee_role.benefit_group.dental_reference_plan_id.blank? || @employee_role.benefit_group.elected_dental_plan_ids.blank? %>
+                <% if can_shop_both_markets?(@person) && @employee_role.present? %>
+                  <% if can_shop_individual?(@person) && ( @employee_role.benefit_group.dental_reference_plan_id.blank? || @employee_role.benefit_group.elected_dental_plan_ids.blank? ) %>
+                    <script>
+                    (function () {
+                      $('#market_kind_shop').on('change', function() {
+                        if ( $('#market_kind_shop').is(':checked') ) {
+                          $("#coverage_kind_health").prop("checked", true);
+
+                          $(".n-radio-row.dn").slideUp();
+                        }
+                      });
+                      })();
+
+                    </script>
+                      <div class="n-radio-row dn">
+                        <label class="n-radio" for="coverage_kind_dental">
+                          <%= radio_button_tag 'coverage_kind', 'dental', false, id: 'coverage_kind_dental', class: 'n-radio' %>
+                          <span class="n-radio">
+                          </span>
+                          Dental
+                        </label>
+                      </div>
+                    <% elsif can_shop_shop?(@person) && ( @employee_role.benefit_group.dental_reference_plan_id.blank? || @employee_role.benefit_group.elected_dental_plan_ids.blank? ) %>
                     <% else %>
                       <div class="n-radio-row">
                         <label class="n-radio" for="coverage_kind_dental">
@@ -115,9 +135,7 @@
                         </label>
                       </div>
                     <% end %>
-                  <% else %>
-                    <% if @employee_role.benefit_group.dental_reference_plan_id.blank? || @employee_role.benefit_group.elected_dental_plan_ids.blank? %>
-                    <% else %>
+                    <% elsif can_shop_individual?(@person) %>
                       <div class="n-radio-row">
                         <label class="n-radio" for="coverage_kind_dental">
                           <%= radio_button_tag 'coverage_kind', 'dental', false, id: 'coverage_kind_dental', class: 'n-radio' %>
@@ -126,9 +144,19 @@
                           Dental
                         </label>
                       </div>
-<% end %>
-                    <% end %>
-                <% end %>
+                    <% elsif can_shop_shop?(@person) && @employee_role.present? %>
+                      <% if @employee_role.present? && ( @employee_role.benefit_group.dental_reference_plan_id.blank? || @employee_role.benefit_group.elected_dental_plan_ids.blank? ) %>
+                      <% else %>
+                      <div class="n-radio-row">
+                        <label class="n-radio" for="coverage_kind_dental">
+                          <%= radio_button_tag 'coverage_kind', 'dental', false, id: 'coverage_kind_dental', class: 'n-radio' %>
+                          <span class="n-radio">
+                          </span>
+                          Dental
+                        </label>
+                      </div>
+                    <% end%>
+                  <% end %>
               </div>
             </div>
 
@@ -218,6 +246,8 @@ $(document).ready(function() {
   $('#market_kind_shop').on('change', function() {
     if ( $('#coverage_kind_dental').is(':checked') ) {
       $("#coverage_kind_health").prop("checked", true);
+
+      $(".n-radio-row.dn").slideUp();
     }
   });
 

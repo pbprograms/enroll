@@ -75,7 +75,16 @@
           <div class="col-xs-9">
             <div class="panel">
               <div class="panel-heading">
-                <h3><%= cv %></h3>
+                <h3>
+                  <% case cv %>
+                  <% when 'United Health Care' %>
+                    UnitedHealthCare
+                  <% when 'Kaiser' %>
+                    Kaiser Permanente
+                  <% else %>
+                    <%= cv %>
+                  <% end %>
+                </h3>
               </div>
             </div>
           </div>
