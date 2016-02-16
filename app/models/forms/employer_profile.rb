@@ -4,7 +4,9 @@ module Forms
     attr_reader :employer_profile
 
     class OrganizationAlreadyMatched < StandardError; end
-
+    def persisted?
+      false
+    end
     def check_existing_organization
       existing_org = Organization.where(:fein => fein).first
       if existing_org.present?

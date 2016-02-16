@@ -1,5 +1,4 @@
 class Employers::EmployerProfilesController < ApplicationController
-
   before_action :find_employer, only: [:show, :show_profile, :destroy, :inbox,
                                        :bulk_employee_upload, :bulk_employee_upload_form]
 
@@ -14,15 +13,36 @@ class Employers::EmployerProfilesController < ApplicationController
   def wizard
     @step = params[:step]
     @progress_step = params[:progress_step]
+
     @organization = Forms::EmployerProfile.new
     @person = Forms::EmployerProfile.new
     @employer_profile = EmployerProfile.last
     @census_employee = CensusEmployee.new
+    @census_employee.address = Address.new
+    @census_employee.email = Email.new
     @census_employees = CensusEmployee.all
     @plan_year = PlanYear.new
-
     @plan_year.benefit_groups = [BenefitGroup.new]
+    @plan_year.benefit_groups.first.build_relationship_benefits
 
+    @carrier_profile = CarrierProfile.last
+    @plans = Plan.by_active_year(2016).shop_market.health_coverage.by_carrier_profile(@carrier_profile).and(hios_id: /-01/)
+
+
+  end
+
+  def relationship_benefits
+    {
+      "benefit_groups_attributes" =>
+      {
+        "0" => {
+           "title"=>"2015 Employer Benefits",
+           # "carrier_for_elected_plan"=>"53e67210eb899a4603000004",
+           "reference_plan_id" => 'asdadsa',
+           "relationship_benefits_attributes" => 'adasdsads'
+        }
+      }
+    }
   end
 
   def index
