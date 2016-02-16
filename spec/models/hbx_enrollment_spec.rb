@@ -733,7 +733,7 @@ describe HbxEnrollment, dbclean: :after_each do
                                                   )
                                                 }
 
-    before do 
+    before do
       allow(employee_role).to receive(:benefit_group).and_return(plan_year.benefit_groups.first)
       allow(census_employee).to receive(:active_benefit_group_assignment).and_return(benefit_group_assignment)
       allow(shop_enrollment).to receive(:employee_role).and_return(employee_role)
@@ -743,7 +743,7 @@ describe HbxEnrollment, dbclean: :after_each do
       before do
         TimeKeeper.set_date_of_record_unprotected!(open_enrollment_start_on)
       end
- 
+
       it "should allow" do
         expect(shop_enrollment.can_select_coverage?).to be_truthy
       end
@@ -753,7 +753,7 @@ describe HbxEnrollment, dbclean: :after_each do
       before do
         TimeKeeper.set_date_of_record_unprotected!(open_enrollment_end_on + 5.days)
       end
- 
+
       it "should not allow" do
         expect(shop_enrollment.can_select_coverage?).to be_falsey
       end
@@ -780,7 +780,7 @@ describe HbxEnrollment, dbclean: :after_each do
         expect(shop_enrollment.can_select_coverage?).to be_falsey
       end
     end
-     
+
     context 'when roster create present' do
       let(:census_employee) { FactoryGirl.create(:census_employee, first_name: 'John', last_name: 'Smith', dob: '1966-10-10'.to_date, ssn: '123456789', hired_on: middle_of_prev_year, created_at: Date.new(calender_year, 5, 10), updated_at: Date.new(calender_year, 5, 10)) }
 
@@ -798,8 +798,8 @@ describe HbxEnrollment, dbclean: :after_each do
 
       before do
         TimeKeeper.set_date_of_record_unprotected!(Date.new(calender_year, 5, 9))
-      end 
-        
+      end
+
       it "should not allow" do
         expect(shop_enrollment.can_select_coverage?).to be_falsey
       end
@@ -810,7 +810,7 @@ describe HbxEnrollment, dbclean: :after_each do
       let(:qle_date) { effective_date + 15.days }
       let(:qualifying_life_event_kind) { FactoryGirl.create(:qualifying_life_event_kind)}
 
-      let(:special_enrollment_period) { 
+      let(:special_enrollment_period) {
         special_enrollment = shop_family.special_enrollment_periods.build({
           qle_on: qle_date,
           effective_on_kind: "first_of_month",
@@ -819,7 +819,7 @@ describe HbxEnrollment, dbclean: :after_each do
         special_enrollment.save
         special_enrollment
       }
-   
+
       let(:shop_enrollment)   { FactoryGirl.create(:hbx_enrollment,
                                                     household: shop_family.latest_household,
                                                     coverage_kind: "health",
@@ -835,6 +835,10 @@ describe HbxEnrollment, dbclean: :after_each do
                                                 }
 
       context 'under special enrollment period' do
+        before do
+          TimeKeeper.set_date_of_record_unprotected!( special_enrollment_period.end_on - 5.days )
+        end
+
         it "should allow" do
           expect(shop_enrollment.can_select_coverage?).to be_truthy
         end
