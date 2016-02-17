@@ -1,4 +1,4 @@
-<div class="col-xs-12 benefits-tab">
+<div class="col-xs-12 benefits-tab content-bottom">
   <div class="row">
     <div class="col-xs-8">
       <h1 class="no-buffer">Benefits - Coverage You Offer</h1>
@@ -317,7 +317,7 @@
         </div>
     <div class="bottom-mgn-xs">
       <% if (plan_year.draft? && @current_plan_year.nil?) || (plan_year.renewing_draft? && @employer_profile.renewing_plan_year == plan_year && @current_plan_year.nil?) %>
-      <%= link_to "Publish Plan Year", employers_employer_profile_plan_year_publish_path(@employer_profile,plan_year), method: :post, remote: true, class: "btn btn-trans pull-right" unless plan_year.draft? && @employer_profile.published_plan_year.present? %>
+      <%= link_to "Publish Plan Year", employers_employer_profile_plan_year_publish_path(@employer_profile,plan_year), method: :post, remote: true, class: "btn btn-primary btn-br mtz btn-right pull-right" unless plan_year.draft? && @employer_profile.published_plan_year.present? %>
       <%= link_to "Edit Plan Year", edit_employers_employer_profile_plan_year_path(@employer_profile,plan_year), class: "btn btn-trans pull-right"%>
       <% elsif (plan_year.draft? || plan_year.renewing_draft?) %>
       <%= link_to "Edit Plan Year", edit_employers_employer_profile_plan_year_path(@employer_profile,plan_year), class: "btn btn-trans pull-right"%>
