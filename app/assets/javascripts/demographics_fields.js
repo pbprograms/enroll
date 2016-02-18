@@ -130,13 +130,17 @@ function validationForIndianTribeMember() {
 }
 
 function validationForUsCitizenOrUsNational(e) {
-  if ( $('input[name="person[us_citizen]"]:checked').length < 1 ) {
+  if ( $('input[name="person[us_citizen]"]').not(":checked").length == 2 ) {
     alert('Please provide an answer for question: Are you a US Citizen or US National?');
+    e.preventDefault && e.preventDefault();
+
   }
 }
 function validationForNaturalizedCitizen(e) {
-  if ( $('#naturalized_citizen_container').is(':visible') && $('input[name="person[naturalized_citizen]"]:checked').length < 1 ) {
+  if ( $('#naturalized_citizen_container').is(':visible') && $('input[name="person[naturalized_citizen]"]').not(":checked").length == 2 ) {
     alert('Please provide an answer for question: Are you a naturalized citizen?');
+    e.preventDefault && e.preventDefault();
+
   }
 }
 function validationForVlpDocuments(e) {
