@@ -146,7 +146,7 @@ class Employers::EmployerProfilesController < ApplicationController
     @employer_contact = @employer_profile.staff_roles.first
 
     if @employer_contact.try(:emails)
-      @employer_contact.emails.any? ? @employer_contact_email = @employer_contact.emails.first : @employer_contact_email = @employer_contact.user.email
+      @employer_contact.emails.any? ? @employer_contact_email = @employer_contact.emails.first.address : @employer_contact_email = @employer_contact.user.email
     else
       @employer_contact_email = @employer_contact.user.email
     end
