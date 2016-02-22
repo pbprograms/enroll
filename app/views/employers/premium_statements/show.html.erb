@@ -3,9 +3,13 @@
 <% end %>
 <div class="col-xs-12 premium-reports-tab">
   <div class="row no-buffer">
-    <h1>Premium Billing Report
+    <h1 class="no-buffer" style="display: inline;">Premium Billing Report</h1>
     <% if @current_plan_year.present? %>
-      <%= @current_plan_year.start_on %> - <%= @current_plan_year.start_on.end_of_month %></h1>
+      <h3 class="no-buffer" style="display: inline;">
+        &nbsp;(<%= @current_plan_year.start_on %> - <%= @current_plan_year.start_on.end_of_month %>)
+      </h3>
+      <br/>
+      <span class="text-danger">This is not an invoice.</span>
     <% end %>
   </div>
   <div class="premium-reports-table">
