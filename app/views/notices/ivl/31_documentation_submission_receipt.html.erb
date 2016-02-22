@@ -1,0 +1,36 @@
+<% @style_color_text = "style='color: #FF0000;'" %>
+<% @style_underline = "style='text-decoration: underline;'" %>
+<% @style_text_indent = "style='margin-left:30px;'" %>
+<% @style_color_indent = "style='color:#ff0000; margin-left:30px;'" %>
+
+<%= render partial: 'notices/shared/logo' %>
+<%= render partial: 'notices/shared/date_and_identifier', :locals => {notice: notice} %>
+<%= render partial: "notices/shared/address", :locals => {notice: notice} %>
+
+
+
+<table class="total_table" border="0">
+  <tbody>
+    <tr>
+      <td><h3>RE: Confirmation of Documents Received – No Further Documents Needed</h3></td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="total_table" border="0">
+  <tbody>
+    <tr>
+      <td>Dear <%= notice.primary_fullname %>:  </td>
+    </tr>
+  </tbody>
+</table>
+
+<%= render partial: 'notices/shared/paragraph', :locals => {
+  content: "Thank You!  We received the following requested documents on <date documents were received>"} %>
+
+<%= render partial: 'notices/shared/unordered_list', :locals => { listings: ["Document 1", "Document 2"] } %>
+
+<%= render partial: 'notices/shared/unordered_list', :locals => { listings: ["[<If Other Field Selected < A Free Response Field>]"] } %>
+
+<%= render partial: 'notices/shared/paragraph', :locals => {
+  content: "These are all of the documents we requested from you.  We will now review the documents received and make a redetermination of your eligibility for Medicaid, private health insurance, and help paying for private health insurance.  You will receive a separate notice if the information you provided is not sufficient for us to make our decision and additional information is needed, or once a decision has been made.  If you have any questions, call DC Health Link Customer Service at 1-855-532-5465 or go online to www.DCHealthLink.com."} %>
