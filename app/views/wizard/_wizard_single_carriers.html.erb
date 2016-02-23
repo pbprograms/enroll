@@ -1,0 +1,37 @@
+<% if @single_plan.present? %>
+<br><br>
+<h4>Let your plan participants choose any plan they would like.<br/>It will not cost you more to let them choose.</h4>
+<br/><br/>
+<% end %>
+<% @plans.each do |p| %>
+<div class="col-xs-3">
+  <div class="row">
+
+  <div class="col-xs-12 reference-plan">
+    <div class="col-xs-3">
+
+      <%= radio_button "#{@location_id}", :reference_plan_id, p.id %>
+      <%= label_tag "#{@location_id}_reference_plan_id" do %>
+      <i class="fa fa-circle-o"></i>
+      <i class="fa fa-dot-circle-o"></i>
+      <% end %>
+    </div>
+
+    <div class="col-xs-9">
+      <div class="panel row">
+        <div class="panel-heading">
+          <h3 style="margin-top: 0;"><%= p.name %></h3>
+        </div>
+        <div class="panel-body">
+          <span class="plan-label">Type: </span><span><%= p.plan_type %></span><br>
+          <span class="plan-label">Carrier: </span><span></span><br>
+          <span class="plan-label">Level: </span><span><%= p.metal_level %></span><br>
+          <span class="plan-label">Network: </span><span><%= p.nationwide ? 'Nationwide' : 'DC Metro' %></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+<% end %>

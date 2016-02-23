@@ -7,8 +7,13 @@
         <% end %>
       </li>
       <li class="skip">
-        <input type="submit" form="new_person" step="<%= @step.to_i + 1 %>" progress_step="<%= @progress_step %>" value="skip &rarr;" aria-hidden="skip"/>
+        <%= link_to wizard_employers_employer_profiles_path(step: (@step.to_i + 1), progress_step: @progress_step) do %>
+          <span aria-hidden="true">&rarr;</span> Next
+        <% end %>
       </li>
+      <!-- <li class="skip">
+        <input type="submit" form="new_person" step="<%= @step.to_i + 1 %>" progress_step="<%= @progress_step %>" value="skip &rarr;" aria-hidden="skip"/>
+      </li> -->
     </ul>
   </nav>
 </div>

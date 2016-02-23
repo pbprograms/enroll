@@ -27,6 +27,7 @@ class Employers::EmployerProfilesController < ApplicationController
 
     @carrier_profile = CarrierProfile.last
     @plans = Plan.by_active_year(2016).shop_market.health_coverage.by_carrier_profile(@carrier_profile).and(hios_id: /-01/)
+    @carrier_names = Organization.valid_carrier_names
 
 
   end
