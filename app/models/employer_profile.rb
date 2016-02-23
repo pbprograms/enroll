@@ -9,6 +9,11 @@ class EmployerProfile
   include Acapi::Notifiers
   extend Acapi::Notifiers
 
+  INTAKE_PROGRESS_STEP = { :register => { 1 => "Staff Roles", 2 => "Demographics", 3 => "Application", 4 => "Manage Communication" },
+                            :employees => { 1 => "Add Employees", 2 => 'Roster'}}
+
+  # [:register, :employees, :benefit_period, :benefit_package, :submit_application]
+
   embedded_in :organization
 
   attr_accessor :broker_role_id

@@ -169,6 +169,9 @@ Rails.application.routes.draw do
     resources :inboxes, only: [:new, :create, :show, :destroy]
     resources :employer_profiles do
       get 'wizard', on: :collection
+      EmployerProfile::INTAKE_PROGRESS_STEP.keys.each do |ips|
+        get "#{ips}", on: :collection
+      end
       get 'new'
       get 'my_account'
       get 'show_profile'

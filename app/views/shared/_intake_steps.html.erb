@@ -1,38 +1,6 @@
-<ul class="nav nav-pills nav-stacked">
-  <% if @progress_step == '1' %>
-  <li role="presentation" class="<% if @step == '1'%>active<% end %>"><%= link_to 'Staff Roles', wizard_employers_employer_profiles_path(step: 1, progress_step: 1) %></li>
-  <li role="presentation" class="<% if @step == '2'%>active<% end %>"><%= link_to 'Demographics', wizard_employers_employer_profiles_path(step: 2, progress_step: 1) %></li>
-  <li role="presentation" class="<% if @step == '3'%>active<% end %>"><%= link_to 'Application', wizard_employers_employer_profiles_path(step: 3, progress_step: 1) %></li>
-  <li role="presentation" class="<% if @step == '4'%>active<% end %>"><%= link_to 'Manage Communication', wizard_employers_employer_profiles_path(step: 4, progress_step: 1) %></li>
+<ul class="nav nav-pills nav-stacked nav-tabs" role="tablist">
+  <% @intake_steps[EmployerProfile::INTAKE_PROGRESS_STEP.keys[@progress_step.to_i]].each_with_index do |(key, value), index| %>
+    <% index = index + 1 %>
+    <li role="presentation" class="<% if @step == "#{index}" %>active<% end %>"><%= link_to "#{value}", "#"+"#{value}".parameterize.underscore, aria_controls: "home", role: "tab", data: {toggle: "tab"} %></li>
   <% end %>
-
-  <% if @progress_step == '2' %>
-  <li role="presentation" class="<% if @step == '1'%>active<% end %>"><%= link_to 'Add Employees', wizard_employers_employer_profiles_path(step: 1, progress_step: 2) %></li>
-  <li role="presentation" class="<% if @step == '2'%>active<% end %>"><%= link_to 'Roster', wizard_employers_employer_profiles_path(step: 2, progress_step: 2) %></li>
-  <% end %>
-
-  <% if @progress_step == '3' %>
-  <li role="presentation" class="<% if @step == '1'%>active<% end %>"><%= link_to 'Start & End Date', wizard_employers_employer_profiles_path(step: 1, progress_step: 3) %></li>
-  <li role="presentation" class="<% if @step == '2'%>active<% end %>"><%= link_to 'Open Enrollment', wizard_employers_employer_profiles_path(step: 2, progress_step: 3) %></li>
-  <li role="presentation" class="<% if @step == '3'%>active<% end %>"><%= link_to 'Eligiblility', wizard_employers_employer_profiles_path(step: 3, progress_step: 3) %></li>
-  <% end %>
-
-  <% if @progress_step == '4' %>
-  <li role="presentation" class="<% if @step == '1'%>active<% end %>"><%= link_to 'Title & Description', wizard_employers_employer_profiles_path(step: 1, progress_step: 4) %></li>
-  <li role="presentation" class="<% if @step == '2'%>active<% end %>"><%= link_to 'Benefit Type', wizard_employers_employer_profiles_path(step: 2, progress_step: 4) %></li>
-  <li role="presentation" class="<% if @step == '3'%>active<% end %>"><%= link_to 'Contirubtion Amount', wizard_employers_employer_profiles_path(step: 3, progress_step: 4) %></li>
-  <li role="presentation" class="<% if @step == '4'%>active<% end %>"><%= link_to 'Benefit Selection', wizard_employers_employer_profiles_path(step: 4, progress_step: 4) %></li>
-  <li role="presentation" class="<% if @step == '5'%>active<% end %>"><%= link_to 'Reference Plan', wizard_employers_employer_profiles_path(step: 5, progress_step: 4) %></li>
-  <li role="presentation" class="<% if @step == '6'%>active<% end %>"><%= link_to 'Assign Employees', wizard_employers_employer_profiles_path(step: 6, progress_step: 4) %></li>
-  <li role="presentation" class="<% if @step == '7'%>active<% end %>"><%= link_to 'Additional Packages', wizard_employers_employer_profiles_path(step: 7, progress_step: 4) %></li>
-
-
-  <% end %>
-
-  <% if @progress_step == '5' %>
-  <li role="presentation" class="<% if @step == '1'%>active<% end %>"><%= link_to 'Start & End Date', wizard_employers_employer_profiles_path(step: 1, progress_step: 5) %></li>
-  <li role="presentation" class="<% if @step == '2'%>active<% end %>"><%= link_to 'Open Enrollment', wizard_employers_employer_profiles_path(step: 2, progress_step: 5) %></li>
-  <li role="presentation" class="<% if @step == '3'%>active<% end %>"><%= link_to 'Eligiblility', wizard_employers_employer_profiles_path(step: 3, progress_step: 5) %></li>
-  <% end %>
-
 </ul>
