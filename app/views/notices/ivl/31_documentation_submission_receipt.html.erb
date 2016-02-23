@@ -26,9 +26,11 @@
 </table>
 
 <%= render partial: 'notices/shared/paragraph', :locals => {
-  content: "Thank You!  We received the following requested documents on <date documents were received>"} %>
+  content: "<strong>Thank You!</strong>  We received the following requested documents on <date documents were received>"} %>
 
-<%= render partial: 'notices/shared/unordered_list', :locals => { listings: ["Document 1", "Document 2"] } %>
+<% docs_received = ["doc 1", "doc 2"] %>
+
+<%= render partial: 'notices/shared/unordered_list', :locals => { listings: docs_received } %>
 
 <%= render partial: 'notices/shared/unordered_list', :locals => { listings: ["[<If Other Field Selected < A Free Response Field>]"] } %>
 
