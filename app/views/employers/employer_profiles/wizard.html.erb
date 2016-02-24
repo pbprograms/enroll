@@ -1,6 +1,7 @@
 <div class="tab-content">
   <% @intake_steps[@progress_step_name].each do |k, v| %>
-    <div role="tabpanel" class="tab-pane <% if k == @step %>active<% end %>" id="<%= "#{v}".parameterize.underscore %>"><%= v %></div>
+    <div role="tabpanel" class="tab-pane <% if k == @step %>in active<% end %>" id="<%= "#{v}".parameterize.underscore %>"><%= v %>
+    </div>
   <% end %>
 </div>
 

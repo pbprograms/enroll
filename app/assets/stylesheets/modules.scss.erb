@@ -112,20 +112,62 @@ $light-green: #B5C989;
 				li {
 					&.active {
 						a {
-							background-color: transparent;
+							background-color: $primary-green;
 							font-weight: 600;
-							color: #333333;
-							border-bottom: solid 10px $primary-green;
+							color: #fff;
 						}
 					}
 					a {
-						margin: auto 1.25%;
+						background-color: #fff;
 						text-transform: capitalize;
 						border: none;
-						border-bottom: solid 10px $light-green;
 						&:hover {
-							background-color: transparent;
 						}
+						.step-number {
+							font-size: 1.5vw;
+						}
+						.step-text {
+						}
+					}
+					.fa {
+						&.fa-caret-down {
+							display: block;
+							text-align: center;
+							margin-top: -5px;
+							color: $primary-green;
+						}
+					}
+				}
+			}
+		}
+		.intake-steps {
+			.nav-tabs {
+				border-bottom: none;
+				li {
+					&.active {
+						position: relative;
+						a {
+							background-color: $primary-green;
+							color: #fff;
+						}
+						.fa {
+							&.fa-caret-right {
+								position: absolute;
+								margin-top: -7px;
+								right: -4px;
+								top: 50%;
+								color: $primary-green;
+								display: block;
+							}
+						}
+					}
+					.fa {
+						&.fa-caret-right {
+							display: none;
+						}
+					}
+					a {
+						color: #333;
 					}
 				}
 			}

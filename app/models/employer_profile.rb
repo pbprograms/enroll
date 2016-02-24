@@ -11,9 +11,7 @@ class EmployerProfile
 
   INTAKE_PROGRESS_STEP = { :register => { 1 => "Staff Roles", 2 => "Demographics", 3 => "Application", 4 => "Manage Communication" },
                             :employees => { 1 => "Add Employees", 2 => 'Roster'},
-                            :dudes => { 1 => "Jack", 2 => "phil"},
-                            :asdiusaidus => { 1 => "asdasdas", 2 => "kevin kevin kevin!", 3 => "Jack jack"},
-                          :asdasds => { 1 => "asdasdas", 2 => "kevin kevin kevin!", 3 => "Jack jack"}}
+                            :dudes => { 1 => "Jack", 2 => "phil"},:asdasd => { 1 => "asdsa", 2 => "phil"}}
 
   # [:register, :employees, :benefit_period, :benefit_package, :submit_application]
 

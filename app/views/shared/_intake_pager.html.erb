@@ -3,23 +3,23 @@
     <ul class="pager">
       <li class="back">
         <% if @step == 1 %>
-          <%= link_to wizard_employers_employer_profiles_path(step: EmployerProfile::INTAKE_PROGRESS_STEP[(EmployerProfile::INTAKE_PROGRESS_STEP.keys[@progress_step.to_i-2])].count, progress_step: @progress_step.to_i - 1, progress_step_name: (EmployerProfile::INTAKE_PROGRESS_STEP.keys[@progress_step.to_i-2])) do %>
+          <%= link_to wizard_employers_employer_profiles_path(step: EmployerProfile::INTAKE_PROGRESS_STEP[(EmployerProfile::INTAKE_PROGRESS_STEP.keys[@progress_step.to_i-2])].count, progress_step: @progress_step.to_i - 1, progress_step_name: (EmployerProfile::INTAKE_PROGRESS_STEP.keys[@progress_step.to_i-2])), class: 'btn btn-trans' do %>
             <span aria-hidden="true">&larr;</span> Back
           <% end %>
         <% else %>
-          <%= link_to wizard_employers_employer_profiles_path(step: (@step.to_i - 1), progress_step: @progress_step, progress_step_name: @progress_step_name) do %>
+          <%= link_to wizard_employers_employer_profiles_path(step: (@step.to_i - 1), progress_step: @progress_step, progress_step_name: @progress_step_name), class: 'btn btn-trans' do %>
             <span aria-hidden="true">&larr;</span> Back
           <% end %>
         <% end %>
       </li>
       <li class="skip">
         <% if @intake_steps[@progress_step_name].count == @step %>
-          <%= link_to wizard_employers_employer_profiles_path(step: 1, progress_step: (@progress_step.to_i + 1), progress_step_name: (EmployerProfile::INTAKE_PROGRESS_STEP.keys[@progress_step.to_i])) do %>
-            <span aria-hidden="true">&rarr;</span> Next
+          <%= link_to wizard_employers_employer_profiles_path(step: 1, progress_step: (@progress_step.to_i + 1), progress_step_name: (EmployerProfile::INTAKE_PROGRESS_STEP.keys[@progress_step.to_i]) ), class: 'btn btn-trans' do %>
+            Next <span aria-hidden="true">&rarr;</span>
           <% end %>
         <% else %>
-          <%= link_to wizard_employers_employer_profiles_path(step: (@step.to_i + 1), progress_step: @progress_step, progress_step_name: @progress_step_name) do %>
-            <span aria-hidden="true">&rarr;</span> Next
+          <%= link_to wizard_employers_employer_profiles_path(step: (@step.to_i + 1), progress_step: @progress_step, progress_step_name: @progress_step_name), class: 'btn btn-trans' do %>
+            Next <span aria-hidden="true">&rarr;</span>
           <% end %>
         <% end %>
       </li>
