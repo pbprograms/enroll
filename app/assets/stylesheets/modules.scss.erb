@@ -1,6 +1,8 @@
 $primary-color: #007bc4;
 $primay-active-button-text-color: #ffffff;
 $primary-bold: 600;
+$primary-green: #69A30D;
+$light-green: #B5C989;
 
 .module {
 	&.update-browser-warning {
@@ -98,6 +100,31 @@ $primary-bold: 600;
 									}
 								}
 							}
+						}
+					}
+				}
+			}
+		}
+	}
+	&.wizard {
+		.intake-progress {
+			.nav {
+				li {
+					&.active {
+						a {
+							background-color: transparent;
+							font-weight: 600;
+							color: #333333;
+							border-bottom: solid 10px $primary-green;
+						}
+					}
+					a {
+						margin: auto 1.25%;
+						text-transform: capitalize;
+						border: none;
+						border-bottom: solid 10px $light-green;
+						&:hover {
+							background-color: transparent;
 						}
 					}
 				}

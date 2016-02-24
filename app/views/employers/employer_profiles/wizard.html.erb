@@ -1,15 +1,6 @@
 <div class="tab-content">
-  <% @intake_steps.keys.each_with_index do |key, index| %>
-    <% @intake_steps[key].each_with_index do |k, value| %>
-      <% step_name = "#{@intake_steps[key][value]}".parameterize.underscore %>
-      <div role="tabpanel" class="tab-pane <% if @progress_step.to_s.to_i == value %>active<%end%>" id="#<%= step_name %>" url="<%="#{key}"%>_employers_employer_profiles?step_name=<%="#{step_name}"%>">
-        <% if @step == 1 %>
-        asdasdas
-        <% elsif @step == 2 %>
-        asdasds
-        <% end %>
-      </div>
-    <% end %>
+  <% @intake_steps[@progress_step_name].each do |k, v| %>
+    <div role="tabpanel" class="tab-pane <% if k == @step %>active<% end %>" id="<%= "#{v}".parameterize.underscore %>"><%= v %></div>
   <% end %>
 </div>
 

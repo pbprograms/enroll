@@ -2,13 +2,25 @@
   <nav>
     <ul class="pager">
       <li class="back">
-        <%= link_to wizard_employers_employer_profiles_path(step: (@step.to_i - 1), progress_step: @progress_step) do %>
-          <span aria-hidden="true">&larr;</span> Back
+        <% if @step == 1 %>
+          <%= link_to wizard_employers_employer_profiles_path(step: EmployerProfile::INTAKE_PROGRESS_STEP[(EmployerProfile::INTAKE_PROGRESS_STEP.keys[@progress_step.to_i-2])].count, progress_step: @progress_step.to_i - 1, progress_step_name: (EmployerProfile::INTAKE_PROGRESS_STEP.keys[@progress_step.to_i-2])) do %>
+            <span aria-hidden="true">&larr;</span> Back
+          <% end %>
+        <% else %>
+          <%= link_to wizard_employers_employer_profiles_path(step: (@step.to_i - 1), progress_step: @progress_step, progress_step_name: @progress_step_name) do %>
+            <span aria-hidden="true">&larr;</span> Back
+          <% end %>
         <% end %>
       </li>
       <li class="skip">
-        <%= link_to wizard_employers_employer_profiles_path(step: (@step.to_i + 1), progress_step: @progress_step) do %>
-          <span aria-hidden="true">&rarr;</span> Next
+        <% if @intake_steps[@progress_step_name].count == @step %>
+          <%= link_to wizard_employers_employer_profiles_path(step: 1, progress_step: (@progress_step.to_i + 1), progress_step_name: (EmployerProfile::INTAKE_PROGRESS_STEP.keys[@progress_step.to_i])) do %>
+            <span aria-hidden="true">&rarr;</span> Next
+          <% end %>
+        <% else %>
+          <%= link_to wizard_employers_employer_profiles_path(step: (@step.to_i + 1), progress_step: @progress_step, progress_step_name: @progress_step_name) do %>
+            <span aria-hidden="true">&rarr;</span> Next
+          <% end %>
         <% end %>
       </li>
       <!-- <li class="skip">

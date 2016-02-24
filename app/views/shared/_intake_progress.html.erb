@@ -1,5 +1,10 @@
-<ul class="nav nav-pills nav-justified">
-  <% @intake_steps.each_with_index do |(key, value), index| %>
-    <li role="presentation" class="<% if @progress_step == "#{index}" %>active<% end %>"><%= link_to "#{key}", wizard_employers_employer_profiles_path(progress_step: index, step: 1) %></li>
-  <% end %>
-</ul>
+<div class="module wizard">
+  <div class="intake-progress">
+    <ul class="nav nav-pills nav-justified">
+      <% @intake_steps.each_with_index do |(key), index| %>
+        <% index = index + 1 %>
+        <li role="presentation" class="<% if index == @progress_step %>active<% end %>"><%= link_to "#{index}. "+"#{key}", wizard_employers_employer_profiles_path(progress_step_name: key, progress_step: index, step: 1) %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>

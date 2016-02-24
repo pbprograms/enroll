@@ -11,25 +11,25 @@ class Employers::EmployerProfilesController < ApplicationController
 
 
   def wizard
-    @step = params[:step]
-    @progress_step = params[:progress_step]
-
-    @organization = Forms::EmployerProfile.new
-    @person = Forms::EmployerProfile.new
-    @employer_profile = EmployerProfile.last
-    @census_employee = CensusEmployee.new
-    @census_employee.address = Address.new
-    @census_employee.email = Email.new
-    @census_employees = CensusEmployee.all
-    @plan_year = PlanYear.new
-    @plan_year.benefit_groups = [BenefitGroup.new]
-    @plan_year.benefit_groups.first.build_relationship_benefits
-
-    @carrier_profile = CarrierProfile.last
-    @plans = Plan.by_active_year(2016).shop_market.health_coverage.by_carrier_profile(@carrier_profile).and(hios_id: /-01/)
-    @carrier_names = Organization.valid_carrier_names
-
     @intake_steps = EmployerProfile::INTAKE_PROGRESS_STEP
+    @step = params[:step].to_i
+    @progress_step = params[:progress_step].to_i
+    @progress_step_name = "#{params[:progress_step_name]}".to_sym
+
+
+    # @organization = Forms::EmployerProfile.new
+    # @person = Forms::EmployerProfile.new
+    # @employer_profile = EmployerProfile.last
+    # @census_employee = CensusEmployee.new
+    # @census_employee.address = Address.new
+    # @census_employee.email = Email.new
+    # @census_employees = CensusEmployee.all
+    # @plan_year = PlanYear.new
+    # @plan_year.benefit_groups = [BenefitGroup.new]
+    # @plan_year.benefit_groups.first.build_relationship_benefits
+    # @carrier_profile = CarrierProfile.last
+    # @plans = Plan.by_active_year(2016).shop_market.health_coverage.by_carrier_profile(@carrier_profile).and(hios_id: /-01/)
+    # @carrier_names = Organization.valid_carrier_names
 
   end
 

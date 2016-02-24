@@ -1,6 +1,5 @@
 <ul class="nav nav-pills nav-stacked nav-tabs" role="tablist">
-  <% @intake_steps[EmployerProfile::INTAKE_PROGRESS_STEP.keys[@progress_step.to_i]].each_with_index do |(key, value), index| %>
-    <% index = index + 1 %>
-    <li role="presentation" class="<% if @step == "#{index}" %>active<% end %>"><%= link_to "#{value}", "#"+"#{value}".parameterize.underscore, aria_controls: "home", role: "tab", data: {toggle: "tab"} %></li>
+  <% @intake_steps[@progress_step_name].each do |k,v| %>
+    <li role="presentation" class="<% if k == @step %>active<% end %>"><a href="<%= "#"+"#{v}".parameterize.underscore %>" aria-controls="<%= v %>" role="tab" data-toggle="tab"><%= v %></a></li>
   <% end %>
 </ul>
