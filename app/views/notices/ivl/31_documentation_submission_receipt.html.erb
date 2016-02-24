@@ -26,13 +26,11 @@
 </table>
 
 <%= render partial: 'notices/shared/paragraph', :locals => {
-  content: "<strong>Thank You!</strong>  We received the following requested documents on <date documents were received>"} %>
+  content: "<strong>Thank You!</strong>  We received the following requested documents on [date documents were received]"} %>
 
-<% docs_received = ["doc 1", "doc 2"] %>
+<%= render partial: 'notices/shared/unordered_list', :locals => { listings: ["doc 1","doc 2"] } %>
 
-<%= render partial: 'notices/shared/unordered_list', :locals => { listings: docs_received } %>
-
-<%= render partial: 'notices/shared/unordered_list', :locals => { listings: ["[<If Other Field Selected < A Free Response Field>]"] } %>
+<%= render partial: 'notices/shared/unordered_list', :locals => { listings: ["[If Other Field Selected < A Free Response Field]"] } %>
 
 <%= render partial: 'notices/shared/paragraph', :locals => {
   content: "These are all of the documents we requested from you.  We will now review the documents received and make a redetermination of your eligibility for Medicaid, private health insurance, and help paying for private health insurance.  You will receive a separate notice if the information you provided is not sufficient for us to make our decision and additional information is needed, or once a decision has been made.  If you have any questions, call DC Health Link Customer Service at 1-855-532-5465 or go online to www.DCHealthLink.com."} %>
