@@ -45,6 +45,7 @@ module Insured::FamiliesHelper
 
   def qle_link_generater(qle, index)
     options = {class: 'qle-menu-item'}
+    options[:class] += ' pre-selected' if !@existing_sep.blank? and @existing_sep.qualifying_life_event_kind == qle
     data = {
       title: qle.title, id: qle.id.to_s, label: qle.event_kind_label,
       post_event_sep_in_days: qle.post_event_sep_in_days,
