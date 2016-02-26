@@ -185,13 +185,13 @@ class HbxEnrollment
     end
 
     def advance_day(new_date)
-      
+
       # #FIXME Families with duplicate renewals
       families_with_effective_renewals_as_of(new_date).each do |family|
         family.enrollments.renewing.each do |hbx_enrollment|
           if hbx_enrollment.effective_on <= new_date
             if census_employee = hbx_enrollment.census_employee
-              if census_employee.renewal_benefit_group_assignment.may_select_coverage?            
+              if census_employee.renewal_benefit_group_assignment.may_select_coverage?
                 census_employee.renewal_benefit_group_assignment.select_coverage!
               end
             end
@@ -635,7 +635,7 @@ class HbxEnrollment
       new_hire_effective_date = employee_role.coverage_effective_on
     else
       open_enrollment_effective_date = employee_role.employer_profile.show_plan_year.start_on
-      
+
       if open_enrollment_effective_date < employee_role.coverage_effective_on
         new_hire_enrollment_period = employee_role.benefit_group.new_hire_enrollment_period(employee_role.new_census_employee.hired_on)
         raise "You're not yet eligible under your employer-sponsored benefits. Please return on #{new_hire_enrollment_period.first} to enroll for coverage."
@@ -864,11 +864,12 @@ class HbxEnrollment
       transitions from: [:shopping, :coverage_selected, :auto_renewing, :renewing_coverage_selected], to: :inactive, after: :propogate_waiver
     end
 
-    event :cancel_coverage do
+    event :cancel_coverage, :after => :record_transition do
       transitions from: [:coverage_selected, :renewing_coverage_selected], to: :coverage_canceled
     end
 
     event :terminate_coverage, :after => :record_transition do
+
       transitions from: :coverage_selected, to: :coverage_terminated, after: :propogate_terminate
       transitions from: :auto_renewing, to: :coverage_terminated, after: :propogate_terminate
       transitions from: :renewing_coverage_selected, to: :coverage_terminated, after: :propogate_terminate
@@ -911,7 +912,7 @@ class HbxEnrollment
 
     event :cancel_coverage, :after => :record_transition do
       transitions from: [:auto_renewing, :renewing_coverage_selected, :renewing_transmitted_to_carrier, :renewing_coverage_enrolled, :coverage_selected, :transmitted_to_carrier, :coverage_renewed, :enrolled_contingent, :unverified], to: :coverage_canceled
-      transitions from: :renewing_waived, to: :inactive 
+      transitions from: :renewing_waived, to: :inactive
     end
   end
 
@@ -963,7 +964,7 @@ class HbxEnrollment
     end
   end
 
-  private 
+  private
 
   def benefit_group_assignment_valid?(coverage_effective_date)
     plan_year = employee_role.employer_profile.find_plan_year_by_effective_date(coverage_effective_date)

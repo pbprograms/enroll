@@ -11,6 +11,7 @@ class Insured::PlanShoppingsController < ApplicationController
   before_action :set_kind_for_market_and_coverage, only: [:thankyou, :show, :plans, :checkout, :receipt]
 
   def checkout
+
     plan_selection = PlanSelection.for_enrollment_id_and_plan_id(params.require(:id), params.require(:plan_id))
 
     if plan_selection.employee_is_shopping_before_hire?
