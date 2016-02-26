@@ -53,5 +53,17 @@ FactoryGirl.define do
     roles ["broker_agency_staff"]
   end
 
+  trait :with_family do
+    after :create do |user|
+      person = FactoryGirl.create :person, :with_family, :user => user
+    end
+  end
+
+  trait :ridp_verified do
+    after :create do |user|
+      user.ridp_by_payload!
+    end
+  end
+
   factory :invalid_user, traits: [:without_email, :without_password, :without_password_confirmation]
 end
