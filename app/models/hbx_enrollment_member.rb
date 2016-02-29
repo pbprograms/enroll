@@ -79,10 +79,10 @@ class HbxEnrollmentMember
   end
 
   def is_covered_on?(coverage_date)
-    if coverage_end_on.present? && coverage_end_on < coverage_date
-      false
-    else
+    if coverage_end_on.blank? || coverage_end_on >= coverage_date
       true
+    else
+      false
     end
   end
 
