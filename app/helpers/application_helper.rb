@@ -1,5 +1,9 @@
 module ApplicationHelper
 
+  def copyright_notice
+    raw("&copy; #{Settings.site.copyright_period} #{Settings.site.short_name}. All Rights Reserved.")
+  end
+
   def menu_tab_class(a_tab, current_tab)
     (a_tab == current_tab) ? raw(" class=\"active\"") : ""
   end
@@ -465,7 +469,7 @@ module ApplicationHelper
   def incarceration_cannot_purchase(family_member)
     pronoun = family_member.try(:gender)=='male' ? ' he ':' she '
     name=family_member.try(:first_name) || ''
-    result = "Since " + name + " is currently incarcerated," + pronoun + "is not eligible to purchase a plan on #{HbxProfile::ShortName}.<br/> Other family members may still be eligible to enroll."
+    "Since " + name + " is currently incarcerated," + pronoun + "is not eligible to purchase a plan on #{Settings.site.short_name}.<br/> Other family members may still be eligible to enroll."
   end
 
   def generate_options_for_effective_on_kinds(effective_on_kinds, qle_date)
@@ -487,6 +491,7 @@ module ApplicationHelper
   def purchase_or_confirm
     'Confirm'
   end
+
 
   def qualify_qle_notice
     content_tag(:span) do

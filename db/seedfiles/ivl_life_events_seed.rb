@@ -48,7 +48,7 @@ QualifyingLifeEventKind.create!(
 
 QualifyingLifeEventKind.create!(
   title: "Entered into a legal domestic partnership",
-  tool_tip: "Entering a domestic partnership as permitted or recognized by the District of Columbia",
+  tool_tip: "Entering a domestic partnership as permitted or recognized by the #{Settings.aca.state_name}",
   action_kind: "add_member",
   market_kind: "individual",
   event_kind_label: "Date of domestic partnership",
@@ -98,7 +98,7 @@ QualifyingLifeEventKind.create!(
   )
 
 QualifyingLifeEventKind.create!(
-  title: "Moved or moving to the District of Columbia",
+  title: "Moved or moving to the #{Settings.aca.state_name}",
   tool_tip: " ",
   action_kind: "add_benefit",
   market_kind: "individual",

@@ -205,6 +205,10 @@ class PeopleController < ApplicationController
     end
   end
 
+  def get_census_employee(id)
+    CensusEmployee.find(id)
+  end
+
   def update
     sanitize_person_params
     @person = find_person(params[:id])
@@ -238,11 +242,6 @@ class PeopleController < ApplicationController
       end
     end
   end
-
-  def get_census_employee(id)
-     CensusEmployee.find(id)
-  end
-
 
   def create
     sanitize_person_params
