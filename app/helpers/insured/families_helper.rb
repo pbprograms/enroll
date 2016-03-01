@@ -83,4 +83,14 @@ module Insured::FamiliesHelper
 
     employee_role.census_employee.newhire_enrollment_eligible? && employee_role.can_select_coverage?
   end
+
+  def disable_make_changes_button?(hbx_enrollment)
+    #binding.pry
+    if hbx_enrollment.employee_role.is_under_open_enrollment?
+      return false
+    else
+      return true
+    end
+  end
+
 end
