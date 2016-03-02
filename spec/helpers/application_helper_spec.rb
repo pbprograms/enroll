@@ -210,4 +210,15 @@ RSpec.describe ApplicationHelper, :type => :helper do
       expect(helper.qualify_qle_notice).to include("In order to purchase benefit coverage, you must be in either an Open Enrollment or Special Enrollment period. ")
     end
   end
+
+  # describe "user_first_name_last_name_and_suffix" do
+  #   let(:person) { FactoryGirl.create(:person) }
+  #   let(:user) { FactoryGirl.create(:user, person: person) }
+  #
+  #   it "should return users first name, last name, and suffix" do
+  #     expect(helper.user_first_name_last_name_and_suffix).to eq (person.first_name+" "+person.last_name+" "+person.suffix)
+  #   end
+  # end
+
+
 end

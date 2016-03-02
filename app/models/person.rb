@@ -324,6 +324,10 @@ class Person
     @full_name = [name_pfx, first_name, middle_name, last_name, name_sfx].compact.join(" ")
   end
 
+  def first_name_last_name_and_suffix
+    [first_name, last_name, name_sfx].compact.join(" ")
+  end
+
   def age_on(date)
     age = date.year - dob.year
     if date.month < dob.month or (date.month == dob.month and date.day < dob.day)

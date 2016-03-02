@@ -290,6 +290,12 @@ module ApplicationHelper
     end
   end
 
+  def user_first_name_last_name_and_suffix
+    if signed_in?
+      current_user.person.try(:first_name_last_name_and_suffix) ? current_user.person.first_name_last_name_and_suffix.to_s.titleize  : current_user.email
+    end
+  end
+
   def retrieve_show_path(provider, message)
     return broker_agencies_inbox_path(provider, message_id: message.id) if provider.try(:broker_role)
     case(provider.model_name.name)

@@ -57,7 +57,7 @@
                             <span class="dark-grey">My ID: <%= truncate(current_user.try(:person).try(:hbx_id).upcase, length: 8, omission: '') %>&nbsp;&nbsp;</span>
                           <% end %>
                         </li>
-                        <h4><%= user_full_name.titleize %></h4>
+                        <h4><%= user_first_name_last_name_and_suffix %></h4>
                       </div>
                     </ul>
                   <% end %>
