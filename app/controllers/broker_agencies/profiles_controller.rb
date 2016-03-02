@@ -3,6 +3,7 @@ class BrokerAgencies::ProfilesController < ApplicationController
   before_action :check_admin_staff_role, only: [:index]
   before_action :find_hbx_profile, only: [:index]
   before_action :find_broker_agency_profile, only: [:show, :edit, :update, :employers]
+  before_action :set_current_person, only: [:staff_index]
 
   def index
     @broker_agency_profiles = BrokerAgencyProfile.all
@@ -193,9 +194,14 @@ class BrokerAgencies::ProfilesController < ApplicationController
   end
 
   def eligible_brokers
-    user_market_kind = current_user.has_consumer_role? ? "individual" : "shop"
-    staff = Person.where('broker_role.broker_agency_profile_id': {:$exists => true}).any_in('broker_role.market_kind' => [user_market_kind, "both"])
-    staff.where(:'broker_role.aasm_state'=> 'active')
+    Person.where('broker_role.broker_agency_profile_id': {:$exists => true}).where(:'broker_role.aasm_state'=> 'active').any_in(:'broker_role.market_kind'=>[person_market_kind, "both"])
   end
 
+  def person_market_kind
+    if @person.user.has_consumer_role?
+      "individual"
+    elsif @person.user.has_employee_role?
+      "shop"
+    end
+  end
 end
