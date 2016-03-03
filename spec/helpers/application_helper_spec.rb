@@ -211,14 +211,5 @@ RSpec.describe ApplicationHelper, :type => :helper do
     end
   end
 
-  # describe "user_first_name_last_name_and_suffix" do
-  #   let(:person) { FactoryGirl.create(:person) }
-  #   let(:user) { FactoryGirl.create(:user, person: person) }
-  #
-  #   it "should return users first name, last name, and suffix" do
-  #     expect(helper.user_first_name_last_name_and_suffix).to eq (person.first_name+" "+person.last_name+" "+person.suffix)
-  #   end
-  # end
-
 
 end

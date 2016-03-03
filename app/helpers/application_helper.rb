@@ -292,7 +292,7 @@ module ApplicationHelper
 
   def user_first_name_last_name_and_suffix
     if signed_in?
-      current_user.person.try(:first_name_last_name_and_suffix) ? current_user.person.first_name_last_name_and_suffix.to_s.titleize  : current_user.email
+      current_user.person.try(:first_name_last_name_and_suffix) ? current_user.person.first_name_last_name_and_suffix : (current_user.email).downcase
     end
   end
 
