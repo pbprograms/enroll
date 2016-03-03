@@ -37,7 +37,7 @@ class Insured::FamiliesController < FamiliesController
 
     @waived = @family.coverage_waived? && !@waived_hbx_enrollments.any? {|i| unique_display_years.include? i.effective_on.year}
 
-    @employee_role = @person.employee_roles.active.first
+    @employee_role = @person.active_employee_roles.first
     @tab = params['tab']
     respond_to do |format|
       format.html
@@ -70,6 +70,8 @@ class Insured::FamiliesController < FamiliesController
     @hbx_enrollment_id = params[:hbx_enrollment_id]
     @change_plan = params[:change_plan]
     @employee_role_id = params[:employee_role_id]
+
+
     @next_ivl_open_enrollment_date = HbxProfile.current_hbx.try(:benefit_sponsorship).try(:renewal_benefit_coverage_period).try(:open_enrollment_start_on)
 
     @market_kind = (params[:employee_role_id].present? && params[:employee_role_id] != 'None') ? 'shop' : 'individual'
@@ -177,8 +179,9 @@ class Insured::FamiliesController < FamiliesController
   end
 
   private
+
   def check_employee_role
-    @employee_role = @person.employee_roles.try(:first)
+    @employee_role = @person.active_employee_roles.first
   end
 
   def init_qualifying_life_events
@@ -196,7 +199,7 @@ class Insured::FamiliesController < FamiliesController
       @manually_picked_role = params[:market] ? params[:market] : "shop_market_events_without_new_employment"
       @qualifying_life_events += QualifyingLifeEventKind.send @manually_picked_role if @manually_picked_role
     else
-      if @person.employee_roles.active.present?
+      if @person.active_employee_roles.present?
         @qualifying_life_events += QualifyingLifeEventKind.shop_market_events_without_new_employment
       else @person.consumer_role.present?
       @qualifying_life_events += QualifyingLifeEventKind.individual_market_events
@@ -208,7 +211,7 @@ class Insured::FamiliesController < FamiliesController
   def check_for_address_info
     if @person.has_active_employee_role?
       if @person.addresses.blank?
-        redirect_to edit_insured_employee_path(@person.employee_roles.active.first)
+        redirect_to edit_insured_employee_path(@person.active_employee_roles.first)
       end
     elsif @person.has_active_consumer_role?
       if !(@person.addresses.present? || @person.no_dc_address.present? || @person.no_dc_address_reason.present?)
