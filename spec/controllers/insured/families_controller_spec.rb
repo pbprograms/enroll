@@ -120,7 +120,7 @@ RSpec.describe Insured::FamiliesController do
       end
 
       it "should get shop market events" do
-        expect(assigns(:qualifying_life_events)).to eq QualifyingLifeEventKind.shop_market_events
+        expect(assigns(:qualifying_life_events)).to eq QualifyingLifeEventKind.shop_market_events_without_new_employment
       end
     end
 

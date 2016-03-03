@@ -103,6 +103,7 @@ class QualifyingLifeEventKind
                         :post_event_sep_in_days
 
   scope :active, ->{ where(is_active: true).where(:created_at.ne => nil).order(ordinal_position: :asc) }
+  scope :without_new_employment, ->{ where(:reason.ne => "new_employment") }
 
   # Business rules for EmployeeGainingMedicare
   # If coverage ends on last day of month and plan selected before loss of coverage: 
@@ -173,6 +174,10 @@ class QualifyingLifeEventKind
   class << self
     def shop_market_events
       where(:market_kind => "shop").active.to_a
+    end
+
+    def shop_market_events_without_new_employment
+      where(:market_kind => "shop").without_new_employment.active.to_a
     end
 
     def individual_market_events
