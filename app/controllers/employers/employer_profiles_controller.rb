@@ -16,7 +16,6 @@ class Employers::EmployerProfilesController < ApplicationController
     @progress_step = params[:progress_step].to_i
     @progress_step_name = "#{params[:progress_step_name]}".to_sym
 
-
     # @organization = Forms::EmployerProfile.new
     # @person = Forms::EmployerProfile.new
     # @employer_profile = EmployerProfile.last
@@ -30,7 +29,40 @@ class Employers::EmployerProfilesController < ApplicationController
     # @carrier_profile = CarrierProfile.last
     # @plans = Plan.by_active_year(2016).shop_market.health_coverage.by_carrier_profile(@carrier_profile).and(hios_id: /-01/)
     # @carrier_names = Organization.valid_carrier_names
+  end
 
+  def staff_roles
+    @tab_pane = params[:tab_pane]
+    respond_to do |format|
+      format.js { render :action => "tab_pane" }
+    end
+  end
+
+  def demographics
+    @tab_pane = params[:tab_pane]
+    respond_to do |format|
+      format.js { render :action => "tab_pane" }
+    end
+  end
+
+  def application
+    @tab_pane = params[:tab_pane]
+    respond_to do |format|
+      format.js { render :action => "tab_pane" }
+    end
+  end
+
+  def manage_communication
+    @tab_pane = params[:tab_pane]
+    respond_to do |format|
+      format.js { render :action => "tab_pane" }
+    end
+  end
+  def demographics
+    @tab_pane = params[:tab_pane]
+    respond_to do |format|
+      format.js { render :action => "tab_pane" }
+    end
   end
 
   def relationship_benefits

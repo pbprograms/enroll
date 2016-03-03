@@ -168,10 +168,6 @@ Rails.application.routes.draw do
     end
     resources :inboxes, only: [:new, :create, :show, :destroy]
     resources :employer_profiles do
-      get 'wizard', on: :collection
-      EmployerProfile::INTAKE_PROGRESS_STEP.keys.each do |ips|
-        get "#{ips}", on: :collection
-      end
       get 'new'
       get 'my_account'
       get 'show_profile'
@@ -183,6 +179,12 @@ Rails.application.routes.draw do
         get 'search'
         post 'match'
         get 'inbox'
+        get 'wizard'
+        EmployerProfile::INTAKE_PROGRESS_STEP.keys.each do |ips|
+          EmployerProfile::INTAKE_PROGRESS_STEP[ips].each do |k,v|
+            get "#{v}".downcase.tr(" ", "_"), :action => "#{v}".downcase.tr(" ", "_")
+          end
+        end
       end
       resources :plan_years do
         get 'reference_plans'
