@@ -81,6 +81,7 @@ RSpec.describe Insured::GroupSelectionController, :type => :controller do
     end
 
     it "should get hbx_enrollment when has active hbx_enrollments and in qle flow" do
+      allow(hbx_enrollment).to receive(:may_terminate_coverage?).and_return true
       sign_in user
       get :new, person_id: person.id, employee_role_id: employee_role.id, change_plan: 'change_by_qle'
       expect(assigns(:hbx_enrollment)).to eq hbx_enrollment
