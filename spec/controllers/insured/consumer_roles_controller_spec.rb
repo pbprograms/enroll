@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Insured::ConsumerRolesController, :type => :controller do
   let(:user){ FactoryGirl.create(:user, :consumer) }
-  let(:person){ FactoryGirl.build(:person) }
+  let(:person){ FactoryGirl.create(:person, :with_consumer_role) }
   let(:family){ double("Family") }
   let(:family_member){ double("FamilyMember") }
   let(:consumer_role){ FactoryGirl.build(:consumer_role) }
