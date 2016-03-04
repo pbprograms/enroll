@@ -20,7 +20,7 @@ module HbxImport
       census_employees_grouped = census_employees_from_csv.group_by{|census_employee| census_employee.fein}
 
       census_employees_to_save = []
-      benefit_groups_to_save = []
+      #benefit_groups_to_save = []
       census_employees_grouped.each do |fein, census_employees|
         employer_profile = EmployerProfile.find_by_fein(fein)
         if employer_profile.present?
@@ -63,30 +63,6 @@ module HbxImport
       end
 
       puts "Built #{census_employees_to_save.count} new census records."
-
-      save_status = census_employees_to_save.reduce(
-        saved_census_employees: [],
-        saved_benefit_groups: [],
-        failed_census_employees: [],
-        failed_benefit_groups: []
-      ) do |status, employee|
-        employee.save
-        if employee.valid?
-          status[:saved_census_employees] << employee
-          employee.active_benefit_group_assignment.save
-          if employee.active_benefit_group_assignment.valid?
-            status[:saved_benefit_groups] << employee.active_benefit_group_assignment
-          else
-            status[:failed_benefit_groups] << employee.active_benefit_group_assignment
-          end
-        else
-          status[:failed_census_employees] << employee
-        end
-        status
-      end
-
-      puts "Successfully saved #{save_status[:saved_census_employees].count} new census records."
-      puts "Successfully saved #{save_status[:saved_benefit_groups].count} benefit group members."
     end
   end
 
