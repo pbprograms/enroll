@@ -81,7 +81,7 @@ module Parsers
       def broker_exists_if_specified
         return true if broker_npn.blank?
         unless BrokerRole.by_npn(broker_npn).any?
-          errors.add(:broker_npn, "invalid broker NPN")
+          errors.add(:broker_npn, "does not correspond to an existing Broker")
         end
       end
 
@@ -123,6 +123,19 @@ module Parsers
         locations
       end
 
+      def assign_brokers
+        broker_agency_accounts = []
+        if !broker_npn.blank?
+         br = BrokerRole.by_npn(broker_npn).first
+         broker_agency_accounts << BrokerAgencyAccount.new({
+           start_on: Time.mktime(2016,4,1,0,0,0),
+           writing_agent_id: br.id,
+           broker_agency_profile_id: br.broker_agency_profile_id
+         })
+        end 
+        broker_agency_accounts
+      end
+
       def save
         return false unless valid?
         new_organization = Organization.new({
@@ -131,6 +144,7 @@ module Parsers
            :dba => dba,
            :office_locations => map_office_locations,
            :employer_profile => EmployerProfile.new({
+              :broker_agency_accounts => assign_brokers,
               :entity_kind => "c_corporation"
            })
         })

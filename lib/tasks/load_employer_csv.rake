@@ -6,7 +6,6 @@ namespace :import do
       unless ce.save
         puts "=================="
         puts row.fields.inspect
-        puts ce.inspect
         puts ce.errors.full_messages.inspect
       end
     end
