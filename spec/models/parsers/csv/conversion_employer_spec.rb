@@ -37,10 +37,6 @@ describe Parsers::Csv::ConversionEmployer, "given a non-blank row" do
   describe "given a full, valid row" do
     let(:raw_row) { "521780000,\"Care Pharmacy DBA\",\"Care Pharmacy\",\"3001 P Street N.W.\",\" \",\"Washington\",\"DC\",20007,\"3001 P Street N.W. 2\",\"Suite WHATEVER\",\"Seattle\",\"WA\",\"55532\",\"Bug\",\"Dance\",\"care@carerx.com\",\"2020374000\",\"3\",\" \",\"3001 P Street N.W.\",\" \",\"Washington\",\"DC\",\"20007\",\"Debby C Mcac\",\"777660\",\" \",\" \",\"07/01/2016\",\"CareFirst BlueCross BlueShield\",\"Single Plan from Carrier \",\"BC HMO Ref  500 Gold Trad Dental Drug\",\"86052DC0480005-01\",\"BC HMO Ref  500 Gold Trad Dental Drug\",\"86052DC0480005-01\"," }
 
-    it "is valid" do
-      expect(subject.valid?).to be_truthy
-    end
-
     EXPECTED_PROPERTIES = {
       :fein => "521780000",
       :dba => "Care Pharmacy DBA",
@@ -62,5 +58,55 @@ describe Parsers::Csv::ConversionEmployer, "given a non-blank row" do
     }
 
     it_should_behave_like "a parsed ConversionEmployer row entry", EXPECTED_PROPERTIES
+  end
+end
+
+class ShouldaActiveModel
+  extend Shoulda::Matchers::ActiveModel
+end
+
+describe Parsers::Csv::ConversionEmployer do
+  it { is_expected.to ShouldaActiveModel.validate_length_of(:fein).is_equal_to(9) }
+  it { is_expected.to ShouldaActiveModel.validate_presence_of(:legal_name) }
+
+end
+
+describe Parsers::Csv::ConversionEmployer, "given an already existing FEIN" do
+  let(:employer) { FactoryGirl.create(:employer_profile) }
+  let(:taken_fein) { employer.fein }
+
+  subject { Parsers::Csv::ConversionEmployer.new(:fein => taken_fein) }
+
+  after(:each) do
+    employer.delete
+  end
+
+  it "has an error for the already claimed fein" do
+    subject.valid?
+    expect(subject.errors).to include(:fein)
+  end
+end
+
+describe Parsers::Csv::ConversionEmployer, "given a broker NPN" do
+  subject { Parsers::Csv::ConversionEmployer.new(:broker_npn => broker_npn) }
+
+  describe "if that broker does not exist" do
+    let(:broker_npn) { "SOME TOTAL GARBAGE THANKS" }
+    it "has errors on broker npn" do
+      subject.valid?
+      expect(subject.errors).to include(:broker_npn)
+    end
+  end
+
+  describe "if that broker exists" do
+    let(:broker_role) { FactoryGirl.create(:broker_role) }
+    let(:broker_npn) { broker_role.npn }
+    after(:each) do
+      broker_role.person.delete
+    end
+    it "has no errors on broker npn" do
+      subject.valid?
+      expect(subject.errors).not_to include(:broker_npn)
+    end
   end
 end
