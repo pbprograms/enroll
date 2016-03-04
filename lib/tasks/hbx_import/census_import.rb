@@ -9,10 +9,12 @@ module HbxImport
     end
 
     def run
+      debugger
       census_employees_from_csv = []
       CSV.foreach(file_name, headers: true) do |row|
         census_employees_from_csv << CensusRecord.from_row(row.fields)
       end
+
       census_employees_from_csv = census_employees_from_csv.reject(&:nil?).sort.uniq
       puts "Found #{census_employees_from_csv.size} unique census records in #{census_employees_from_csv.collect(&:fein).uniq.size} employers."
 
@@ -22,9 +24,10 @@ module HbxImport
       benefit_groups_to_save = []
       census_employees_grouped.each do |fein, census_employees|
         employer_profile = EmployerProfile.find_by_fein(fein)
+        debugger
         if employer_profile.present?
-          plan_year = employer_profile.plan_years.last
-          benefit_group = plan_year.benefit_groups.last
+          #plan_year = employer_profile.plan_years.last
+          #benefit_group = plan_year.benefit_groups.last
           census_employees.each do |census_employee|
             found = CensusEmployee.where(ssn: census_employee.ssn, dob: census_employee.dob).to_a.first
             if found.nil?
@@ -42,15 +45,15 @@ module HbxImport
               end
 #              ce.build_address(kind: "home",address_1:"830 I St NE",city:"Washington",state:"DC",zip:"20002")
               ce.employment_terminated_on = census_employee.dot
-              ce.add_benefit_group_assignment(benefit_group, plan_year.start_on)
+              #ce.add_benefit_group_assignment(benefit_group, plan_year.start_on)
+              ce.employer_profile = employer_profile
               begin
               ce.save!
               if !ce.employment_terminated_on.blank?
                 ce.aasm_state = "employment_terminated"
                 ce.save!
               end
-              benefit_group.census_employees << ce._id
-
+              #benefit_group.census_employees << ce._id
               census_employees_to_save << ce
               rescue
                 puts census_employee.work_email.inspect
