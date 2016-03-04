@@ -9,7 +9,6 @@ module HbxImport
     end
 
     def run
-      debugger
       census_employees_from_csv = []
       CSV.foreach(file_name, headers: true) do |row|
         census_employees_from_csv << CensusRecord.from_row(row.fields)
@@ -24,7 +23,6 @@ module HbxImport
       benefit_groups_to_save = []
       census_employees_grouped.each do |fein, census_employees|
         employer_profile = EmployerProfile.find_by_fein(fein)
-        debugger
         if employer_profile.present?
           #plan_year = employer_profile.plan_years.last
           #benefit_group = plan_year.benefit_groups.last
