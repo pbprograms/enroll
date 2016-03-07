@@ -4,11 +4,7 @@ class Employers::PremiumStatementsController < ApplicationController
 
   def show
     @employer_profile = EmployerProfile.find(params.require(:id))
-    @current_plan_year = @employer_profile.published_plan_year
-    @hbx_enrollments = @current_plan_year.hbx_enrollments.first(100) rescue []
-    @hbx_enrollments.reject!{|enrollment| !enrollment.census_employee.is_active? }
-
-    # @hbx_enrollments = HbxEnrollment.covered(@hbx_enrollments)
+    @current_plan_year, @hbx_enrollments = @employer_profile.premium_billing_plan_year_and_enrollments
 
     respond_to do |format|
       format.html
@@ -19,7 +15,7 @@ class Employers::PremiumStatementsController < ApplicationController
     end
   end
 
-private
+  private
 
   def csv_for(hbx_enrollments)
     (output = "").tap do
