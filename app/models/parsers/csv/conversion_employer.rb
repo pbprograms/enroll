@@ -33,8 +33,9 @@ module Parsers
         :broker_npn
       ]
 
-      attr_accessor :fein,
-        :dba,
+      attr_reader :fein, :broker_npn
+
+      attr_accessor :dba,
         :legal_name,
         :primary_location_address_1,
         :primary_location_address_2,
@@ -50,14 +51,21 @@ module Parsers
         :contact_phone,
         :enrolled_employee_count,
         :new_hire_count,
-        :broker_name,
-        :broker_npn
+        :broker_name
 
       validates_presence_of :legal_name, :allow_blank => false
       validates_length_of :fein, is: 9
 
       validate :validate_new_fein
       validate :broker_exists_if_specified
+
+      def fein=(val)
+        @fein = Maybe.new(val).strip.extract_value
+      end
+
+      def broker_npn=(val)
+        @broker_npn = Maybe.new(val).strip.extract_value
+      end
 
       def self.from_row(row)
         return ConversionEmployer.new if row.nil?
