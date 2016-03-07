@@ -270,7 +270,7 @@ module Forms
 
 
     def relationship_validation
-      return if family.blank? or family.family_members.blank?
+      return if family.blank? || family.family_members.blank?
 
       relationships = Hash.new
       family.active_family_members.each{|fm| relationships[fm._id.to_s]=fm.relationship}
