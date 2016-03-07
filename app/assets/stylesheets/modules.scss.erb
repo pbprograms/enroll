@@ -131,4 +131,53 @@ $primary-bold: 600;
 			}
 		}
 	}
+	&.ivl-documents-table {
+		margin-top: 1.25%;
+		.table {
+			.thead-default {
+				tr {
+					background-color: #fff;
+					th {
+						text-align: center;
+						vertical-align: middle;
+					}
+				}
+			}
+			tbody {
+				tr {
+					&.top {
+						&.even {
+							background-color: #ffffff !important;
+							&:hover {
+								background-color: #f5f5f5 !important;
+							}
+						}
+					}
+					td {
+						vertical-align: middle;
+						&.table-functions {
+							min-width: 70px;
+							.fa {
+								cursor: pointer;
+								display: inline-block;
+								color: #b7b7b7;
+								margin-left: 5px;
+							}
+						}
+					}
+					&:hover {
+						td {
+							&.table-functions {
+								.fa {
+									&:hover {
+										color: #23527c;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
