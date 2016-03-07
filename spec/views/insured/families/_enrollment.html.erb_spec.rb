@@ -71,11 +71,6 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
       expect(rendered).to have_selector("a[href='/products/plans/summary?active_year=#{plan.active_year}&hbx_enrollment_id=#{hbx_enrollment.id}&source=account&standard_component_id=#{plan.hios_id}']", text: "View Details")
     end
 
-    it "should display the effective date" do
-      expect(rendered).to have_selector('label', text: 'Effective date:')
-      expect(rendered).to have_selector('strong', text: '08/10/2015')
-    end
-
     it "should not disable the Make Changes button" do 
       expect(rendered).to_not have_selector('.cna') 
     end
@@ -92,6 +87,16 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
 
     end
   
+    it "should display the effective date" do
+      expect(rendered).to have_selector('label', text: 'Effective date:')
+      expect(rendered).to have_selector('strong', text: '08/10/2015')
+    end
+
+    it "should display effective date when terminated enrollment" do
+      allow(hbx_enrollment).to receive(:coverage_terminated?).and_return(true)
+      expect(rendered).to match /effective date/i
+    end
+
   end
 
   context "with consumer_role" do
