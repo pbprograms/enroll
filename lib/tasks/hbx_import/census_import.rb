@@ -59,7 +59,7 @@ module HbxImport
               end
             rescue Exception => e
               failed_employee_counter += 1
-              puts "\nERROR: #{ce.first_name} #{ce.last_name} " + ce.errors.full_messages.to_s
+              puts "\nERROR: #{ce.inspect}\n" + ce.errors.full_messages.to_s
             end
           end
         else
