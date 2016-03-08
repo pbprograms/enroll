@@ -9,6 +9,7 @@ module AccessPolicies
     end
 
     def authorize_show(employer, controller)
+      return(true) if user.has_hbx_staff_role? || is_broker_for_employer?(employer.id)
       person = user.person
       unless person
         log("AccessPolicies #3736 user:#{user.email}", {:severity => "error"})
@@ -47,6 +48,12 @@ module AccessPolicies
         employers = broker_agency_profiles.map { |bap| ::EmployerProfile.find_by_broker_agency_profile(bap) }.flatten
       end
       employers.map(&:id).map(&:to_s).include?(employer_id.to_s)
+    end
+
+    def authorize_edit(employer_profile, controller)
+      return true if @user.has_hbx_staff_role? || is_broker_for_employer?(employer_profile.id)
+      return true if Person.staff_for_employer(employer_profile).include?(@user.person)
+      controller.redirect_to_new and return
     end
   end
 end

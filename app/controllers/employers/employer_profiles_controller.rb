@@ -1,4 +1,4 @@
-class Employers::EmployerProfilesController < ApplicationController
+class Employers::EmployerProfilesController < Employers::EmployersController
 
   before_action :find_employer, only: [:show, :show_profile, :destroy, :inbox,
                                        :bulk_employee_upload, :bulk_employee_upload_form]
@@ -6,8 +6,8 @@ class Employers::EmployerProfilesController < ApplicationController
   before_action :check_show_permissions, only: [:show, :show_profile, :destroy, :inbox, :bulk_employee_upload, :bulk_employee_upload_form]
   before_action :check_index_permissions, only: [:index]
   before_action :check_employer_staff_role, only: [:new]
+  before_action :check_access_to_organization, only: [:edit]
   skip_before_action :verify_authenticity_token, only: [:show], if: :check_origin?
-
   layout "two_column", except: [:new]
 
   def index
@@ -141,39 +141,31 @@ class Employers::EmployerProfilesController < ApplicationController
   def edit
     @organization = Organization.find(params[:id])
     @employer_profile = @organization.employer_profile
-    @employer = @employer_profile.match_employer(current_user)
-    @employer_contact = @employer_profile.staff_roles.first
-
-    if @employer_contact.try(:emails)
-      @employer_contact.emails.any? ? @employer_contact_email = @employer_contact.emails.first : @employer_contact_email = @employer_contact.user.email
-    else
-      @employer_contact_email = @employer_contact && @employer_contact.user && @employer_contact.user.email
-    end
-    @current_user_is_hbx_staff = current_user.has_hbx_staff_role?
-    @current_user_is_broker = current_user.has_broker_agency_staff_role?
-  rescue => e
-    @mail = current_user.email
-    log("#{e.message}; #3672 params: #{params.to_s}, url: #{request.original_url}, method: #{request.method}, stacktrace: #{e.backtrace}, user: #{@mail}", {:severity => 'error'})
-    redirect_to welcome_employers_employer_profiles_path
-    return
+    @staff = Person.staff_for_employer_including_pending(@employer_profile)
+    @add_staff = params[:add_staff]
   end
 
   def create
+
     params.permit!
     @organization = Forms::EmployerProfile.new(params[:organization])
     organization_saved = false
     begin
-      organization_saved = @organization.save(current_user)
+      organization_saved = @organization.save(current_user, params[:employer_id])
     rescue Exception => e
       flash[:error] = e.message
       render action: "new"
       return
     end
-
     if organization_saved
       @person = current_user.person
       create_sso_account(current_user, current_user.person, 15, "employer") do
-        redirect_to employers_employer_profile_path(@organization.employer_profile, tab: 'home')
+        if params[:employer_id].present?
+          flash[:notice] = 'Your Employer Staff application is pending'
+          render action: 'new'
+        else
+          redirect_to employers_employer_profile_path(@organization.employer_profile, tab: 'home')
+        end  
       end
     else
       render action: "new"
@@ -186,9 +178,8 @@ class Employers::EmployerProfilesController < ApplicationController
     @organization = Organization.find(params[:id])
     #save duplicate office locations as json in case we need to refresh
     @organization_dup = @organization.office_locations.as_json
-
     @employer_profile = @organization.employer_profile
-    @employer = @employer_profile.match_employer(current_user)
+
     if current_user.has_employer_staff_role? && @employer_profile.staff_roles.include?(current_user.person)
       @organization.assign_attributes(organization_profile_params)
 
@@ -196,11 +187,7 @@ class Employers::EmployerProfilesController < ApplicationController
       @organization.assign_attributes(:office_locations => [])
       @organization.save(validate: false)
 
-      #Fix issue 3770. Make sure DOB is in correct format
-      employer_attributes = employer_params
-      employer_attributes["dob"] = DateTime.strptime(employer_attributes["dob"], '%m/%d/%Y').try(:to_date)
-
-      if @organization.update_attributes(employer_profile_params) && @employer.update_attributes(employer_attributes)
+      if @organization.update_attributes(employer_profile_params)
         flash[:notice] = 'Employer successfully Updated.'
         redirect_to edit_employers_employer_profile_path(@organization)
       else
@@ -254,10 +241,6 @@ class Employers::EmployerProfilesController < ApplicationController
 
   end
 
-  def redirect_to_new
-    redirect_to new_employers_employer_profile_path
-  end
-
   def redirect_to_first_allowed
     redirect_to employers_employer_profile_path(:id => current_user.person.employer_staff_roles.first.employer_profile_id)
   end
@@ -299,8 +282,8 @@ class Employers::EmployerProfilesController < ApplicationController
   end
 
   def check_employer_staff_role
-    if current_user.has_employer_staff_role?
-      redirect_to employers_employer_profile_path(:id => current_user.person.employer_staff_roles.first.employer_profile_id, :tab => "home")
+    if current_user.person && current_user.person.has_active_employer_staff_role?
+      redirect_to employers_employer_profile_path(:id => current_user.person.active_employer_staff_roles.first.employer_profile_id, :tab => "home")
     end
   end
 
@@ -338,6 +321,13 @@ class Employers::EmployerProfilesController < ApplicationController
     else
       redirect_to new_employers_employer_profile_path
     end
+  end
+
+  def check_access_to_organization
+    id = params.permit(:id)[:id]
+    organization = Organization.find(id)
+    policy = ::AccessPolicies::EmployerProfile.new(current_user)
+    policy.authorize_edit(organization.employer_profile, self)
   end
 
   def find_employer

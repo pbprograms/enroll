@@ -49,6 +49,7 @@ RSpec.describe Employers::EmployerProfilesController do
       allow(user).to receive(:has_hbx_staff_role?).and_return(false)
       allow(user).to receive(:has_employer_staff_role?).and_return(false)
       allow(user).to receive(:person).and_return(person)
+      allow(person).to receive(:has_active_employer_staff_role?).and_return(false)
       sign_in(user)
       get :new
       expect(response).to have_http_status(:success)
@@ -88,6 +89,8 @@ RSpec.describe Employers::EmployerProfilesController do
       allow(user).to receive(:has_hbx_staff_role?).and_return(false)
       allow(user).to receive(:has_employer_staff_role?).and_return(true)
       allow(user).to receive(:person).and_return(person)
+      allow(person).to receive(:has_active_employer_staff_role?).and_return(true)
+      allow(person).to receive(:active_employer_staff_roles).and_return([double("employer_staff_role", employer_profile_id: 77)])
       sign_in(user)
       get :new
       expect(response).to have_http_status(:redirect)
@@ -586,12 +589,12 @@ RSpec.describe Employers::EmployerProfilesController do
         expect(response).to be_redirect
       end
     end
-    it "should update person info" do
+    it "should not update person info" do
       allow(user).to receive(:save).and_return(true)
       sign_in(user)
       expect(Organization).to receive(:find)
       put :update, id: organization.id, first_name: "test", organization: organization_params
-      expect(person.first_name).to eq "test"
+      expect(person.first_name).not_to eq "test"
       expect(response).to be_redirect
     end
     context "given the company does not have managing staff" do
