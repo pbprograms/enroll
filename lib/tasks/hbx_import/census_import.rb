@@ -11,6 +11,7 @@ module HbxImport
     def run
       missing_employer_counter = 0
       failed_employee_counter = 0
+      employees_in_missing_employer_counter = 0
 
       census_employees_from_csv = []
       CSV.foreach(file_name, headers: true) do |row|
@@ -64,11 +65,13 @@ module HbxImport
           end
         else
           missing_employer_counter += 1
+          employees_in_missing_employer_counter += census_employees.count
         end
       end
 
       puts "\n\n"
       puts "Missing employer count #{missing_employer_counter}"
+      puts "Total employees belonging to the all missing employers #{employees_in_missing_employer_counter}"
       puts "Failed employee records count #{failed_employee_counter} (given the employer was found)"
       puts "Built #{census_employees_to_save.count} new census records."
     end
