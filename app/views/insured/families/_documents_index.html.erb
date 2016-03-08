@@ -3,7 +3,7 @@
       <h4>No results found</h4>
   <% else %>
 
-  <div class="module ivl-documents-table">
+  <div class="module ivl-documents-table panel">
   <div class="table-responsive">
     <table class="table table-striped table-hover table-sm">
       <thead class="thead-default">
@@ -54,61 +54,55 @@
               <br/>
             <% end %>
           </td>
-          <td>
-            <i class="fa fa-plus fa-2x" data-toggle="tooltip" title="Add Document"></i>
+          <td class="table-functions">
+            <a data-toggle="collapse" href="#<%= member.id %>" aria-expanded="false" aria-controls="<%= member.id %>">
+              <%= member.person.consumer_role.vlp_documents.present? ? '<i class="fa fa-caret-down fa-2x" data-toggle="tooltip" title="View Documents"></i>'.html_safe : '<i class="fa fa-plus fa-lg" data-toggle="tooltip" title="Add Documents"></i>'.html_safe %>
+            </a>
           </td>
         </tr>
-        <tr class="">
 
-            <td colspan="5">
-              <% member.person.consumer_role.vlp_documents.each do |vlp_doc| %>
-                <%= vlp_doc.subject %>
-                <br/>
-              <% end %>
+              <tr class="collapse dn" id="<%= member.id %>">
+                <td colspan="6" class="td-container">
+                  <div class="table-responsive">
+                    <table class="table table-sm">
+                    <% member.person.consumer_role.vlp_documents.each_with_index do |vlp_doc, i | %>
+                    <tr class="<% if i == 0 %>bt-n<% end %>">
+                      <td>
+                        <%= vlp_doc.subject %>
+                        &nbsp;
+                        <% case vlp_doc.status %>
+                          <% when "downloaded" %>
+                            <span class="label label-success">Downloaded</span>
+                          <% else %>
+                            <span class="label label-warning">Warning</span>
+                        <% end %>
 
-            </td>
-            <td>
-              <% member.person.consumer_role.vlp_documents.each do |vlp_doc| %>
+                      </td>
+                      <td class="table-functions">
+                      <% if vlp_doc.identifier.present? %>
+                        <% key = vlp_doc.identifier.split('#').last %>
+                        <%= link_to("/insured/verification_documents/download/#{key}") do %>
+                          <i class="fa fa-download fa-lg" data-toggle="tooltip" title="Download"></i>
+                        <% end %>
+                      <% end %>
+                      <i class="fa fa-trash-o fa-lg" data-toggle="tooltip" title="Delete"></i>
+                      </td>
+                    </tr>
+                    <% end %>
+                    <tr class="upload bt-n">
+                      <td colspan="6" class="td-container">
+                        <%= render "docs_uploading_menu" %>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                </td>
+              </tr>
 
-              <% if vlp_doc.identifier.present? %>
-                <% key = vlp_doc.identifier.split('#').last %>
-                <%= link_to("/insured/verification_documents/download/#{key}") do %>
-                    <i class="fa fa-download fa-2x" data-toggle="tooltip" title="Download Document"></i><br/>
-                <% end %>
-              <% end %>
-              <% end %>
-            </td>
-        </tr>
         <% end %>
       </tbody>
     </table>
   </div>
 </div>
 
-    <!-- Verification TABLE -->
-    <div class="col-md-12">
-
-      <!-- Verification table BODY  -->
-      <% @family_members.each do |member|%>
-          <% accordion_element += 1 %>
-
-            <div class="accordion" id="docs-accordion">
-              <div class="accordion-group">
-                <div class="accordion-heading">
-                  <a class="module accordion-toggle" data-toggle="collapse" data-parent="#docs-accordion" href="#docs_accordion<%=accordion_element%>">
-                    <%= render partial: "verification_table", locals: {member: member} %>
-                  </a>
-                </div>
-
-                <div id="docs_accordion<%=accordion_element%>" class="accordion-body collapse">
-                  <div class="accordion-inner">
-                    <%= render partial: "documents_table", locals: {member: member} %>
-                  </div>
-                </div>
-              </div>
-            </div>
-      <% end %>
-      <!-- >>>>> verification table body  -->
-    </div>
-    <!-- >>>>> verification table -->
   <% end %>

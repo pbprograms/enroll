@@ -55,33 +55,6 @@ $primary-bold: 600;
       }
     }
   }
-  &.verification-dashboard {
-    border-bottom: 2px solid #7e8994;
-    background-color: #FFFFFF;
-    padding: 2px;
-  }
-  &.documents-dashboard {
-    border-bottom: 2px solid rgba(102, 108, 118, 0.42);
-    border-left: 2px solid rgba(102, 108, 118, 0.42);
-    border-right: 2px solid rgba(102, 108, 118, 0.42);
-    background-color: #E3E3E3;
-    padding: 2px;
-  }
-
-  &.doc_upload {
-    background-color: #E3E3E3;
-    border-left: 2px solid rgba(102, 108, 118, 0.42);
-    border-right: 2px solid rgba(102, 108, 118, 0.42);
-  }
-
-  &.header_doc_table {
-    background-color: rgba(65, 62, 71, 0.54);
-    color: #fbfdff;
-  }
-
-  &.accordion-toggle {
-    color:#000000;
-  }
 	&.census-employees-table {
 		margin-top: 1.25%;
 		.table {
@@ -153,10 +126,49 @@ $primary-bold: 600;
 							}
 						}
 					}
+					&.dn {
+						&:hover {
+							background-color: transparent;
+						}
+						td.td-container {
+							padding: 0px 12px;
+						}
+						table {
+							&.table {
+								background-color: #fff;
+								margin: 0 0 12px;
+								tr {
+									&.bt-n {
+										td {
+											border-top: none !important;
+
+										}
+									}
+									td {
+										padding: 10px 12px;
+										.fa {
+											&.fa-download {
+												color: #b7b7b7;
+												&:hover {
+													color: #23527c;
+												}
+											}
+										}
+									}
+								}
+								.upload {
+								
+									td.td-container {
+										padding: 6px 12px 30px;
+									}
+								}
+							}
+						}
+					}
 					td {
 						vertical-align: middle;
 						&.table-functions {
-							min-width: 70px;
+							text-align: right;
 							.fa {
 								cursor: pointer;
 								display: inline-block;
