@@ -132,6 +132,9 @@ $primary-bold: 600;
 						}
 						td.td-container {
 							padding: 0px 12px;
+							.table-responsive {
+								overflow: visible;
+							}
 						}
 						table {
 							&.table {
@@ -141,7 +144,11 @@ $primary-bold: 600;
 									&.bt-n {
 										td {
 											border-top: none !important;
-
+										}
+									}
+									&.bb {
+										td {
+											border-bottom: 1px solid #ddd;
 										}
 									}
 									td {
@@ -157,7 +164,7 @@ $primary-bold: 600;
 									}
 								}
 								.upload {
-								
+
 									td.td-container {
 										padding: 6px 12px 30px;
 									}

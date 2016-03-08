@@ -66,7 +66,7 @@
                   <div class="table-responsive">
                     <table class="table table-sm">
                     <% member.person.consumer_role.vlp_documents.each_with_index do |vlp_doc, i | %>
-                    <tr class="<% if i == 0 %>bt-n<% end %>">
+                    <tr class="<% if i == 0 %>bt-n<% elsif i+1 == member.person.consumer_role.vlp_documents.count %>bb<% end %>">
                       <td>
                         <%= vlp_doc.subject %>
                         &nbsp;
