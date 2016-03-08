@@ -3,7 +3,7 @@ $(document).on('ready', function() {
     $('.dn').on('show.bs.collapse', function (e) {
     // Get clicked element that initiated the collapse...
     clicked = $(document).find("[href='#" + $(e.target).attr('id') + "']");
-    clicked.html('<i class="fa fa-caret-up fa-2x" data-toggle="tooltip" title="Close Documents"></i>');
+    clicked.html('<i class="fa fa-caret-up fa-2x" data-toggle="tooltip" title="Hide Documents"></i>');
     $('[data-toggle="tooltip"]').tooltip();
 });
 
