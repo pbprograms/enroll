@@ -247,6 +247,11 @@ Rails.application.routes.draw do
         get :search_broker_agency
       end
     end
+
+    resource :quotes, only: [:index] do
+      root 'quotes#index'
+    end
+
   end
 
   resources :translations
