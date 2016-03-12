@@ -17,6 +17,7 @@ class Quote
 
     plans.each do |p|
       puts p.id
+      puts Caches::PlanDetails.lookup_rate(p.id, TimeKeeper.date_of_record, 18)
     end
 
   end
