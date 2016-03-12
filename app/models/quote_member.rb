@@ -3,6 +3,7 @@ class QuoteMember
   include Mongoid::Timestamps
   include MongoidSupport::AssociationProxies
 
+
   GENDER_KINDS = %W(male female)
 
   EMPLOYEE_RELATIONSHIP_KINDS = %W[employee self spouse domestic_partner child_under_26  child_26_and_over disabled_child_26_and_over]
@@ -37,5 +38,4 @@ class QuoteMember
     end
     age
   end
-
 end

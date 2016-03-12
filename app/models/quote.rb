@@ -66,7 +66,6 @@ class Quote
         #puts "   " + hh.first_name
       end
     end
-
   end
 
   def gen_data
