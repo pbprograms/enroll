@@ -61,6 +61,7 @@
   <section class="row" style="background-color: #fff;">
     <article class="col-xs-12">
       <h3>Enrollment Report</h3>
+      <br/>
     <% calender_month = TimeKeeper.date_of_record.next_month %>
     <% if @current_plan_year.present? && !(@current_plan_year.start_on..@current_plan_year.end_on).cover?(calender_month) %>
        <% calender_month = TimeKeeper.date_of_record %>
