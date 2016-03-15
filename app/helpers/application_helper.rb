@@ -538,4 +538,14 @@ module ApplicationHelper
   def all_unverified
     number_with_delimiter(@unverified_persons.count)
   end
+
+  def favorite_class(broker_role, general_agency_profile)
+    return "" if broker_role.blank?
+
+    if broker_role.included_in_favorite_general_agencies?(general_agency_profile.id)
+      "glyphicon-star"
+    else
+      "glyphicon-star-empty"
+    end
+  end
 end
