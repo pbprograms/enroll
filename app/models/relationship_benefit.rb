@@ -1,7 +1,7 @@
 class RelationshipBenefit
   include Mongoid::Document
 
-  embedded_in :benefit_group, polymorphic: true
+  embedded_in :benefit_group#, polymorphic: true
 
   field :relationship, type: String
   field :premium_pct, type: Float, default: 0.0
