@@ -557,6 +557,42 @@ RSpec.describe Employers::EmployerProfilesController do
     end
   end
 
+  describe "GET edit" do
+    let(:user) { double("User", email: "user_email@example.com")}
+    let(:organization) { double("Organization", id: "test") }
+    let(:employer_profile){ double("EmployerProfile") }
+    let(:email) { double("Email", address: "contact_email@example.com")}
+    let(:employer_contact_1){ double("EmployerContact", emails: [email]) }
+    let(:employer_contact_2){ double("EmployerContact", emails: []) }
+    let(:employer){ double("Employer") }
+    let(:staff_roles_1){ [employer_contact_1] }
+    let(:staff_roles_2){ [employer_contact_2] }
+
+    before do
+      sign_in user
+      allow(user).to receive(:has_hbx_staff_role?).and_return(false)
+      allow(user).to receive(:has_broker_agency_staff_role?).and_return(false)
+      allow(Organization).to receive(:find).and_return(organization)
+      allow(organization).to receive(:employer_profile).and_return(employer_profile)
+      allow(employer_profile).to receive(:match_employer).and_return(employer)
+    end
+
+    it "when employer contact email is present should display correct email" do
+      allow(employer_profile).to receive(:staff_roles).and_return(staff_roles_1)
+      @employer_contact = staff_roles_1.first
+      get :edit, id: organization.id
+      expect(assigns(:employer_contact_email)).to eq("contact_email@example.com")
+    end
+
+    it "when employer contact email is not present" do
+      allow(employer_profile).to receive(:staff_roles).and_return(staff_roles_2)
+      employer_contact = staff_roles_2.first
+      allow(employer_contact).to receive(:user).and_return(user)
+      get :edit, id: organization.id
+      expect(assigns(:employer_contact_email)).to eq("user_email@example.com")
+    end
+  end
+
   #describe "DELETE destroy" do
   #  let(:user) { double("user")}
   #  let(:employer_profile) { FactoryGirl.create(:employer_profile) }
