@@ -1,13 +1,11 @@
-class QuoteMember
+class QuoteHousehold
   include Mongoid::Document
   include Mongoid::Timestamps
   include MongoidSupport::AssociationProxies
 
 
-  field :name, type: String
-  field :age, type: Integer
-
-  embedded_in :quote_households
+  embedded_in :quote
+  embeds_many :quote_members
 
 
 end
