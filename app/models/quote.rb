@@ -18,6 +18,8 @@ class Quote
   field :start_on, type: Date
   field :broker_agency_profile_id, type: BSON::ObjectId
 
+  field :reference_plan_id, type: BSON::ObjectId
+
   associated_with_one :broker_agency_profile, :broker_agency_profile_id, "BrokerAgencyProfile"
 
   field :plan_option_kind, type: String
@@ -130,5 +132,5 @@ class Quote
   def relationship_benefit_for(relationship)
     quote_relationship_benefits.where(relationship: relationship).first
   end
-
+  
 end

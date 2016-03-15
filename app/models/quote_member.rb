@@ -7,7 +7,7 @@ class QuoteMember
   GENDER_KINDS = %W(male female)
 
   EMPLOYEE_RELATIONSHIP_KINDS = %W[employee self spouse domestic_partner child_under_26  child_26_and_over disabled_child_26_and_over]
-
+  
   # Required Fields
   # The required fields below are the minimum necessary data for plan cost calculation
   field :dob, type: Date
