@@ -138,15 +138,6 @@
           <th>
             <header>Type</header>
           </th>
-          <th>
-            <header>Metallic Level</header>
-          </th>
-          <th>
-            <header>ID</header>
-          </th>
-          <th>
-            <header>Plans By</header>
-          </th>
         </tr>
         <tr>
           <td>
@@ -164,13 +155,19 @@
               <%= bg.try(:reference_plan).try(:plan_type).try(:upcase) %>
             </p>
           </td>
+        </tr>
+        <tr>
+          <th>
+            <header>Metal Level</header>
+          </th>
+          <th>
+            <header>Plans By</header>
+          </th>
+        </tr>
+        <tr>
           <td>
             <p>
               <%= bg.reference_plan.metal_level.titleize %>
-            </p>
-          </td>
-          <td>
-            <p><%= bg.reference_plan_id %>
             </p>
           </td>
           <td>
@@ -187,7 +184,6 @@
         </tr>
       </table>
       <% if bg.dental_reference_plan_id.present? %>
-
       <h5 class="bg-title">Dental</h5>
   <table>
     <tr>
@@ -199,15 +195,6 @@
       </th>
       <th>
         <header>Type</header>
-      </th>
-      <th>
-        <header>Metallic Level</header>
-      </th>
-      <th>
-        <header>ID</header>
-      </th>
-      <th>
-        <header>Plans By</header>
       </th>
     </tr>
     <tr>
@@ -226,14 +213,19 @@
           <%= bg.dental_reference_plan.plan_type.to_s.upcase %>
         </p>
       </td>
+    </tr>
+    <tr>
+      <th>
+        <header>Metal Level</header>
+      </th>
+      <th>
+        <header>Plans By</header>
+      </th>
+    </tr>
+    <tr>
       <td>
         <p>
           <%= bg.dental_reference_plan.metal_level.titleize %>
-        </p>
-      </td>
-
-      <td>
-        <p><%= bg.dental_reference_plan.id %>
         </p>
       </td>
       <td>
@@ -242,7 +234,10 @@
           All Plans From A Single Carrier
           <% elsif bg.dental_plan_option_kind == "single_plan" %>
             <% if bg.elected_dental_plan_ids.count < 13 %>
-              Custom
+              Custom (<%= bg.elected_dental_plans.count %> Plans)
+              <br/>
+              <%= link_to "View Plans", "", data: {toggle: "modal", target: "#electedDentalPlans_#{bg.id}"} %>
+
             <% else %>
               All Plans
             <% end %>
@@ -251,6 +246,9 @@
       </td>
     </tr>
   </table>
+  <% if bg.elected_dental_plan_ids.count < 13 && bg.elected_dental_plan_ids.count > 1 %>
+    <%= render partial: 'shared/custom_dental_offered_plans_modal', locals: { bg: bg } %>
+  <% end %>
   <% end %>
 
     </div>

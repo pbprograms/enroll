@@ -824,6 +824,7 @@ describe PlanYear, :type => :model, :dbclean => :after_each do
                 HbxEnrollment.create(
                   household: family.households.first,
                   benefit_group_id: benefit_group.id,
+                  coverage_kind: 'health',
                   kind: "unassisted_qhp")
               end
 
@@ -864,6 +865,7 @@ describe PlanYear, :type => :model, :dbclean => :after_each do
                       ee.active_benefit_group_assignment.select_coverage
                       ee.save
                     end
+                    allow(HbxEnrollment).to receive(:find).and_return hbx_enrollment
                   end
 
                   it "should include all eligible employees" do

@@ -3,11 +3,11 @@
 <a href="#" data-href="<%= calc_employer_contributions_employers_employer_profile_plan_years_path %>" id='calc_employer_contributions_link' style='display:none;'></a>
 <a href="#" data-href="<%= calc_offered_plan_contributions_employers_employer_profile_plan_years_path %>" id='calc_offered_plan_contributions_link' style='display:none;'></a>
 <a href="#" data-href="<%= reference_plan_options_employers_employer_profile_plan_years_path %>" id='reference_plan_options_link' style='display:none;'></a>
-
+<% i = f.index %>
 <div class="reference-summary">
 </div>
 <%= render "employers/plan_years/employee_costs_modal" %>
-<fieldset id='benefit-group-<%= f.object.id.to_s %>' class='benefit-group-fields' data-benefit-group="<%= f.object.id.to_s %>">
+<fieldset id='benefit-group-<%= f.object.id.to_s %>' class='benefit-group-fields' data-benefit-group="<%= f.object.id.to_s %>" data-benefit-group-index="<% if i < 50 %><%= i %><% end %>">
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
       <h1>
@@ -77,28 +77,38 @@
     <div class="health selected-plan row" style="display: none;">
     </div>
     <% i = f.index %>
-    <% if @plan_year.new_record? == false && @plan_year.benefit_groups[i].try(:dental_reference_plan_id).blank? %>
+    <span class="dent plan-count" style="display: none;">
+    <% if i < 50 %>
+      <% if @plan_year.benefit_groups[i].elected_dental_plan_ids.count == 13 %>
+        All
+      <% else %>
+        <%= @plan_year.benefit_groups[i].elected_dental_plan_ids.count %>
+      <% end %>
+    <% end %>
+    </span>
       <br/>
       <br/>
       <div class="row">
-        <div class="col-xs-12 edit-add-dental b bt-n" style="display: block;">
+        <div class="col-xs-12 edit-add-dental b bt-n" style="<% if (@plan_year.new_record? == false && @plan_year.benefit_groups[i].try(:dental_reference_plan_id).present?) || @plan_year.new_record == true %>display: none;<% else %>display: block;<% end %>">
           <div class="col-xs-1">
           </div>
           <div class="col-xs-10">
-            <h4 class="di">Click "Add Dental Plan" to add a dental plan to this benefit package</h4>
-            <span class="btn btn-trans btn-small pull-right">Add Dental Plan</span>
+            <div class="row">
+              <h4 class="di">Click "Add Dental Plans" to add one or more dental plans to this benefit package</h4>
+              <span class="btn btn-trans btn-small pull-right">Add Dental Plans</span>
+            </div>
           </div>
           <div class="col-xs-1">
           </div>
         </div>
       </div>
-    <% end %>
     <div class="select-dental-plan dental row" style="display: none;">
       <br/>
       <br/>
       <br/>
       <h1>
         <%= @plan_year.new_record? ? 'Dental - Set Up Benefit Package' : 'Dental - Edit Benefit Package' %>
+        <i class="fa fa-trash-o pull-right" style="margin-top: 10px;" data-toggle="tooltip" title="Remove"></i>
       </h1>
         <h4>
           <span class="starter" style="display: inline-block;">

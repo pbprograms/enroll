@@ -177,6 +177,7 @@ class Family
   def enrollments
     return [] if  latest_household.blank?
     latest_household.hbx_enrollments.show_enrollments
+
   end
 
   def primary_family_member

@@ -9,12 +9,32 @@ $("#<%= @location_id %> <%= @coverage_type %> .reference-steps .dental .nav-tabs
 $("#<%= @location_id %> <%= @coverage_type %>.selected-plan .row:first").hide();
 $("#<%= @location_id %> .dental .reference-steps div:first").hide()
 $("#<%= @location_id %> <%= @coverage_type %> .col-md-12.top-pd").hide();
-$('#<%= @location_id %> .dental-benefits-fields .col-xs-6.form-group.form-group-lg label > input').attr('disabled', 'disabled');
-// hide dental section when editing benefit groups with no dental plan
-$('.edit-add-dental').closest('.benefit-group-fields').find('.dental:first').hide();
+//$('#<%#= @location_id %> .dental-benefits-fields .col-xs-6.form-group.form-group-lg label > input').attr('disabled', 'disabled');
+
 // show dental config links
 $("#<%= @location_id %> .dental-config-links").show();
 
+if ( $("#<%= @location_id %> .edit-add-dental").is(':hidden') ) {
+    $("#<%= @location_id %> .select-dental-plan").show();
+};
+
+$(document).on('click', "#<%= @location_id %> .fa.fa-trash-o", function () {
+  // clear dental plan form
+  $(this).closest('.dental').find('input:checked:enabled').removeProp("checked");
+  $(this).closest('.dental').find('input.hidden-param').val("");
+  $(this).closest('.dental').find('input.hidden-param').attr("value","");
+  $(this).closest('.dental').find('input.hidden-param.contribution_handler.premium-storage-input').val("0");
+  $(this).closest('.dental').find('input.contribution_slide_handler.slider').attr('data-value', '0');
+  $(this).closest('.dental').find('input.contribution_slide_handler.slider').attr('value', '0');
+  $(this).closest('.dental').find('input.hidden-param.contribution_handler.premium-storage-input').trigger("change");
+  $("#<%= @location_id %> .select-dental-plan, #<%= @location_id %> .dental-reference-plans, #<%= @location_id %> .dental.selected-plan, #<%= @location_id %> .elected-plans-tab, #<%= @location_id %> .elected-plans-continue").hide();
+  $("#<%= @location_id %> .edit-add-dental").fadeIn();
+  $("#<%= @location_id %> .dental-plan-offering, #<%= @location_id %> .reference-steps .dental:first").show();
+  $("#<%= @location_id %> .select-dental-plan").prev().show();
+  validateEditPlanYear();
+  $("#<%= @location_id %> .edit-add-dental, #<%= @location_id %> .dental .nav-tabs").show();
+
+});
 // make summary links
 $("#<%= @location_id %> <%= @coverage_type %> <%= @coverage_type %>-view-summary").show();
 start_on = $("#plan_year_start_on").val().substr(0,4);
@@ -39,13 +59,17 @@ if (window.location.href.indexOf("edit") > -1 && window.location.href.indexOf("p
         var url = $(this).attr('href');
         $(this).attr('href', url+"&location_id="+newLocationId);
       });
+      validateEditPlanYear();
     });
+    plan_count = $('#<%= @location_id %> .dent.plan-count').text();
+    $('#<%= @location_id %> .dental .dental-config-reference-selection').text('Currently Offering: '+plan_count+' Plans')
   } else {
     $("#<%= @location_id %> .health .health .change-dental-reference-plan").on('click', function() {
       $(this).closest('.selected-plan').hide();
       $(this).closest('#<%= @location_id %>').find('.reference-steps:first').show();
       $('#<%= @location_id %> .reference-steps:first .currently-offered').html('You currently offer <%= @plan.name %>.');
       $('#<%= @location_id %> .reference-steps:first .currently-offering').html('You currently offer <%= @plan.name %>.');
+      validateEditPlanYear();
     });
 
   }
@@ -69,13 +93,13 @@ if (window.location.href.indexOf("edit") > -1 && window.location.href.indexOf("p
    } else {
      var coverage_type = '.dental';
      var reference_plan_id = $("#<%= @location_id %> .dental .dental-ref-plan").val();
+     var plan_count = parseInt($("#<%= @location_id %> .dent.plan-count").text());
    }
 
    if (reference_plan_id == "" || reference_plan_id == undefined) {
      return
    }
-   console.log(reference_plan_id+" "+coverage_type+" "+location_id);
-   calcEmployerContributions($('a#employee_costs_link').attr('href'), location_id, coverage_type);
+   calcEmployerContributions($('a#employee_costs_link').attr('href'), location_id, coverage_type, plan_count);
  });
 
 } else {

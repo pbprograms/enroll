@@ -8,7 +8,7 @@ $('#referencePlanSummaryModal').find('.modal-body').before('<i class=\'fa fa-spi
 $('#referencePlanSummaryModal').find('.modal-body').hide('normal', function() {
   $('#referencePlanSummaryModal').find('.fa-spinner').css('visibility','visible');
 });
-$('#referencePlanSummaryModal .modal-footer a span').text('Less Details');
+$('#referencePlanSummaryModal .modal-footer a span.btn-more-details').text('Less Details');
 $('#referencePlanSummaryModal .modal-footer a span').removeClass('btn-more-details');
 $('#referencePlanSummaryModal .modal-footer a span').addClass('btn-less-details');
 $('#referencePlanSummaryModal .modal-footer .btn-less-details').attr('href', '');
@@ -18,9 +18,9 @@ $('#referencePlanSummaryModal .modal-footer .btn-less-details').on('click', func
 });
 
 $('.modal-body-swap').show();
-$('#referencePlanSummaryModal').find('.modal-title').text('Reference Plan Details (More Details)');
+$('#referencePlanSummaryModal').find('.modal-title').text('<%= @plan.name %> (<%= @plan.carrier_profile.legal_name %>) - More Details');
 <% else %>
-$('#referencePlanSummaryModal').find('.modal-title').text('Reference Plan Details');
+$('#referencePlanSummaryModal').find('.modal-title').text('<%= @plan.name %> (<%= @plan.carrier_profile.legal_name %>) - Details');
 
 <% end %>
 $('#referencePlanSummaryModal').modal('show');

@@ -9,6 +9,7 @@ describe "employers/premium_statements/show.js.erb" do
       "HbxEnrollment",
       plan: new_plan,
       humanized_members_summary: "hds: #{random_value}",
+      coverage_kind: 'health',
       total_employer_contribution: "total_employer_contribution:#{random_value}",
       total_employee_cost: "total_employee_cost:#{random_value}",
       total_premium: "total_premium:#{random_value}",

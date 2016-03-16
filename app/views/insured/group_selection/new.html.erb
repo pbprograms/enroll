@@ -102,7 +102,6 @@
                     Health
                   </label>
                 </div>
-                
                 <% if can_shop_both_markets?(@person) && @employee_role.present? %>
                   <% if can_shop_individual?(@person) && ( @employee_role.benefit_group.dental_reference_plan_id.blank? || @employee_role.benefit_group.elected_dental_plan_ids.blank? ) %>
                     <script>

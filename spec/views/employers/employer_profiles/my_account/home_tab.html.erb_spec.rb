@@ -101,6 +101,7 @@ RSpec.describe "employers/employer_profiles/my_account/_home_tab.html.erb" do
     def benefit_group_1
       double(
         "BenefitGroup",
+        id: "someotherid",
         title: "title_1",
         effective_on_kind: "first_of_month",
         effective_on_offset: "30",
@@ -115,8 +116,8 @@ RSpec.describe "employers/employer_profiles/my_account/_home_tab.html.erb" do
         dental_reference_plan_id: double("id"),
         dental_reference_plan: reference_plan_1,
         dental_plan_option_kind: 'single_plan',
-        elected_dental_plan_ids: [:dental_reference_plan_id, :dental_reference_plan_id]
-
+        elected_dental_plan_ids: [:dental_reference_plan_id, :dental_reference_plan_id],
+        elected_dental_plans: [reference_plan_1]
 
         )
     end
@@ -124,6 +125,7 @@ RSpec.describe "employers/employer_profiles/my_account/_home_tab.html.erb" do
     def benefit_group_2
       double(
         "BenefitGroup",
+        id: "someid",
         title: "title_2",
         effective_on_kind: "date_of_hire",
         effective_on_offset: "0",
@@ -138,8 +140,8 @@ RSpec.describe "employers/employer_profiles/my_account/_home_tab.html.erb" do
         dental_reference_plan_id: double("id"),
         dental_reference_plan: reference_plan_2,
         dental_plan_option_kind: 'single_plan',
-        elected_dental_plan_ids: [:dental_reference_plan_id, :dental_reference_plan_id]
-
+        elected_dental_plan_ids: [:dental_reference_plan_id, :dental_reference_plan_id],
+        elected_dental_plans: [reference_plan_2]
         )
     end
 
@@ -222,6 +224,7 @@ RSpec.describe "employers/employer_profiles/my_account/_home_tab.html.erb" do
     let(:benefit_groups){ [benefit_group_1, benefit_group_2] }
 
     before :each do
+      # allow(benefit_group_2).to receive(:elected_dental_plans).and_return(benefit_group_2.elected_dental_plan_ids)
       assign :employer_profile, employer_profile
       assign :hbx_enrollments, [hbx_enrollment]
       assign :current_plan_year, employer_profile.published_plan_year
@@ -263,6 +266,8 @@ RSpec.describe "employers/employer_profiles/my_account/_home_tab.html.erb" do
 
     it "should display a link to download employer guidance pdf" do
       expect(rendered).to have_selector(".icon-left-download", text: /Download Step-by-Step Instructions/i)
+    it "should display a link to custom dental plans modal" do
+      expect(rendered).to have_selector("a", text: "View Plans")
     end
 
   end

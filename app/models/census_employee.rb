@@ -334,6 +334,12 @@ class CensusEmployee < CensusMember
     active_benefit_group_assignment.present? && active_benefit_group_assignment.initialized?
   end
 
+  def has_active_health_coverage?
+    active_benefit_group_assignment.present? &&
+      active_benefit_group_assignment.hbx_enrollment.present? &&
+      active_benefit_group_assignment.hbx_enrollment.coverage_kind == 'health'
+  end
+
   class << self
     def find_all_by_employer_profile(employer_profile)
       unscoped.where(employer_profile_id: employer_profile._id).order_name_asc
@@ -352,12 +358,12 @@ class CensusEmployee < CensusMember
     def find_all_terminated(employer_profiles: [], date_range: (TimeKeeper.date_of_record..TimeKeeper.date_of_record))
 
       if employer_profiles.size > 0
-        employer_profile_ids = employer_profiles.map(&:_id) 
+        employer_profile_ids = employer_profiles.map(&:_id)
         query = unscoped.terminated.any_in(employer_profile_id: employer_profile_ids).
                                     where(
                                       :employment_terminated_on.gte => date_range.first,
                                       :employment_terminated_on.lte => date_range.last
-                                    )      
+                                    )
       else
         query = unscoped.terminated.where(
                                     :employment_terminated_on.gte => date_range.first,

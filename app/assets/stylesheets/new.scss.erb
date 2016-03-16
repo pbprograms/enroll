@@ -285,6 +285,9 @@
         }
       }
     }
+    .plan-year-primary {
+      pointer-events: auto;
+    }
     .fa {
       cursor: pointer;
     }
@@ -522,7 +525,7 @@
           }
           td {
             color: #333333;
-            font-size: 16px;
+            font-size: 12px;
             word-wrap: break-word;
             vertical-align: top;
             padding-right:15px;
@@ -663,7 +666,6 @@
         }
       }
       label {
-        text-transform: uppercase;
         margin-top: 5px;
         font-size: 14px;
         color: rgba(131, 135, 128, 1);
@@ -862,7 +864,8 @@
       background-color: #fff;
       .di {
         position: relative;
-        top: 7px;
+        top: 10px;
+        font-size: 15px;
       }
     }
     .plan-options {
@@ -1651,6 +1654,14 @@
 
 
 #home .select-dental-plan {
+  .fa {
+    &.fa-trash-o {
+      color: #b7b7b7;
+      &:hover {
+        color: #23527c;
+      }
+    }
+  }
   .premium-storage-input {
     text-align: center;
     font-size: 16px;

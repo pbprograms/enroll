@@ -25,7 +25,7 @@
   </div>
   <% if @plan_years.present? %>
 
-  <% @plan_years.each do |plan_year| %>
+  <% @plan_years.each_with_index do |plan_year, pi| %>
   <div class="row no-buffer plan-year">
     <h3>
       <% if plan_year.draft? || plan_year.renewing_draft? %>
@@ -38,7 +38,7 @@
       <strong><%= plan_year.aasm_state.to_s.humanize.upcase %> Plan Year for <%= plan_year.start_on.to_date.year%></strong>
     </h3>
 
-    <% plan_year.benefit_groups.each do |bg| %>
+    <% plan_year.benefit_groups.each_with_index do |bg, bi| %>
     <% next if bg.reference_plan_id.blank? %>
     <% if bg.default == true %>
       <% active = 'active' %>
@@ -110,7 +110,7 @@
         <% end%>
         <table>
           <tr>
-            <th>
+            <th colspan="2">
               <header>Reference Plan</header>
             </th>
             <th>
@@ -120,17 +120,14 @@
               <header>Type</header>
             </th>
             <th>
-              <header>Metallic Level</header>
-            </th>
-            <th>
-              <header>ID</header>
+              <header>Metal Level</header>
             </th>
             <th>
               <header>Plans By</header>
             </th>
           </tr>
           <tr>
-            <td>
+            <td colspan="2">
               <p>
                 <%= bg.reference_plan.name.try(:upcase) %>
               </p>
@@ -148,10 +145,6 @@
             <td>
               <p>
                 <%= bg.reference_plan.metal_level.titleize %>
-              </p>
-            </td>
-            <td>
-              <p><%= bg.reference_plan_id %>
               </p>
             </td>
             <td>
@@ -178,7 +171,7 @@
         <h5 class="bg-title">Dental</h5>
         <table>
           <tr>
-            <th>
+            <th colspan="2">
               <header>Reference Plan</header>
             </th>
             <th>
@@ -188,17 +181,14 @@
               <header>Type</header>
             </th>
             <th>
-              <header>Metallic Level</header>
-            </th>
-            <th>
-              <header>ID</header>
+              <header>Metal Level</header>
             </th>
             <th>
               <header>Plans By</header>
             </th>
           </tr>
           <tr>
-            <td>
+            <td colspan="2">
               <p>
                 <%= bg.dental_reference_plan.name %>
               </p>
@@ -218,19 +208,17 @@
                 <%= bg.dental_reference_plan.metal_level.titleize %>
               </p>
             </td>
-
-            <td>
-              <p><%= bg.dental_reference_plan.id %>
-              </p>
-            </td>
             <td>
               <p>
                 <% if bg.dental_plan_option_kind == "single_carrier" %>
                 All Plans From A Single Carrier
                 <% elsif bg.dental_plan_option_kind == "single_plan" %>
                   <% if bg.elected_dental_plan_ids.count < 13 %>
-                    Custom
-                  <% else %>
+                  Custom (<%= bg.elected_dental_plans.count %> Plans)
+                  <br/>
+                  <%= link_to "View Plans", "", data: {toggle: "modal", target: "#electedDentalPlans_#{bg.id}"} %>
+
+                    <% else %>
                     All Plans
                   <% end %>
                 <% end %>
@@ -239,6 +227,9 @@
           </tr>
         </table>
   </div>
+    <% if bg.elected_dental_plan_ids.count < 13 && bg.elected_dental_plan_ids.count > 1 %>
+      <%= render partial: 'shared/custom_dental_offered_plans_modal', locals: { bg: bg } %>
+    <% end %>
   <% end %>
   <br class="clear"/>
 

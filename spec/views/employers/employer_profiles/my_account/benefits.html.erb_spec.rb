@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "employers/employer_profiles/my_account/_benefits.html.erb" do
-  let(:employer_profile) { FactoryGirl.create(:employer_profile) }
-  let(:plan_year) { FactoryGirl.create(:plan_year) }
-  let(:benefit_group) { FactoryGirl.create(:benefit_group, plan_year: plan_year) }
-  let(:plan) { FactoryGirl.create(:plan) }
+  let(:employer_profile) { FactoryGirl.build_stubbed(:employer_profile) }
+  let(:plan_year) { FactoryGirl.build_stubbed(:plan_year) }
+  let(:benefit_group) { FactoryGirl.build_stubbed(:benefit_group, :with_valid_dental, plan_year: plan_year ) }
+  let(:plan) { FactoryGirl.build_stubbed(:plan) }
   let(:user) { FactoryGirl.create(:user) }
 
   before :each do
@@ -61,6 +61,9 @@ RSpec.describe "employers/employer_profiles/my_account/_benefits.html.erb" do
     allow(benefit_group).to receive(:effective_on_offset).and_return 60
     render "employers/employer_profiles/my_account/benefits"
     expect(rendered).to match /first of month/i
+  it "should display a link to custom dental plans modal" do
+    render "employers/employer_profiles/my_account/benefits"
+    expect(rendered).to have_selector("a", text: "View Plans")
   end
 
 end

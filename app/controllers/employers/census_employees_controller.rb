@@ -176,7 +176,7 @@ class Employers::CensusEmployeesController < ApplicationController
     # reference_plan = @benefit_group.try(:reference_plan)
     @plan = @hbx_enrollment && @hbx_enrollment.decorated_hbx_enrollment
 
-    # PlanCostDecorator.new(@hbx_enrollment.plan, @hbx_enrollment, @benefit_group, reference_plan) if @hbx_enrollment.present? && @benefit_group.present? && reference_plan.present?
+    # PlanCostDecorator.new(@hbx_enrollment.plan, @hbx_enrollment, @benefit_group, reference_plan) if @hbx_enrollment.present? and @benefit_group.present? and reference_plan.present?
   end
 
   def delink
