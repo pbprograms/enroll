@@ -3,6 +3,7 @@ class BrokerAgencies::ProfilesController < ApplicationController
   before_action :check_admin_staff_role, only: [:index]
   before_action :find_hbx_profile, only: [:index]
   before_action :find_broker_agency_profile, only: [:show, :edit, :update, :employers, :assign, :update_assign, :manage_employers, :general_agency_index, :clear_assign_for_employer]
+  before_action :set_current_person, only: [:staff_index]
 
   def index
     @broker_agency_profiles = BrokerAgencyProfile.all
@@ -82,14 +83,13 @@ class BrokerAgencies::ProfilesController < ApplicationController
   def sanitize_broker_profile_params
     params[:organization][:office_locations_attributes].each do |key, location|
       params[:organization][:office_locations_attributes].delete(key) unless location['address_attributes']
-      location.delete('phone_attributes') if (location['phone_attributes'].present? and location['phone_attributes']['number'].blank?)
+      location.delete('phone_attributes') if (location['phone_attributes'].present? && location['phone_attributes']['number'].blank?)
     end
   end
 
   def staff_index
     @q = params.permit(:q)[:q]
-    @staff = Person.where('broker_role.broker_agency_profile_id': {:$exists => true})
-    @staff = @staff.where(:'broker_role.aasm_state'=> 'active')
+    @staff = eligible_brokers
     @page_alphabets = page_alphabets(@staff, "last_name")
     page_no = cur_page_no(@page_alphabets.first)
     if @q.nil?
@@ -256,5 +256,17 @@ class BrokerAgencies::ProfilesController < ApplicationController
     subject = "You are associated to #{employer_profile.legal_name}- #{general_agency.legal_name}"
     body = "<br><p>Associated details<br>General Agency : #{general_agency.legal_name}<br>Employer : #{employer_profile.legal_name}<br>Status : #{status}</p>"
     secure_message(@broker_agency_profile, general_agency, subject, body)
+  end
+
+  def eligible_brokers
+    Person.where('broker_role.broker_agency_profile_id': {:$exists => true}).where(:'broker_role.aasm_state'=> 'active').any_in(:'broker_role.market_kind'=>[person_market_kind, "both"])
+  end
+
+  def person_market_kind
+    if @person.has_active_consumer_role?
+      "individual"
+    elsif @person.has_active_employee_role?
+      "shop"
+    end
   end
 end
