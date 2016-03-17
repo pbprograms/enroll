@@ -3,11 +3,10 @@
 <% @style_text_indent = "style='margin-left:30px;'" %>
 <% @style_color_indent = "style='color:#ff0000; margin-left:30px;'" %>
 
-
 <%= render partial: 'notices/shared/paragraph_with_headers', :locals => {
   contents: ["To make sure that we have correct and complete information about all the members of your household, we need you
     to provide some additional documents. <strong>Scanned or photocopied versions of these documents are acceptable.</strong> "],
-    heading: 'Provide Documents Needed <span style="color:#000000; font-size: 0.7em;"> 42 CFR 435.952(c)(2), 45 CFR §155.315(f)(2).</span>', sub_heading: ''} %>
+    heading: "Provide Documents Needed <span style='color:#000000; font-size: 0.7em;'> #{@legals}.</span>", sub_heading: ''} %>
 
 <%= render partial: 'notices/shared/paragraph', :locals => {
   content: "Here is the information that we need:"} %>
@@ -77,6 +76,8 @@
     "School records showing a U.S. place of birth", "Federal or State census record showing U.S. citizenship or a U.S. place of birth"]
     } %>
 
+<p style="page-break-before: always">
+
   <%= render partial: 'notices/shared/paragraph', :locals => {
     content: "<span #{@style_underline}>Needed Information to Verify Immigration Status</span>"} %>
 
@@ -119,6 +120,8 @@
     previous: "Foreign passport",
     listings: ["Passport number", "Expiration date"]
     } %>
+
+<p style="page-break-before: always">
 
   <%= render partial: 'notices/shared/unordered_list', locals: {
     previous: "Country of issuance Reentry Permit (I-327)",
@@ -190,8 +193,8 @@
     A document that shows that the following household members live in the #{Settings.aca.state_name}:"} %>
 
   <%= render partial: 'notices/shared/paragraph', :locals => {
-    content: "[Residency Inconsistent First Name 1][Residency Inconsistent Last Name 1]
-    <span #{@style_color_text}>[IF Multiple Residency Inconsistencies]</span>[Residency Inconsistent First Name N][Residency Inconsistent Last Name N]
+    content: "[Residency Inconsistent First Name 1][Residency Inconsistent Last Name 1]<br>
+    <span #{@style_color_text}>[IF Multiple Residency Inconsistencies]</span><br>[Residency Inconsistent First Name N][Residency Inconsistent Last Name N]<br>
     [Repeat for as many member as is necessary]"} %>
 
   <%= render partial: 'notices/shared/unordered_list', locals: {
@@ -215,7 +218,7 @@
 
   <%= render partial: 'notices/shared/paragraph', :locals => {
     content: "<span #{@style_text_indent}>[MEC Type 1 Inconsistent First Name 1] [MEC Type 1 Inconsistent Last Name 1]</span><br>
-   <span #{@style_color_indent}>[IF Multiple MEC Inconsistency Type 1]</span> [MEC Type 1 Inconsistent First Name N] [MEC Type 1 Inconsistent Last Name N]<br>
+   <span #{@style_color_indent}>[IF Multiple MEC Inconsistency Type 1]</span><br><span #{@style_text_indent}> [MEC Type 1 Inconsistent First Name N] [MEC Type 1 Inconsistent Last Name N]</span><br>
    <span #{@style_text_indent}>[Repeat for as many member as is necessary]</span>"} %>
 
  <%= render partial: 'notices/shared/paragraph', :locals => {
@@ -225,10 +228,10 @@
 
  <%= render partial: 'notices/shared/paragraph', :locals => {
    content: "<span #{@style_text_indent}>[MEC Type 2 Inconsistent First Name 1] [MEC Type 2 Inconsistent Last Name 1]</span><br>
-  <span #{@style_color_indent}>[IF Multiple MEC Inconsistency Type 2]</span> [MEC Type 2 Inconsistent First Name N] [MEC Type 1 Inconsistent Last Name N]<br>
+  <span #{@style_color_indent}>[IF Multiple MEC Inconsistency Type 2]</span><br> <span #{@style_text_indent}>[MEC Type 2 Inconsistent First Name N] [MEC Type 1 Inconsistent Last Name N]</span><br>
   <span #{@style_text_indent}>[Repeat for as many member as is necessary]</span>"} %>
 
-
+<br>
 <%= render partial: 'notices/shared/paragraph', :locals => {
   content: "This would make you ineligible for tax credits.  Please provide documentation that this coverage has been cancelled."} %>
 
@@ -238,7 +241,7 @@
 
 <%= render partial: 'notices/shared/paragraph', :locals => {
   content: "[Indian Inconsistent First Name 1] [Indian Inconsistent Last Name 1]<br>
-  <span #{@style_color_text}>[IF Multiple Indian Inconsistencies]</span>[Indian Inconsistent First Name N] [Indian Inconsistent Last Name N]<br>
+  <span #{@style_color_text}>[IF Multiple Indian Inconsistencies]</span><br>[Indian Inconsistent First Name N] [Indian Inconsistent Last Name N]<br>
   [Repeat for as many member as is necessary]"} %>
 
 
@@ -305,10 +308,3 @@
     the postmark date (or date at the top) of the determination notice.  D.C. Official Code §4-210.09, 42 C.F.R. §431.221,
     and 45 C.F.R. §155.520. <strong>See the insert for more information on your appeal rights.</strong>"],
     heading: 'If You Think We Made a Mistake', sub_heading: ''} %>
-
-
-
-<%= render partial: 'notices/shared/paragraph', :locals => {
-  content: "<strong>Note: If this notice was sent to you in error, and your health plan for 2015 has already been cancelled or
-  terminated, you must go to <a href='www.DCHealthLink.com'>www.DCHealthLink.com</a> during open enrollment to re-enroll for 2016.
-  Your coverage will not be automatically renewed.</strong>".html_safe} %>
