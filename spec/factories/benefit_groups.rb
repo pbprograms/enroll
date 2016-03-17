@@ -34,7 +34,7 @@ FactoryGirl.define do
       ] }
 
       dental_plan_option_kind "single_plan"
-      dental_reference_plan_id {FactoryGirl.create(:plan_with_premium_tables)._id}
+      dental_reference_plan_id {FactoryGirl.create(:plan, :with_premium_tables)._id}
       elected_dental_plan_ids { [ self.reference_plan_id ]}
       employer_max_amt_in_cents 1000_00
   end

@@ -83,7 +83,6 @@ describe "employers/premium_statements/show.js.erb" do
       expect(rendered).to match(/#{format_date(census_employee.hired_on)}/)
       expect(rendered).to match(/#{benefit_group.title}/)
       expect(rendered).to match(/#{hbx_enrollment.plan.name}/)
-      expect(rendered).to match(/#{hbx_enrollment.humanized_members_summary}/)
       expect(rendered).to match(/#{hbx_enrollment.total_employer_contribution}/)
       expect(rendered).to match(/#{hbx_enrollment.total_employee_cost}/)
       expect(rendered).to match(/#{hbx_enrollment.total_premium}/)
