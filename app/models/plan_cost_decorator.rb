@@ -65,7 +65,7 @@ class PlanCostDecorator < SimpleDelegator
 
   def relationship_benefit_for(member)
     relationship = relationship_for(member)
-    benefit_group.relationship_benefit_for(relationship)
+    @reference_plan.coverage_kind == 'dental' ? benefit_group.dental_relationship_benefit_for(relationship) : benefit_group.relationship_benefit_for(relationship)
   end
 
   def employer_contribution_percent(member)
@@ -86,7 +86,6 @@ class PlanCostDecorator < SimpleDelegator
   def premium_for(member)
     relationship_benefit = relationship_benefit_for(member)
     if relationship_benefit && relationship_benefit.offered?
-      #binding.pry
       (Caches::PlanDetails.lookup_rate(__getobj__.id, plan_year_start_on, age_of(member)) * large_family_factor(member)).round(2)
     else
       0.00
