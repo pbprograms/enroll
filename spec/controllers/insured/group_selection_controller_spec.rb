@@ -10,7 +10,9 @@ RSpec.describe Insured::GroupSelectionController, :type => :controller do
   let(:family) {Family.new}
   let(:hbx_enrollment) {HbxEnrollment.create}
   let(:hbx_enrollments) {double(:enrolled => [hbx_enrollment])}
-  let(:benefit_package) { FactoryGirl.create(:benefit_package,
+  let(:hbx_profile) {FactoryGirl.create(:hbx_profile)}
+  let(:benefit_package) { FactoryGirl.build(:benefit_package,
+      benefit_coverage_period: hbx_profile.benefit_sponsorship.benefit_coverage_periods.first,
       title: "individual_health_benefits_2015",
       elected_premium_credit_strategy: "unassisted",
       benefit_eligibility_element_group: BenefitEligibilityElementGroup.new(
@@ -24,8 +26,7 @@ RSpec.describe Insured::GroupSelectionController, :type => :controller do
         residency_status:     ["state_resident"],
         ethnicity:            ["any"]
     ))}
-    let(:hbx_profile) {double}
-    let(:benefit_sponsorship) { double }
+
     let(:bcp) { double }
 
   before do
@@ -35,12 +36,6 @@ RSpec.describe Insured::GroupSelectionController, :type => :controller do
     allow(person).to receive(:consumer_role).and_return(nil)
     allow(person).to receive(:consumer_role?).and_return(false)
     allow(user).to receive(:last_portal_visited).and_return('/')
-    allow(HbxProfile).to receive(:current_hbx).and_return hbx_profile
-    allow(hbx_profile).to receive(:benefit_sponsorship).and_return benefit_sponsorship
-    allow(benefit_sponsorship).to receive(:current_benefit_period).and_return(bcp)
-    allow(hbx_enrollment).to receive(:can_complete_shopping?).and_return(true)
-    allow(household).to receive(:hbx_enrollments).and_return(hbx_enrollments)
-    allow(hbx_enrollments).to receive_message_chain(:shop_market, :active){ [hbx_enrollment] }
   end
 
   context "GET new" do

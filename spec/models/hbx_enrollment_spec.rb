@@ -538,16 +538,12 @@ describe HbxEnrollment, dbclean: :after_all do
 
     context "inactive_pre_hbx" do
       let(:consumer_role) {FactoryGirl.create(:consumer_role)}
-      let(:benefit_package) {FactoryGirl.create(:benefit_package)}
-      let(:benefit_coverage_period) {FactoryGirl.build(:benefit_coverage_period)}
-      let(:hbx_profile) {double}
-      let(:benefit_sponsorship) {double}
+      let(:hbx_profile) { FactoryGirl.create(:hbx_profile) }
+      let(:benefit_package) { hbx_profile.benefit_sponsorship.benefit_coverage_periods.first.benefit_packages.first }
+      let(:benefit_coverage_period) { hbx_profile.benefit_sponsorship.benefit_coverage_periods.first }
       let(:hbx) {HbxEnrollment.new(consumer_role_id: consumer_role.id)}
       let(:family) {FactoryGirl.build(:family)}
       before :each do
-        allow(HbxProfile).to receive(:current_hbx).and_return hbx_profile
-        allow(hbx_profile).to receive(:benefit_sponsorship).and_return benefit_sponsorship
-        allow(benefit_sponsorship).to receive(:current_benefit_period).and_return benefit_coverage_period
         allow(benefit_coverage_period).to receive(:earliest_effective_date).and_return TimeKeeper.date_of_record
         allow(coverage_household).to receive(:household).and_return household
         allow(household).to receive(:family).and_return family
@@ -1062,13 +1058,8 @@ end
 context "Benefits are terminated" do
   let(:effective_on_date)         { TimeKeeper.date_of_record.beginning_of_month }
   let(:benefit_group)             { FactoryGirl.create(:benefit_group) }
-  let!(:benefit_coverage_period)  { FactoryGirl.create(:benefit_coverage_period,
-                                        start_on: effective_on_date.beginning_of_year,
-                                        end_on: effective_on_date.end_of_year,
-                                        open_enrollment_start_on: effective_on_date.beginning_of_year - 1.month,
-                                        open_enrollment_end_on: effective_on_date.beginning_of_year + 1.month
-                                      )
-                                    }
+  let!(:hbx_profile)               { FactoryGirl.create(:hbx_profile) }
+
   before do
     TimeKeeper.set_date_of_record_unprotected!(Date.new(effective_on_date.year, 6, 1))
   end
