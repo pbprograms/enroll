@@ -10,7 +10,7 @@ Feature: Employer Profile
     Given BusyGuy accesses the Employer Portal
 
     Given BusyGuy selects Turner Agency, Inc from the dropdown
-    Then BusyGuy is notified about Employer Staff Role pending status
+    Then BusyGuy is notified about Employer Staff Role application is pending
     Then BusyGuy logs out
     When Hannah accesses the Employer Portal
     And Hannah decides to Update Business information
@@ -43,17 +43,16 @@ Feature: Employer Profile
     And Sarah decides to Update Business information
     Then Point of Contact count is 1
     Then Sarah logs out
-    Then show elapsed time
 
   Scenario: A new person asks for a staff role at an existing company
     Given Hannah is a person
     Given Hannah is the staff person for an employer
     Given NewGuy is a user with no person who goes to the Employer Portal
-    Given NewGuy enters first, last, dob
+    Given NewGuy enters first, last, dob and contact info
     Given NewGuy selects Turner Agency, Inc from the dropdown
-    Then NewGuy is notified about Employer Staff Role pending status
+    Then NewGuy is notified about Employer Staff Role application is pending
     Then NewGuy logs out
-
+    # Could be HBXAdmin or Broker or Hannah doing approval
     Given Admin is a person
     Given Admin has HBXAdmin privileges
     And Admin accesses the Employers tab of HBX portal
@@ -61,3 +60,21 @@ Feature: Employer Profile
     Given Admin decides to Update Business information
     Then Point of Contact count is 2
     Then Admin approves EmployerStaffRole for NewGuy
+
+Scenario: A new person creates a new company
+    Given NewGuy is a user with no person who goes to the Employer Portal
+    Given NewGuy enters first, last, dob and contact info
+    Given a FEIN for a new company
+    Given NewGuy enters Employer Information
+    Then NewGuy becomes an Employer
+    When NewGuy decides to Update Business information
+    Then Point of Contact count is 1
+
+Scenario: A new person claims an existing unclaimed company
+   Given NewGuy is a user with no person who goes to the Employer Portal
+    Given NewGuy enters first, last, dob and contact info
+    Given a FEIN for an existing company
+    Given NewGuy enters Employer Information
+    Then NewGuy becomes an Employer
+    When NewGuy decides to Update Business information
+    Then Point of Contact count is 1

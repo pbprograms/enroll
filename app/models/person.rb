@@ -414,6 +414,11 @@ class Person
     emails.detect { |adr| adr.kind == "work" }
   end
 
+  def work_email_or_best
+    email = emails.detect { |adr| adr.kind == "work" } || emails.first
+    (email && email.address) || (user && user.email)
+  end
+
   def work_phone
     phones.detect { |phone| phone.kind == "work" } || main_phone
   end
@@ -440,6 +445,14 @@ class Person
 
   def active_employee_roles
     employee_roles.select{|employee_role| employee_role.census_employee && employee_role.census_employee.is_active? }
+  end
+
+  def has_active_employer_staff_role?
+    employer_staff_roles.present? and employer_staff_roles.active.present?
+  end
+
+  def active_employer_staff_roles
+    employer_staff_roles.present? ? employer_staff_roles.active : []
   end
 
   def has_active_employer_staff_role?
@@ -525,7 +538,8 @@ class Person
     end
 
     def find_all_staff_roles_by_employer_profile(employer_profile)
-      where({"$and"=>[{"employer_staff_roles.employer_profile_id"=> employer_profile.id}, {"employer_staff_roles.is_owner"=>true}]})
+      #where({"$and"=>[{"employer_staff_roles.employer_profile_id"=> employer_profile.id}, {"employer_staff_roles.is_owner"=>true}]})
+      staff_for_employer(employer_profile)
     end
 
     def match_existing_person(personish)
@@ -563,12 +577,8 @@ class Person
     end
 
     def staff_for_employer(employer_profile)
-      self.where(:employer_staff_roles => {
-        '$elemMatch' => {
-            employer_profile_id: employer_profile.id,
-            :aasm_state => :is_active
-        }
-        })
+      staff_had_role = self.where(:'employer_staff_roles.employer_profile_id' => employer_profile.id)
+      staff_had_role.map(&:employer_staff_roles).flatten.select{|r|r.is_active?}.map(&:person)
     end
 
     def staff_for_employer_including_pending(employer_profile)
@@ -612,8 +622,6 @@ class Person
         return false, 'No matching employer staff role'
       end
     end
-
-
   end
 
   # HACK
@@ -695,7 +703,28 @@ class Person
     !!agent
   end
 
-
+  def contact_info(email_address, area_code, number, extension)
+    if email_address.present?
+      email = emails.detect{|mail|mail.kind == 'work'}
+      if email
+        email.update_attributes!(address: email_address)
+      else
+        email= Email.new(kind: 'work', address: email_address)
+        emails.append(email)
+        self.update_attributes!(emails: emails)
+        save!
+      end
+    end
+    phone = phones.detect{|p|p.kind == 'work'}
+    if phone
+      phone.update_attributes!(area_code: area_code, number: number, extension: extension)
+    else
+      phone = Phone.new(kind: 'work', area_code: area_code, number: number, extension: extension)
+      phones.append(phone)
+      self.update_attributes!(phones: phones)
+      save!
+    end
+  end
 
   private
   def is_ssn_composition_correct?

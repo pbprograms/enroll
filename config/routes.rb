@@ -165,6 +165,7 @@ Rails.application.routes.draw do
         get :approve
       end
     end
+
     #TODO REFACTOR
     resources :people do
       collection do

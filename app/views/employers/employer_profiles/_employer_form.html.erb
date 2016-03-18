@@ -1,9 +1,6 @@
-
 <div class="col-xs-12 employer-edit-tab">
-<h1>Business Info</h1>
+    <h1>Business Info</h1>
 
-
-      <%#= render "shared/error_messages", object: f.object %>
       <% if @organization.errors.any? %>
         <div class="alert alert-error">
           <h4>
@@ -36,17 +33,23 @@
         <div class='table-responsive col-12' >
           <table style='width: 100%; border-collapse: collapse; border: 1px solid #d5d5d5'>
             <thead style='height: 40px;'>
-             <th style='width: 23%; height: 40px; padding: 10px'>First Name </th>
-             <th style='width: 23%'>Last Name  </th>
-             <th style='width: 23%'> Email       </th>
-             <th style='width: 15%'> Status      </th>
-             <th style='width: 10%'> Remove Role </th>
+             <th style='width: 18%; height: 40px; padding: 10px'>First Name </th>
+             <th style='width: 18%'>Last Name    </th>
+             <th style='width: 18%'> Email       </th>
+             <th style='width: 18%'> Phone       </th>
+             <th style='width: 18%'> Status      </th>
+             <th style='width: 9%'> Remove Role  </th>
              </thead>
             <% @staff.each do |staff| %>
               <tr style='border: 1px solid #d5d5d5; height: 50px; '>
                 <td style='padding: 10px'><%= staff.first_name %></td>
                 <td><%= staff.last_name %></td>
-                <td><%= staff.user && staff.user.email %></td>
+                <td>
+                  <%= staff.work_email_or_best %>
+                </td>
+                <td>
+                  <% phone = staff.phones.detect{|phone| phone.kind == 'work'} %>
+                  <%= phone && (phone.area_code.to_s + phone.number + (phone.extension? ? ' x'+phone.extension : '')) %>
                 <td>
                   <% role = staff.employer_staff_roles.detect{|role| role.employer_profile_id == @employer_profile.id && !role.is_closed?} %>
                   <%= role && role.current_state %>
@@ -57,7 +60,7 @@
                   <% end %>
                 </td>
                 <td>
-                  <%= link_to(employers_employer_staff_role_path(id: @employer_profile.id, staff_id: staff.id), method: 'delete', id: 'delete_' + staff.id.to_s) do %>
+                  <%= link_to(employers_employer_staff_role_path(id: @employer_profile.id, staff_id: staff.id), method: 'delete', id: 'delete_' + staff.id.to_s, data: {confirm: 'Delete this role?'}) do %>
                     <i class="fa fa-trash-o fa-2x role-trashcan"></i>
                   <%end%>
                 </td>
@@ -95,8 +98,6 @@
           <br>
           <%= link_to 'Add Employer Staff Role', edit_employers_employer_profile_path(@employer_profile.organization, add_staff: 'yes'), class: 'btn btn-trans pull-left col-12' %>
           <br/><br><br>
-
-
           <div class="">
             <h4> Employer Information</h4>
             <div class="row no-buffer row-form-wrapper">
@@ -105,8 +106,10 @@
               <% end %>
             </div><br>
             <h2> Office Locations </h2>
-            <%= f.fields_for :office_locations, errors: {}, fieldset: false do |office_location| %>
+            <% @row = false %>
+            <%= f.fields_for :office_locations, errors: {}, fieldset: false do |office_location,block| %>
               <%= render partial: 'shared/office_location_fields', locals: {f: office_location} %>
+              <% @row = true %>
             <% end %>
             <br/>
             <div class="form-inputs">
@@ -120,8 +123,7 @@
               </button> &nbsp;&nbsp;
             </div>
           </div>
-
-        <% end %>
-  <% end %>
-
+      <% end %>
+    <% end %>
+    
 </div>
