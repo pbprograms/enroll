@@ -195,6 +195,10 @@ When(/^(.+) creates? a new employer profile$/) do |named_person|
   find('.selectric-interaction-choice-control-organization-entity-kind').click
   find(:xpath, "//div[@class='selectric-scroll']/ul/li[contains(text(), 'C Corporation')]").click
   step "I enter office location for #{default_office_location}"
+  fill_in 'organization[email]', :with => Forgery('email').address
+  fill_in 'organization[area_code]', :with => '202'
+  fill_in 'organization[number]', :with => '5551212'
+  fill_in 'organization[extension]', :with => '22332'
   find('.interaction-click-control-confirm').click
 end
 
@@ -504,7 +508,7 @@ Then(/^.+ should see the current plan year$/) do
 end
 
 And(/^.+ should see the premium billings report$/) do
-  # expect(@browser.h3(text: /Premium Billing Report/i).visible?).to be_truthy
+  # expect(@browser.h3(text: /Enrollment Report/i).visible?).to be_truthy
 end
 
 When(/^.+ should see a published success message without employee$/) do
