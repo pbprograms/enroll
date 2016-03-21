@@ -1,0 +1,20 @@
+<%= f.fields_for :employer_profile, errors: {}, fieldset: false do |emp|  %>
+<div class="row no-buffer row-form-wrapper" style="border-top: 1px solid #b5b5b5;">
+    <div class="col-md-4 col-sm-4 col-xs-12 form-group form-group-lg no-pd">
+      <%= text_field_tag :first_name, @employer.try(:first_name), class: "floatlabel form-control", placeholder: 'FIRST NAME *' %>
+    </div>
+    <div class="col-md-4 col-sm-4 col-xs-12 form-group-lg no-pd">
+      <%= text_field_tag :last_name, @employer.try(:last_name), class: "floatlabel form-control", placeholder: 'LAST NAME *' %>
+    </div>
+  </div>
+  <div class="row no-buffer row-form-wrapper">
+    <div class="col-xs-12 form-group form-group-lg no-pd">
+      <%= emp.text_field :point_of_contact, class: "fien_field floatlabel form-control", placeholder: 'EMAIL' %>
+    </div>
+  </div>
+</div>
+<% end %>
+
+<%= f.fields_for :office_locations, errors: {}, fieldset: false do |office_location| %>
+  <%= render partial: 'shared/office_location_fields', locals: {f: office_location} %>
+<% end %>
