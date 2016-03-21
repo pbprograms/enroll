@@ -87,17 +87,21 @@ end
 When /^they approve the general agency$/ do
   click_link general_agency.legal_name
   click_link 'Staff'
-  click_link general_agency.general_agency_profile.general_agency_staff_roles.first.full_name
+  click_link 'Staff'
+  click_link 'Staff'
+  click_link 'Staff'
   sleep 5
-  expect(false).to be_truthy
+  click_link general_agency.general_agency_profile.general_agency_staff_roles.first.full_name
+  click_button 'Approve'
 end
 
 Then /^they should see updated status$/ do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(find('.alert')).to have_content('Staff approved successfully.')
 end
 
 Then /^the general agency should receive an email$/ do
-  pending # Write code here that turns the phrase above into concrete actions
+  pending "figuring out whether open_email isn't working or the email isn't being sent"
+  open_email(general_agency.general_agency_profile.general_agency_staff_roles.first.emails.first.address)
 end
 
 Given /^a general agency, approved, awaiting account creation, exists$/ do

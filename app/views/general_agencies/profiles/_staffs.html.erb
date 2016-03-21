@@ -8,7 +8,7 @@
             <tbody>
               <% @staffs.each do |staff| %>
                 <tr>
-                  <td><%= link_to pp(staff.first_name + ' ' + staff.last_name), edit_staff_general_agencies_profiles_path(id: staff.general_agency_staff_roles.last.id), remote: true %></td>
+                  <td><%= link_to staff.first_name + ' ' + staff.last_name, edit_staff_general_agencies_profiles_path(id: staff.general_agency_staff_roles.last.id), remote: true %></td>
                   <td><%= GeneralAgencyProfile.find(staff.general_agency_staff_roles.last.general_agency_profile_id).legal_name %></td>
                   <td><%= staff.general_agency_staff_roles.last.current_state %></td>
                 </tr>
