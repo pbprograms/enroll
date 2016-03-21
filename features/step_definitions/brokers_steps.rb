@@ -29,9 +29,9 @@ And(/^.+ enters broker agency information$/) do
   find(:xpath, "//p[@class='label'][contains(., 'Select Practice Area')]").click
   find(:xpath, "//li[contains(., 'Small Business Marketplace ONLY')]").click
 
-  find('button.multiselect').click
-  find(:xpath, '//label[input[@value="bn"]]').click
-  find(:xpath, '//label[input[@value="fr"]]').click
+  #find('button.multiselect').click
+  #find(:xpath, '//label[input[@value="bn"]]').click
+  #find(:xpath, '//label[input[@value="fr"]]').click
 
   find(:xpath, "//label[input[@name='organization[accept_new_clients]']]").trigger('click')
   find(:xpath, "//label[input[@name='organization[working_hours]']]").trigger('click')
@@ -143,7 +143,7 @@ Then(/^.+ confirms? broker selection$/) do
 end
 
 Then(/^.+ should see broker selected successful message$/) do
-  expect(page).to have_content("Your broker has been notified of your selection and should contact you shortly. You can always call or email him or her directly. If this is not the broker you want to use, select 'Change Broker'.")
+  expect(page).to have_content("Your broker has been notified of your selection and should contact you shortly.")
 end
 
 And (/^.+ should see broker active for the employer$/) do
@@ -189,11 +189,17 @@ Then(/^.* creates and publishes a plan year$/) do
   fill_in "plan_year[benefit_groups_attributes][0][relationship_benefits_attributes][2][premium_pct]", with: 50
   fill_in "plan_year[benefit_groups_attributes][0][relationship_benefits_attributes][3][premium_pct]", with: 50
 
+
+  #page.execute_script "$('#plan_year_benefit_groups_attributes_0_relationship_benefits_attributes_0_premium_pct').change()"
+
+
+
+
   find(:xpath, '//li/label[@for="plan_year_benefit_groups_attributes_0_plan_option_kind_single_carrier"]').click
   find('.carriers-tab a').click
   find('.reference-plans label').click
 
-  find('.interaction-click-control-create-plan-year').trigger('click')
+  find('.interaction-click-control-create-plan-year').click
 
   find('.alert-notice')
   find('.interaction-click-control-benefits').click
