@@ -30,7 +30,12 @@ module Forms
     def add_broker_role
       person.broker_role = ::BrokerRole.new({
         :provider_kind => 'broker',
-        :npn => self.npn
+        :npn => self.npn,
+        :broker_agency_profile => broker_agency_profile,
+        :market_kind => market_kind,
+        :languages_spoken => languages_spoken,
+        :working_hours => working_hours,
+        :accept_new_clients => accept_new_clients
       })
     end
 

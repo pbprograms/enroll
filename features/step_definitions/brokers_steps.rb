@@ -3,10 +3,6 @@ When(/^.+ visits the HBX Broker Registration form$/) do
   find(".interaction-click-control-broker-registration").click
 end
 
-When(/^Primary Broker clicks on New Broker Agency Tab$/) do
-  find(:xpath, "//label[input[@id='new_broker_agency']]").click
-end
-
 When(/^Primary Broker should see the New Broker Agency form$/) do
   expect(page).to have_css("#broker_agency_form")
 end
