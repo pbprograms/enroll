@@ -76,6 +76,9 @@ class Employers::CensusEmployeesController < ApplicationController
 
     authorize @census_employee, :update?
 
+    # ticket 5332 clear invalid benefit group assignments
+    @census_employee.benefit_group_assignments.delete_if{|bg_assignment| !bg_assignment.valid?}
+
     if @census_employee.save
       if destroyed_dependent_ids.present?
         destroyed_dependent_ids.each do |g|
