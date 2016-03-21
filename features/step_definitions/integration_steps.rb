@@ -63,6 +63,24 @@ def people
       email: 'ricky.martin@example.com',
       password: 'aA1!aA1!aA1!'
     },
+    "CareFirst Broker" => {
+      first_name: 'Broker',
+      last_name: 'martin',
+      dob: "05/07/1977",
+      ssn: "761111111",
+      email: 'broker.martin@example.com',
+      password: 'aA1!aA1!aA1!'
+    },
+    "John Wood" => {
+      first_name: "John",
+      last_name: "Wood",
+      dob: "03/13/1977",
+      legal_name: "Acmega LLC",
+      dba: "Acmega LLC",
+      fein: "890112233",
+      email: 'johb.wood@example.com',
+      password: 'aA1!aA1!aA1!'
+    },
     "John Doe" => {
       first_name: "John",
       last_name: "Doe#{rand(1000)}",

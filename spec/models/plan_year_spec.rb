@@ -381,7 +381,7 @@ describe PlanYear, :type => :model, :dbclean => :after_each do
     end
 
     before do
-      plan_year_with_benefit_group.update_attributes(:aasm_state => 'renewing_draft')
+      plan_year_with_benefit_group.update_attributes(:aasm_state => 'renewing_draft') 
     end
 
     it "plan year should be in renewing_draft state" do
@@ -399,7 +399,7 @@ describe PlanYear, :type => :model, :dbclean => :after_each do
         expect(plan_year_with_benefit_group.is_application_valid?).to be_falsey
       end
 
-      it "and should provide relevant warnings" do
+      it "and should provide relevant warnings" do 
         expect(plan_year_with_benefit_group.application_eligibility_warnings[:publish].present?).to be_truthy
         expect(plan_year_with_benefit_group.application_eligibility_warnings[:publish]).to match(/Plan year starting on #{plan_year_with_benefit_group.start_on.strftime("%m-%d-%Y")} must be published by #{plan_year_with_benefit_group.due_date_for_publish.strftime("%m-%d-%Y")}/)
       end
@@ -415,11 +415,11 @@ describe PlanYear, :type => :model, :dbclean => :after_each do
         plan_year_with_benefit_group.publish!
       end
 
-      it "application should be valid" do
+      it "application should be valid" do 
         expect(plan_year_with_benefit_group.is_application_valid?).to be_truthy
       end
 
-      it "and plan year should be in publish state" do
+      it "and plan year should be in publish state" do 
         expect(plan_year_with_benefit_group.aasm_state).to eq "renewing_enrolling"
       end
     end
