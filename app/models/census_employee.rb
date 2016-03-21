@@ -352,6 +352,7 @@ class CensusEmployee < CensusMember
       active_benefit_group_assignment.hbx_enrollment.coverage_kind == 'health'
   end
 
+
   class << self
     def find_all_by_employer_profile(employer_profile)
       unscoped.where(employer_profile_id: employer_profile._id).order_name_asc
