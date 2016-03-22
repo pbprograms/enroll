@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Insured::ConsumerRolesController, :type => :controller do
   let(:user){ FactoryGirl.create(:user, :consumer) }
-  let(:person){ FactoryGirl.create(:person, :with_consumer_role) }
+  let(:person){ FactoryGirl.build(:person) }
   let(:family){ double("Family") }
   let(:family_member){ double("FamilyMember") }
   let(:consumer_role){ FactoryGirl.build(:consumer_role) }
@@ -281,14 +281,12 @@ RSpec.describe Insured::ConsumerRolesController, :type => :controller do
       expect(assigns(:vlp_doc_target)).to eq "vlp doc"
     end
 
-    context "target type is family member" do
-      xit "should get FamilyMember" do
-        allow(Forms::FamilyMember).to receive(:find).and_return family_member
-        xhr :get, 'immigration_document_options', {target_type: 'Forms::FamilyMember', target_id: "id", vlp_doc_target: "vlp doc", format: :js}
-        expect(response).to have_http_status(:success)
-        expect(assigns(:target)).to eq family_member
-        expect(assigns(:vlp_doc_target)).to eq "vlp doc"
-      end
+    it "should get FamilyMember" do
+      allow(Forms::FamilyMember).to receive(:find).and_return family_member
+      xhr :get, 'immigration_document_options', {target_type: 'Forms::FamilyMember', target_id: "id", vlp_doc_target: "vlp doc", format: :js}
+      expect(response).to have_http_status(:success)
+      expect(assigns(:target)).to eq family_member
+      expect(assigns(:vlp_doc_target)).to eq "vlp doc"
     end
 
     it "should get FamilyMember" do

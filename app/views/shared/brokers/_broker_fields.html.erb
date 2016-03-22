@@ -30,13 +30,7 @@
               <tr>
                 <th>Languages:</th>
                 <td>
-                  <% languages = [] %>
-                  <% broker_or_staff_role.broker_agency_profile.languages_spoken.map do |lang| %>
-                  <% language = LanguageList::LanguageInfo.find(lang) %>
-
-                  <% languages << language.name.inspect.gsub!(/^\"|\"?$/, '') %>
-                  <% end %>
-                  <%= languages.to_sentence %>
+                  <%= broker_or_staff_role.broker_agency_profile.languages_spoken.map do |lang| lang.upcase end.to_sentence %>
                 </td>
               </tr>
               <tr>

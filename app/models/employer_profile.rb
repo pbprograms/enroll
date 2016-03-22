@@ -78,11 +78,11 @@ class EmployerProfile
   end
 
   def owners #business owners
-    CensusEmployee.where(employer_profile_id: self.id, is_business_owner?: true).count
+    staff_roles.select{|p| p.try(:employee_roles).try(:any?){|ee| ee.census_employee.is_business_owner? }}
   end
 
   def staff_roles #managing profile staff
-    Person.staff_for_employer(self)
+    Person.find_all_staff_roles_by_employer_profile(self) || [Person.find_all_staff_roles_by_employer_profile(self).select{ |staff| staff.employer_staff_role.is_owner }]
   end
 
   def match_employer(current_user)
@@ -160,7 +160,7 @@ class EmployerProfile
   end
 
   def show_plan_year
-    renewing_published_plan_year || active_plan_year || published_plan_year
+    renewing_plan_year || active_plan_year || published_plan_year
   end
 
   def plan_year_drafts
@@ -173,30 +173,12 @@ class EmployerProfile
     end
   end
 
-
-  def premium_billing_plan_year_and_enrollments
-    billing_report_date = TimeKeeper.date_of_record.next_month
-    current_plan_year = find_plan_year_by_effective_date(billing_report_date)
-    
-    if current_plan_year.blank?
-      billing_report_date = TimeKeeper.date_of_record
-      current_plan_year = find_plan_year_by_effective_date(billing_report_date)
-    end
-
-    if current_plan_year.present?
-      hbx_enrollments = current_plan_year.hbx_enrollments_by_month(billing_report_date).compact
-      hbx_enrollments.reject!{|enrollment| !enrollment.census_employee.is_active?}
-    end
-
-    return current_plan_year, hbx_enrollments || []
-  end
-
   def find_plan_year(id)
     plan_years.where(id: id).first
   end
 
   def renewing_published_plan_year
-    plan_years.renewing_published_state.first
+    plan_years.published.first
   end
 
   def renewing_plan_year

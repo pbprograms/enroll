@@ -113,7 +113,6 @@ RSpec.describe "insured/group_selection/new.html.erb" do
       allow(consumer_role3).to receive(:is_incarcerated?).and_return(false)
       allow(hbx_enrollment).to receive(:effective_on).and_return(TimeKeeper.date_of_record.end_of_month + 1.day)
       allow(hbx_enrollment).to receive(:may_terminate_coverage?).and_return(true)
-      allow(benefit_package).to receive(:start_on).and_return(TimeKeeper.date_of_record.beginning_of_year)
       controller.request.path_parameters[:person_id] = jail_person.id
       controller.request.path_parameters[:consumer_role_id] = consumer_role.id
       allow(family_member4).to receive(:first_name).and_return('joey')
@@ -311,7 +310,6 @@ RSpec.describe "insured/group_selection/new.html.erb" do
       assign :market_kind, 'individual'
       assign :change_plan, true
       assign :hbx_enrollment, hbx_enrollment
-      allow(person).to receive(:has_active_employee_role?).and_return(true)
       allow(hbx_enrollment).to receive(:effective_on).and_return(TimeKeeper.date_of_record.beginning_of_month)
       allow(hbx_enrollment).to receive(:coverage_selected?).and_return(true)
       allow(hbx_enrollment).to receive(:may_terminate_coverage?).and_return(true)
@@ -350,9 +348,8 @@ RSpec.describe "insured/group_selection/new.html.erb" do
     end
 
     it "when hbx_enrollment is terminated" do
-      allow(hbx_enrollment).to receive(:coverage_enrolled?).and_return(false)
+      allow(hbx_enrollment).to receive(:coverage_selected?).and_return(false)
       allow(hbx_enrollment).to receive(:auto_renewing?).and_return(false)
-      allow(hbx_enrollment).to receive(:coverage_enrolled?).and_return(false)
       render file: "insured/group_selection/new.html.erb"
       expect(rendered).to have_selector("input[value='Keep existing plan']", count: 0)
     end
@@ -496,7 +493,6 @@ RSpec.describe "insured/group_selection/new.html.erb" do
     let(:hbx_enrollment) {double("hbx enrollment", coverage_selected?: true, id: "hbx_id", effective_on: (TimeKeeper.date_of_record.end_of_month + 1.day), employee_role: employee_role, benefit_group: benefit_group)}
 
     before :each do
-      allow(person).to receive(:has_active_employee_role?).and_return(true)
       allow(employee_role).to receive(:benefit_group).and_return(benefit_group)
       assign :person, person
       assign :employee_role, employee_role

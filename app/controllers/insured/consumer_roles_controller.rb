@@ -67,7 +67,7 @@ class Insured::ConsumerRolesController < ApplicationController
 
             if @employee_candidate.valid?
               found_census_employees = @employee_candidate.match_census_employees
-              @employment_relationships = Factories::EmploymentRelationshipFactory.build(@employee_candidate, found_census_employees)
+              @employment_relationships = Factories::EmploymentRelationshipFactory.build(@employee_candidate, found_census_employees.first)
               if @employment_relationships.present?
                 format.html { render 'insured/employee_roles/match' }
               end
@@ -76,6 +76,10 @@ class Insured::ConsumerRolesController < ApplicationController
 
           found_person = @consumer_candidate.match_person
           if found_person.present?
+            if found_person.try(:consumer_role)
+               session[:already_has_consumer_role] = true
+               session[:person_id] = found_person.id
+            end
             format.html { render 'match' }
           else
             format.html { render 'no_match' }
@@ -93,26 +97,33 @@ class Insured::ConsumerRolesController < ApplicationController
     end
   end
 
-  def build
-    set_current_person(required: false)
-    build_person_params
-    render 'match'
-  end
-
   def create
-    begin
-      @consumer_role = Factories::EnrollmentFactory.construct_consumer_role(params.permit!, actual_user)
-      if @consumer_role.present?
-        @person = @consumer_role.person
-      else
-      # not logging error because error was logged in construct_consumer_role
-        render file: 'public/500.html', status: 500
+
+    if !session[:already_has_consumer_role] == true
+      begin
+        @consumer_role = Factories::EnrollmentFactory.construct_consumer_role(params.permit!, actual_user)
+        if @consumer_role.present?
+          @person = @consumer_role.person
+        else
+        # not logging error because error was logged in construct_consumer_role
+          render file: 'public/500.html', status: 500
+          return
+        end
+      rescue Exception => e
+        flash[:error] = set_error_message(e.message)
+        redirect_to search_insured_consumer_role_index_path
         return
       end
-    rescue Exception => e
-      flash[:error] = set_error_message(e.message)
-      redirect_to search_insured_consumer_role_index_path
-      return
+    else
+
+      @person= Person.find(session[:person_id])
+      @person.user = current_user
+      @person.save
+
+      # 3717 - Person has consumer role but no family document as a result of previously consumer role added as dependent
+      # Attempt to create new family
+      family = Factories::EnrollmentFactory.build_family(@person, [])
+
     end
     is_assisted = session["individual_assistance_path"]
     role_for_user = (is_assisted) ? "assisted_individual" : "individual"
@@ -123,7 +134,11 @@ class Insured::ConsumerRolesController < ApplicationController
             @person.primary_family.update_attribute(:e_case_id, "curam_landing_for#{@person.id}") if @person.primary_family
             redirect_to navigate_to_assistance_saml_index_path
           else
-            redirect_to :action => "edit", :id => @consumer_role.id
+            if session[:already_has_consumer_role] == true
+              redirect_to family_account_path
+            else
+              redirect_to :action => "edit", :id => @consumer_role.id
+            end
           end
         }
       end
@@ -133,18 +148,14 @@ class Insured::ConsumerRolesController < ApplicationController
   def immigration_document_options
     if params[:target_type] == "Person"
       @target = Person.find(params[:target_id])
-      vlp_docs = @target.consumer_role.vlp_documents
     elsif params[:target_type] == "Forms::FamilyMember"
       if params[:target_id].present?
         @target = Forms::FamilyMember.find(params[:target_id])
-        vlp_docs = @target.family_member.person.consumer_role.vlp_documents
       else
         @target = Forms::FamilyMember.new
       end
     end
     @vlp_doc_target = params[:vlp_doc_target]
-    vlp_doc_subject = params[:vlp_doc_subject]
-    @country = vlp_docs.detect{|doc| doc.subject == vlp_doc_subject }.try(:country_of_citizenship) if vlp_docs
   end
 
   def edit
@@ -247,16 +258,5 @@ class Insured::ConsumerRolesController < ApplicationController
     else
       return message
     end
-  end
-
-  def build_person_params
-   @person_params = {:ssn =>  Person.decrypt_ssn(@person.encrypted_ssn)}
-   
-    %w(first_name middle_name last_name gender).each do |field|
-      @person_params[field] = @person.attributes[field]
-    end
-
-    @person_params[:dob] = @person.dob.strftime("%Y-%m-%d")
-    @person_params.merge!({user_id: current_user.id})
   end
 end

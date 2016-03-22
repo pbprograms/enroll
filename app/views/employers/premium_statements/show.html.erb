@@ -3,19 +3,9 @@
 <% end %>
 <div class="col-xs-12 premium-reports-tab">
   <div class="row no-buffer">
-    <% calender_month = TimeKeeper.date_of_record.next_month %>
-    <% if @current_plan_year.present? && !(@current_plan_year.start_on..@current_plan_year.end_on).cover?(calender_month) %>
-       <% calender_month = TimeKeeper.date_of_record %>
-    <% end %>
-
-    <h1 class="no-buffer" style="display: inline;">Enrollment Report</h1>
+    <h1>Premium Billing Report
     <% if @current_plan_year.present? %>
-
-      <h3 class="no-buffer" style="display: inline;">
-        &nbsp;(<%= calender_month.beginning_of_month %> - <%= calender_month.end_of_month %>)
-      </h3>
-      <br/>
-      <span class="text-danger">This is not an invoice.</span>
+      <%= @current_plan_year.start_on %> - <%= @current_plan_year.start_on.end_of_month %></h1>
     <% end %>
   </div>
   <div class="premium-reports-table">

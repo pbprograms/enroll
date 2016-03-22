@@ -49,36 +49,10 @@ RSpec.describe Employers::EmployerProfilesController do
       allow(user).to receive(:has_hbx_staff_role?).and_return(false)
       allow(user).to receive(:has_employer_staff_role?).and_return(false)
       allow(user).to receive(:person).and_return(person)
-      allow(person).to receive(:has_active_employer_staff_role?).and_return(false)
       sign_in(user)
       get :new
       expect(response).to have_http_status(:success)
     end
-  end
-
-  describe "GET edit" do
-    let(:user) { double(has_employer_staff_role?: true, has_broker_agency_staff_role?: false, has_hbx_staff_role?: false, email: 'x@y.com')}
-    let(:employer_profile1) { FactoryGirl.create(:employer_profile)}
-    let(:current_user) {FactoryGirl.create(:user)}
-    let(:person) {FactoryGirl.create(:person)}
-    it "returns success if organization is correct" do
-      allow(user).to receive(:person).and_return(person)
-      sign_in(user)
-      get :edit, id: employer_profile1.organization.id
-      expect(response).to have_http_status(:success)
-    end
-
-    it "redirects and logs if organization id is wrong" do
-      allow(user).to receive(:person).and_return(person)
-      sign_in(user)
-      expect(subject).to receive(:log)  do |msg, severity|
-        expect(msg).to match /3672/
-        expect(severity[:severity]).to eq('error')
-      end
-      get :edit, id: person.id
-      expect(response).to have_http_status(:redirect)
-    end
-
   end
 
   describe "REDIRECT to my account if employer staff role present" do
@@ -89,8 +63,6 @@ RSpec.describe Employers::EmployerProfilesController do
       allow(user).to receive(:has_hbx_staff_role?).and_return(false)
       allow(user).to receive(:has_employer_staff_role?).and_return(true)
       allow(user).to receive(:person).and_return(person)
-      allow(person).to receive(:has_active_employer_staff_role?).and_return(true)
-      allow(person).to receive(:active_employer_staff_roles).and_return([double("employer_staff_role", employer_profile_id: 77)])
       sign_in(user)
       get :new
       expect(response).to have_http_status(:redirect)
@@ -191,9 +163,9 @@ RSpec.describe Employers::EmployerProfilesController do
   describe "GET show" do
     let(:user){ double("User", last_portal_visited: double("last_portal_visited")) }
     let(:person){ double("Person") }
-    let(:employer_profile) {instance_double("EmployerProfile", id: double("id"))}
+    let(:employer_profile) {double("EmployerProfile", id: double("id"))}
     let(:hbx_enrollment) {
-      instance_double("HbxEnrollment",
+      double("HbxEnrollment",
         total_premium: 345,
         total_employee_cost: 145,
         total_employer_contribution: 200
@@ -201,25 +173,25 @@ RSpec.describe Employers::EmployerProfilesController do
     }
 
     let(:plan_year) {
-      instance_double("PlanYear",
+      double("PlanYear",
         additional_required_participants_count: 10
         )
     }
 
     let(:policy) {double("policy")}
+    before(:each) do
+      allow(::AccessPolicies::EmployerProfile).to receive(:new).and_return(policy)
+      allow(policy).to receive(:authorize_show).and_return(true)
+      allow(user).to receive(:last_portal_visited=).and_return("true")
+      allow(user).to receive(:save).and_return(true)
+      allow(EmployerProfile).to receive(:find).and_return(employer_profile)
+      allow(employer_profile).to receive(:show_plan_year).and_return(plan_year)
+      allow(plan_year).to receive(:open_enrollment_contains?).and_return(true)
+      allow(plan_year).to receive(:hbx_enrollments).and_return([hbx_enrollment])
 
+      sign_in(user)
+    end
     context "it should return published plan year " do
-      before do
-        allow(::AccessPolicies::EmployerProfile).to receive(:new).and_return(policy)
-        allow(policy).to receive(:authorize_show).and_return(true)
-        allow(user).to receive(:last_portal_visited=).and_return("true")
-        allow(user).to receive(:save).and_return(true)
-        allow(EmployerProfile).to receive(:find).and_return(employer_profile)
-        allow(employer_profile).to receive(:premium_billing_plan_year_and_enrollments).and_return([plan_year, [hbx_enrollment]])
-  
-        sign_in(user)
-      end
-
       it "should render the show template" do
         allow(user).to receive(:person).and_return(person)
         get :show, id: employer_profile.id, tab: "home"
@@ -229,6 +201,7 @@ RSpec.describe Employers::EmployerProfilesController do
         expect(assigns(:employer_contribution_total)).to eq hbx_enrollment.total_employer_contribution
         expect(assigns(:premium_amt_total)).to eq hbx_enrollment.total_premium
         expect(assigns(:employee_cost_total)).to eq hbx_enrollment.total_employee_cost
+        expect(assigns(:additional_required_participants_count)).to eq plan_year.additional_required_participants_count
       end
     end
   end
@@ -497,20 +470,6 @@ RSpec.describe Employers::EmployerProfilesController do
     end
   end
 
-  describe "GET edit" do
-    let(:user) {FactoryGirl.build(:user)}
-    let(:employer_profile) {FactoryGirl.build(:employer_profile)}
-    let(:organization) {FactoryGirl.create(:organization, employer_profile: employer_profile)}
-
-    it "should get employer_contact_email with empty" do
-      sign_in(user)
-      get :edit, id: organization.id
-      expect(assigns(:employer_contact_email)).to eq nil
-      expect(response).to have_http_status(:success)
-      expect(response).to render_template("edit")
-    end
-  end
-
   describe "PUT update" do
     let(:user) { double("user")}
     let(:employer_profile) { double("EmployerProfile") }
@@ -580,7 +539,7 @@ RSpec.describe Employers::EmployerProfilesController do
       end
     end
 
-    context "given the company have managing staff" do
+     context "given the company have managing staff" do
       it "should render edit template" do
         allow(user).to receive(:save).and_return(true)
         sign_in(user)
@@ -588,25 +547,13 @@ RSpec.describe Employers::EmployerProfilesController do
         expect(response).to be_redirect
       end
     end
-    it "should not update person info" do
+    it "should update person info" do
       allow(user).to receive(:save).and_return(true)
       sign_in(user)
       expect(Organization).to receive(:find)
       put :update, id: organization.id, first_name: "test", organization: organization_params
-      expect(person.first_name).not_to eq "test"
+      expect(person.first_name).to eq "test"
       expect(response).to be_redirect
-    end
-    context "given the company does not have managing staff" do
-      let(:non_employer_user) { double("user", :has_hbx_staff_role? => false, :has_employer_staff_role? => false)}
-      it "should not update person info unless employer_staff_role" do
-        allow(user).to receive(:save).and_return(true)
-        sign_in(non_employer_user)
-        expect(Organization).to receive(:find)
-        put :update, id: organization.id, first_name: "test", organization: organization_params
-        expect(person.first_name).not_to eq "test"
-        expect(response).to be_redirect
-        expect(flash[:error]).to match 'You do not have permissions to update the details'
-      end
     end
   end
 

@@ -3,6 +3,40 @@ $primay-active-button-text-color: #ffffff;
 $primary-bold: 600;
 
 .module {
+	&.update-browser-warning {
+			color: #000;
+			position: relative;
+			width: 50%;
+			top: 15%;
+			border: solid 1px #b7b7b7;
+			background-color: rgba(256,256,256,1);
+			margin: auto;
+			text-align: center;
+			padding-bottom: 50px;
+			.starter {
+				margin: auto;
+				padding: 15px 20px 20px;
+			}
+			.bg-grey {
+				padding: 10px;
+			}
+			.browser-icon {
+				height: 64px;
+				width: 64px;
+				margin: 0 auto 7px;
+				text-align: center;
+				background: url('<%= asset_path("images/broswericons_128.png") %>');
+				&.chrome {
+					background-position: left top;
+				}
+				&.safari {
+					background-position: right top;
+				}
+				&.firefox {
+					background-position: left bottom;
+				}
+			}
+        }
 	&.employer-welcome {
 		.left-icon-section {
 			margin-bottom: 2.5%;
@@ -41,21 +75,21 @@ $primary-bold: 600;
 			}
 		}
 	}
-
   &.market-selection {
-    padding: 0 20% 5%;
+    padding: 0 15% 5%;
     .btn-primary {
-      padding: 3%;
+      padding: 4%;
       font-size: auto;
       font-size: 13px;
       background-color: transparent;
       border: solid 1px #ccc;
       border-radius: 3px;
       text-transform: capitalize;
-      color: $primary-color;
       &.active {
         background-color: $primary-color;
-        color: $primay-active-button-text-color;
+        a {
+          color: $primay-active-button-text-color;
+        }
       }
     }
   }
@@ -75,8 +109,4 @@ $primary-bold: 600;
 			}
 		}
 	}
-	&.employer-staff-table {
-		width: 100%;
-	}
-
 }

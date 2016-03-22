@@ -16,7 +16,7 @@ module Insured::FamiliesHelper
   end
 
   def shift_purchase_time(policy)
-    policy.created_at.in_time_zone('Eastern Time (US & Canada)')
+    policy.created_at.in_time_zone('Eastern Time (US & Canada)') 
   end
 
   def format_policy_purchase_date(policy)
@@ -47,7 +47,9 @@ module Insured::FamiliesHelper
     options = {class: 'qle-menu-item'}
     data = {
       title: qle.title, id: qle.id.to_s, label: qle.event_kind_label,
-      is_self_attested: qle.is_self_attested,
+      post_event_sep_in_days: qle.post_event_sep_in_days,
+      pre_event_sep_in_days: qle.pre_event_sep_in_days,
+      date_hint: qle.date_hint, is_self_attested: qle.is_self_attested,
       current_date: TimeKeeper.date_of_record.strftime("%m/%d/%Y")
     }
 
@@ -76,22 +78,14 @@ module Insured::FamiliesHelper
     options
   end
 
-  def newhire_enrollment_eligible?(employee_role)
-    return false if employee_role.blank? || employee_role.census_employee.blank?
+  def show_employer_panel?(person, hbx_enrollments)
+    return false if person.blank? or !person.has_active_employee_role?
+    return true if hbx_enrollments.blank? or hbx_enrollments.shop_market.blank?
 
-    employee_role.census_employee.newhire_enrollment_eligible? && employee_role.can_select_coverage?
-  end
-
-  def disable_make_changes_button?(hbx_enrollment)
-    if hbx_enrollment.census_employee.blank?
-      return false
+    if hbx_enrollments.shop_market.entries.map(&:employee_role_id).include? person.active_employee_roles.first.id
+      false
     else
-      if !hbx_enrollment.census_employee.employee_role.blank? && hbx_enrollment.census_employee.employee_role.is_under_open_enrollment?
-        return false
-      else
-        return true
-      end
-    end  
+      true
+    end
   end
-
 end

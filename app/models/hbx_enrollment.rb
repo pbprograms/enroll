@@ -287,20 +287,20 @@ class HbxEnrollment
 
   def cancel_previous(year)
 
-    #Perform cancel/terms of previous enrollments for the same plan year
+    #Perform cancel of previous enrollments for the same plan year
     self.household.hbx_enrollments.ne(id: id).by_coverage_kind(self.coverage_kind).by_year(year).cancel_eligible.by_kind(self.kind).each do |p|
 
       p.update_attributes(enrollment_signature: p.generate_hbx_signature) if !p.enrollment_signature.present?
 
-      if (p.enrollment_signature == self.enrollment_signature && p.plan.carrier_profile_id == self.plan.try(:carrier_profile_id) && p.kind != "employer_sponsored" && TimeKeeper.date_of_record < p.effective_on) || (p.kind == "employer_sponsored" && TimeKeeper.date_of_record < p.effective_on)
+      if (p.enrollment_signature == self.enrollment_signature && p.plan.carrier_profile_id == self.plan.carrier_profile_id && p.kind != "employer_sponsored" && TimeKeeper.date_of_record < p.effective_on) || p.kind == "employer_sponsored"
         if p.may_cancel_coverage?
           p.cancel_coverage!
           p.update_current(terminated_on: p.effective_on)
         end
-      elsif (p.enrollment_signature == self.enrollment_signature && p.plan.carrier_profile_id == self.plan.try(:carrier_profile_id) && p.kind != "employer_sponsored" && TimeKeeper.date_of_record >= p.effective_on) || (p.kind == "employer_sponsored" && TimeKeeper.date_of_record >= p.effective_on)
+      elsif p.enrollment_signature == self.enrollment_signature && p.plan.carrier_profile_id == self.plan.carrier_profile_id && p.kind != "employer_sponsored" && TimeKeeper.date_of_record >= p.effective_on
         if p.may_terminate_coverage?
-          term_date = self.effective_on - 1.day
-          term_date = TimeKeeper.date_of_record + 14.days if (TimeKeeper.date_of_record + 14.days) > term_date
+          term_date = self.effective_on - 1
+          term_date = TimeKeeper.date_of_record + 14 if (TimeKeeper.date_of_record + 14) > term_date
 
           p.terminate_coverage
           p.update_current(terminated_on: term_date)
@@ -482,10 +482,6 @@ class HbxEnrollment
     hbx_enrollment_members.count - 1
   end
 
-  def humanized_members_summary
-    hbx_enrollment_members.count{|member| member.covered? }
-  end
-
   def phone_number
     if plan.present?
       phone = plan.try(:carrier_profile).try(:organization).try(:primary_office_location).try(:phone)
@@ -624,48 +620,42 @@ class HbxEnrollment
     nil
   end
 
-  def self.effective_date_for_enrollment(employee_role, hbx_enrollment, qle)
 
-    if employee_role.can_enroll_as_new_hire?
-      return employee_role.coverage_effective_on
-    end
-
-    if employee_role.census_employee.new_hire_enrollment_period.min > TimeKeeper.date_of_record
-      raise "You're not yet eligible under your employer-sponsored benefits. Please return on #{employee_role.census_employee.new_hire_enrollment_period.min} to enroll for coverage."
-    end
-
-    if qle
-      return hbx_enrollment.family.earliest_effective_shop_sep.effective_on
-    end
-
-    active_plan_year = employee_role.employer_profile.show_plan_year
-    if active_plan_year.blank?
-      raise "Unable to find employer-sponsored benefits."
-    end
-
-    if !employee_role.is_under_open_enrollment?
-      raise "You may not enroll until you're eligible under an enrollment period."
-    end
-
-    employee_role.employer_profile.show_plan_year.start_on
-  end
+  # census employees with hire date before open enrollments && eligible date is plan year start are not new hires...if eligible date is later then they should get new hire window
+  # census employees updated before open enrollment will not get new hire window
 
   def self.employee_current_benefit_group(employee_role, hbx_enrollment, qle)
-    effective_date = effective_date_for_enrollment(employee_role, hbx_enrollment, qle)
-    if plan_year = employee_role.employer_profile.find_plan_year_by_effective_date(effective_date)
-
-      census_employee = employee_role.census_employee
-      benefit_group_assignment = plan_year.is_renewing? ?
-      census_employee.renewal_benefit_group_assignment : census_employee.active_benefit_group_assignment
-
-      if benefit_group_assignment.blank? || benefit_group_assignment.plan_year != plan_year
-        raise "Unable to find an active or renewing benefit group assignment for enrollment year #{effective_date.year}"
-      end
-
-      return benefit_group_assignment.benefit_group, benefit_group_assignment
+    if qle
+      qle_effective_date = hbx_enrollment.family.earliest_effective_shop_sep.effective_on
+    elsif employee_role.is_eligible_to_enroll_as_new_hire_on?(TimeKeeper.date_of_record)
+      new_hire_effective_date = employee_role.coverage_effective_on
     else
+      open_enrollment_effective_date = employee_role.employer_profile.show_plan_year.start_on
+
+      if open_enrollment_effective_date < employee_role.coverage_effective_on
+        new_hire_enrollment_period = employee_role.benefit_group.new_hire_enrollment_period(employee_role.new_census_employee.hired_on)
+        raise "You're not yet eligible under your employer-sponsored benefits. Please return on #{new_hire_enrollment_period.first} to enroll for coverage."
+      elsif !employee_role.is_under_open_enrollment?
+        raise "You may not enroll until you're eligible under an enrollment period"
+      end
+    end
+
+    effective_date = qle_effective_date || new_hire_effective_date || open_enrollment_effective_date
+
+    plan_year = employee_role.employer_profile.find_plan_year_by_effective_date(effective_date)
+    if plan_year.blank?
       raise "Unable to find employer-sponsored benefits for enrollment year #{effective_date.year}"
     end
+
+    census_employee = employee_role.census_employee
+    benefit_group_assignment = plan_year.is_renewing? ?
+        census_employee.renewal_benefit_group_assignment : census_employee.active_benefit_group_assignment
+
+    if benefit_group_assignment.blank? || benefit_group_assignment.plan_year != plan_year
+      raise "Unable to find an active or renewing benefit group assignment for enrollment year #{effective_date.year}"
+    end
+
+    return benefit_group_assignment.benefit_group, benefit_group_assignment
   end
 
   def self.new_from(employee_role: nil, coverage_household:, benefit_group: nil, benefit_group_assignment: nil, consumer_role: nil, benefit_package: nil, qle: false, submitted_at: nil)
@@ -876,6 +866,15 @@ class HbxEnrollment
       transitions from: [:shopping, :coverage_selected, :auto_renewing, :renewing_coverage_selected], to: :inactive, after: :propogate_waiver
     end
 
+    # event :cancel_coverage, :after => :record_transition do
+    #   transitions from: :coverage_selected, to: :coverage_canceled, after: :propogate_terminate
+    #   transitions from: :auto_renewing, to: :coverage_canceled, after: :propogate_terminate
+    #   transitions from: :renewing_coverage_selected, to: :coverage_canceled, after: :propogate_terminate
+    #   transitions from: :enrolled_contingent, to: :coverage_canceled, after: :propogate_terminate
+    #   transitions from: :unverified, to: :coverage_canceled, after: :propogate_terminate
+    #   transitions from: :coverage_enrolled, to: :coverage_canceled, after: :propogate_terminate
+    # end
+
     event :cancel_coverage, :after => :record_transition do
       transitions from: [:coverage_selected, :renewing_coverage_selected], to: :coverage_canceled
     end
@@ -936,22 +935,6 @@ class HbxEnrollment
     end
   end
 
-  def can_select_coverage?
-    return true unless is_shop?
-    
-    if employee_role.can_enroll_as_new_hire?
-      coverage_effective_date = employee_role.coverage_effective_on
-    elsif special_enrollment_period.present? && special_enrollment_period.contains?(TimeKeeper.date_of_record)
-      coverage_effective_date = special_enrollment_period.effective_on
-    elsif benefit_group.is_open_enrollment?
-      open_enrollment_effective_date = employee_role.employer_profile.show_plan_year.start_on
-      return false if open_enrollment_effective_date < employee_role.coverage_effective_on
-      coverage_effective_date = open_enrollment_effective_date
-    end
-
-    benefit_group_assignment_valid?(coverage_effective_date)
-  end
-
   def decorated_hbx_enrollment
     if plan.present? && benefit_group.present?
       if benefit_group.is_congress #is_a? BenefitGroupCongress
@@ -965,6 +948,31 @@ class HbxEnrollment
     else
       log("#3835 hbx_enrollment without benefit_group and consumer_role. hbx_enrollment_id: #{self.id}, plan: #{plan}", {:severity => "error"})
       OpenStruct.new(:total_premium => 0.00, :total_employer_contribution => 0.00, :total_employee_cost => 0.00)
+    end
+  end
+
+  def can_select_coverage?
+    if is_shop?
+      coverage_effective_date = nil
+      if special_enrollment_period.present? && special_enrollment_period.contains?(TimeKeeper.date_of_record)
+        coverage_effective_date = special_enrollment_period.effective_on
+      elsif employee_role.is_eligible_to_enroll_as_new_hire_on?(TimeKeeper.date_of_record)
+        coverage_effective_date = employee_role.coverage_effective_on
+      elsif benefit_group.is_open_enrollment?
+        open_enrollment_effective_date = employee_role.employer_profile.show_plan_year.start_on
+        if open_enrollment_effective_date < employee_role.coverage_effective_on
+          return false
+        end
+        coverage_effective_date = open_enrollment_effective_date
+      end
+
+      if coverage_effective_date.present?
+        benefit_group_assignment_valid?(coverage_effective_date)
+      else
+        false
+      end
+    else
+      true
     end
   end
 
@@ -1019,7 +1027,7 @@ class HbxEnrollment
     !(shopping_plan_year.start_on == effective_on)
   end
 
-  private
+  private 
 
   def benefit_group_assignment_valid?(coverage_effective_date)
     plan_year = employee_role.employer_profile.find_plan_year_by_effective_date(coverage_effective_date)

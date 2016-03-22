@@ -48,6 +48,7 @@ describe AccessPolicies::EmployerProfile, :dbclean => :after_each do
 
     context "has an employer staff role for another employer" do
       let(:person) { FactoryGirl.create(:person, :with_employer_staff_role) }
+
       it "should redirect to your first allowed employer profile" do
          expect(controller).to receive(:redirect_to_first_allowed)
          subject.authorize_show(employer_profile, controller)
@@ -100,21 +101,6 @@ describe AccessPolicies::EmployerProfile, :dbclean => :after_each do
         expect(subject.authorize_index(employer_profile, controller)).not_to be_truthy
         expect(controller).not_to receive(:redirect_to_new)
       end
-    end
-  end
-end
-
-describe AccessPolicies::EmployerProfile, :dbclean => :after_each do
-  subject(:policy){ AccessPolicies::EmployerProfile.new(user) }
-  let(:user) { FactoryGirl.create(:user) }
-  let(:controller) { Employers::EmployerProfilesController.new }
-  let(:employer_profile) { FactoryGirl.create(:employer_profile) }
-
-  context "user has no person" do
-    it "should redirect you to new" do
-      expect(controller).to receive(:redirect_to_new)
-      expect(policy).to receive(:log)
-      policy.authorize_show(employer_profile, controller)
     end
   end
 end

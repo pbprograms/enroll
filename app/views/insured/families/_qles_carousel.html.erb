@@ -1,22 +1,18 @@
 <% if @multiroles %>
-  <div class="module market-selection">
-    <div class="btn-group btn-group-justified">
-      <div class="btn-group">
-        <%=	link_to params.merge(tab: 'home', market: "shop_market_events_without_new_employment") do %>
-          <span type="button" class="btn btn-primary<% if @manually_picked_role == 'shop_market_events_without_new_employment' %> active<% end %>">
-            Employee
+    <div class="module market-selection">
+      <div class="btn-group btn-group-justified">
+        <div class="btn-group">
+          <span type="button" class="btn btn-primary<% if @manually_picked_role == 'shop_market_events' %> active<% end %>">
+            <%=	link_to "Employee", family_account_path(tab: 'home', market: "shop_market_events") %>
           </span>
-        <% end %>
-      </div>
-      <div class="btn-group">
-        <%=	link_to params.merge(tab: 'home', market: "individual_market_events") do %>
+        </div>
+        <div class="btn-group">
           <span type="button" class="btn btn-primary<% if @manually_picked_role == 'individual_market_events' %> active<% end %>">
-            Individual
+            <%=	link_to "Individual", family_account_path(tab: 'home', market: "individual_market_events") %>
           </span>
-        <% end %>
+        </div>
       </div>
     </div>
-  </div>
 <% end %>
 <div id="carousel-qles" class="carousel slide" data-ride="carousel">
   <h5>TOP LIFE CHANGES</h5>

@@ -17,9 +17,7 @@
                 </div>
                 <ul class="col-xs-8 nav navbar-nav nav-info navbar-left brd-left">
                   <li class="header-text">
-                    <a>
-                      <%= get_header_text(controller_name) %>
-                    </a>
+                    <%= get_header_text(controller_name) %>
                   </li>
                 </ul>
               </div>
@@ -59,7 +57,7 @@
                             <span class="dark-grey">My ID: <%= truncate(current_user.try(:person).try(:hbx_id).upcase, length: 8, omission: '') %>&nbsp;&nbsp;</span>
                           <% end %>
                         </li>
-                        <h4><%= user_first_name_last_name_and_suffix %></h4>
+                        <h4><%= user_full_name.titleize %></h4>
                       </div>
                     </ul>
                   <% end %>
@@ -73,14 +71,10 @@
   </nav>
 </div>
 
-
 <% if user_signed_in? %>
-    <script>
-
-      //initLoad header variable    
-      var initLoad;
-      // check time until logout
-      function check_time_until_logout(){
+  <script>
+    // check time until logout
+    function check_time_until_logout(){
       $.ajax({
         url: '/check_time_until_logout',
         type: 'GET',
@@ -89,18 +83,10 @@
         error: function(response){
         }
       });
-      }
-    
-     //initLoad variable will ensure setTimeout function is only ran once when header file is loaded 
-
-     if (typeof initLoad === 'undefined')
-     {
-      setTimeout(check_time_until_logout, 87000);
-      initLoad = '';
-     }
-    </script>
+    }
+    setTimeout(check_time_until_logout, 87000);
+  </script>
 <% end %>
-
 <script>
   if (bowser.msie && bowser.version <= 8 || bowser.chrome && bowser.version <= 28 || bowser.firefox && bowser.version <= 22) {
     $('body').before('<div id="modal-wrapper"></div>')

@@ -185,15 +185,15 @@ class User
   end
 
   def has_employee_role?
-    person && person.employee_roles.any?
+    has_role?(:employee)
   end
 
   def has_consumer_role?
-    person && person.consumer_role
+    has_role?(:consumer)
   end
 
   def has_employer_staff_role?
-    person && person.has_active_employer_staff_role?
+    has_role?(:employer_staff)
   end
 
   def has_broker_agency_staff_role?

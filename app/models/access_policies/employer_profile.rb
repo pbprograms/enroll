@@ -1,7 +1,5 @@
 module AccessPolicies
-
   class EmployerProfile
-    include Acapi::Notifiers
     attr_accessor :user
 
     def initialize(user)
@@ -11,15 +9,9 @@ module AccessPolicies
     def authorize_show(employer, controller)
       return(true) if user.has_hbx_staff_role? || is_broker_for_employer?(employer.id)
       person = user.person
-      unless person
-        log("AccessPolicies #3736 user:#{user.email}", {:severity => "error"})
-        controller.redirect_to_new
-        return
-      end
-      return(true) if user.has_hbx_staff_role? || is_broker_for_employer?(employer.id)
 
       if person.employer_staff_roles.length > 0
-        ep_ids = person.employer_staff_roles.map(&:employer_profile_id).map(&:to_s)
+        ep_ids = user.person.employer_staff_roles.map(&:employer_profile_id).map(&:to_s)
         if !ep_ids.include?(employer.id.to_s)
           controller.redirect_to_first_allowed
         end
@@ -48,12 +40,6 @@ module AccessPolicies
         employers = broker_agency_profiles.map { |bap| ::EmployerProfile.find_by_broker_agency_profile(bap) }.flatten
       end
       employers.map(&:id).map(&:to_s).include?(employer_id.to_s)
-    end
-
-    def authorize_edit(employer_profile, controller)
-      return true if @user.has_hbx_staff_role? || is_broker_for_employer?(employer_profile.id)
-      return true if Person.staff_for_employer(employer_profile).include?(@user.person)
-      controller.redirect_to_new and return
     end
   end
 end

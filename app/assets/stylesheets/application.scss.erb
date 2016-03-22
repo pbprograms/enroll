@@ -15,7 +15,6 @@
  *= require bootstrap-theme
  *= require bootstrap.min
  *= require bootstrap-multiselect
- *= require jquery.autocomplete
  *= require component
  *= require custom
  *= require open_sans
@@ -33,38 +32,8 @@
  *= require bootstrap-slider
  *= require_self
  */
-
-.container > .col-xs-12 > .row > .alert.alert-notice {
-  margin-top: 2.5%;
-  margin-bottom: 0;
-}
- .registrations {
-   .actions {
-     .btn {
-       margin-left: auto;
-       margin-right: auto;
-       margin: 0 auto;
-       display: block;
-       margin-bottom: 5px;
-     }
-     span {
-       display: block;
-       text-align: center;
-     }
-
-   }
-   .email-help {
-     font-size: 14px;
-   }
-
- }
-
 .clear {
   clear: both;
-}
-.cna {
-  cursor: not-allowed;
-  display: none;
 }
 .dn {
   display: none;
@@ -94,13 +63,6 @@
  .b {
    border: solid 1px #d5d5d5;
  }
- .brz {
-   border-radius: 0;
- }
- .br-default {
-  border-radius: 6px;
- }
-
  .inv {
    visibility: hidden;
  }
@@ -121,17 +83,6 @@
      padding: 15px 0;
    }
  }
- .dir {
-   margin-top: 0;
- }
- .view-more {
-   white-space: nowrap;
- }
-img {
-  &.full-width {
-    width: 100%;
-  }
-}
  .btn, button {
    &.btn-trans {
      border: solid 1px #b2b2b2;
@@ -212,10 +163,6 @@ img {
  .empty-box {
    padding: 10px 10px;
    border: solid 1px #d5d5d5;
-   &.important {
-     background-color: #fcf8e3;
-
-   }
    .fa {
      &.fa-flag {
        color: #F9BB33;
@@ -379,6 +326,22 @@ img {
     color: #007bc4;
 }
 
+
+.asc::before {
+  font-family: FontAwesome;
+   content: "\f062";
+   display: inline-block;
+   padding-right: 3px;
+   vertical-align: middle;
+}
+
+.desc::before {
+  font-family: FontAwesome;
+  content: "\f063";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+}
 // phasing out out styles
 
 // new radio style
@@ -435,20 +398,4 @@ img {
   cursor: pointer;
   outline:0;
   float: right;
-}
-
-.asc::before {
-  font-family: FontAwesome;
-   content: "\f062";
-   display: inline-block;
-   padding-right: 3px;
-   vertical-align: middle;
-}
-
-.desc::before {
-  font-family: FontAwesome;
-   content: "\f063";
-   display: inline-block;
-   padding-right: 3px;
-   vertical-align: middle;
 }

@@ -1,12 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "employers/employer_profiles/my_account/_home_tab.html.erb" do
-  context "employer profile dashboard with current plan year" do
+  context "employer profile dashboard" do
 
     let(:start_on){TimeKeeper.date_of_record.beginning_of_year}
     let(:end_on){TimeKeeper.date_of_record.end_of_year}
-    let(:end_on_negative){ TimeKeeper.date_of_record.beginning_of_year - 2.years }
-
 
     def new_organization
       instance_double(
@@ -118,6 +116,7 @@ RSpec.describe "employers/employer_profiles/my_account/_home_tab.html.erb" do
         dental_plan_option_kind: 'single_plan',
         elected_dental_plan_ids: [:dental_reference_plan_id, :dental_reference_plan_id],
         elected_dental_plans: [reference_plan_1]
+
 
         )
     end
@@ -245,27 +244,6 @@ RSpec.describe "employers/employer_profiles/my_account/_home_tab.html.erb" do
       end
     end
 
-    it "should not display minimum participation requirement" do
-        assign :end_on, end_on_negative
-        expect(rendered).to_not match(/or more needed by/i)
-    end
-
-  end
-
-  context "employer profile without current plan year" do
-    let(:employer_profile){ FactoryGirl.create(:employer_profile) }
-
-    before :each do
-      assign :employer_profile, employer_profile
-      render partial: "employers/employer_profiles/my_account/home_tab"
-    end
-
-    it "should not display employee enrollment information" do
-      expect(rendered).to_not match(/Employee Enrollments and Waivers/i)
-    end
-
-    it "should display a link to download employer guidance pdf" do
-      expect(rendered).to have_selector(".icon-left-download", text: /Download Step-by-Step Instructions/i)
     it "should display a link to custom dental plans modal" do
       expect(rendered).to have_selector("a", text: "View Plans")
     end

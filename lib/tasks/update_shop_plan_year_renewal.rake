@@ -54,23 +54,58 @@ namespace :update_shop do
   desc "Auto renew employees enrollments"
   task :family_enrollment_renewal => :environment do
 
-    effective_date = Date.new(2015,4,1)
+    # employers = {
+    #   "RehabFocus LLC" => "711024079",
+    #   "Hooks Solutions LLC" => "331138193",
+    #   "Don Ciccio & Figli" => "263057381",
+    #   "Elevate Interval Fitness LLC" => "463256626",
+    #   "Garner & Associates LLC" => "273578793",
+    #   "Set Sports Physical Therapy PLLC" => "010887598",
+    #   "ICWA" => "131621044",
+    #   "Game Change LLC" => "460937444",
+    #   "NSight365 LLC" => "465732698",
+    #   "The New LeDroit Park Building Company" => "454467977",
+    #   "Hattie Ruttenberg" => "133712482",
+    #   "Cap 8 Doors & Hardware" => "455162389",
+    #   "District Restaurant Group" => "274667942",
+    #   "GWHCC" => "223860377",
+    #   "Annie's Ace Hardware" => "272665426",
+    #   "Arturo Ardila-Gomez" => "451474721",
+    #   "Morales Public Relations" => "462817580",
+    #   "Alter Modus International Corporation" => "260376753",
+
+    #   # "Arab Center Washington DC" => "464736138",
+    #   # "ADW Capital Management, LLC" => "471516657",
+
+    #   # "Member-US House of Rep." => "536002522",
+    #   # "STAFF US House of Representatives" => "536002523",
+    #   # "United States Senate" => "536002558",
+    # }
+
+    effective_date = Date.new(2015,3,1)
     organizations = Organization.all_employers_by_plan_year_start_on(effective_date)
 
     employers = organizations.map(&:employer_profile).inject({}) do |employers, profile|
       employers[profile.legal_name] = profile.fein
       employers
     end
+
+
+    employer_feins = []
+    CSV.foreach("#{Rails.root.to_s}/Mar2016PassiveRenewals-GlueEnrollCountSame.csv") do |row|
+       employer_feins << row[0]
+    end
     
     employer_changed_count = 0
     employers.each do |name, fein|
+        puts "Processing employer: #{name}"
         employer = EmployerProfile.find_by_fein(fein)
-        puts "Processing employer: #{name} -- renewing published #{employer.plan_years.renewing_published_state.any?} --census employees - #{employer.census_employees.non_terminated.size}"
-
         if employer.blank?
           puts "  ** employer not found"
           next
         end
+
+        next unless employer_feins.include?(employer.fein)
 
         changed_count = 0
         family_missing = 0
@@ -128,9 +163,30 @@ namespace :update_shop do
 
         employer_changed_count += 1
 
-        renewing_published_plan_year = employer.plan_years.renewing_published_state.first
-        renewing_published_plan_year.advance_date! if renewing_published_plan_year && renewing_published_plan_year.may_advance_date?
+        # families = employer.census_employees.inject([]) do |families, ce|
+        #   person = Person.where(encrypted_ssn: Person.encrypt_ssn(ce.ssn)).first
+        #   if person.blank?
+        #     families
+        #   else
+        #     families << person.primary_family
+        #   end
+        # end
 
+        # changed_count = 0
+
+        # families.compact.each do |family|
+        #   if family.enrollments.any?
+        #     puts "  renewing: #{family.primary_family_member.full_name}"
+        #     factory = Factories::FamilyEnrollmentRenewalFactory.new
+        #     factory.family = family
+        #     factory.renew
+
+        #     changed_count += 1
+        #     puts "  renewed: #{family.primary_family_member.full_name}"
+        #   else
+        #     puts "  no active enrollments for: #{family.primary_family_member.full_name}"
+        #   end
+        # end
 
       puts "Processed #{employer.census_employees.non_terminated.count} census employees, renewed #{changed_count} families, missing #{family_missing} families"
     end

@@ -126,7 +126,6 @@ Rails.application.routes.draw do
       get :search, on: :collection
       get :privacy, on: :collection
       post :match, on: :collection
-      post :build, on: :collection
       get :ridp_agreement, on: :collection
       get :immigration_document_options, on: :collection
       ##get :privacy, on: :collection
@@ -156,15 +155,10 @@ Rails.application.routes.draw do
   end
 
   namespace :employers do
-    post 'search', to: 'employers#search'
     root 'employer_profiles#new'
 
     resources :premium_statements, :only => [:show]
-    resources :employer_staff_roles, :only => [:create, :destroy] do
-      member do
-        get :approve
-      end
-    end
+
     #TODO REFACTOR
     resources :people do
       collection do
@@ -223,7 +217,7 @@ Rails.application.routes.draw do
   end
 
   # match 'thank_you', to: 'broker_roles#thank_you', via: [:get]
-  match 'broker_registration', to: 'broker_agencies/broker_roles#new_broker_agency', via: [:get]
+  match 'broker_registration', to: 'broker_agencies/broker_roles#new_broker', via: [:get]
 
   namespace :carriers do
     resources :carrier_profiles do

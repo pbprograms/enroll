@@ -18,8 +18,9 @@ RSpec.describe "employers/employer_profiles/_employer_form.html.erb" do
   end
 
   it "should show person info" do
-    expect(rendered).to match /Point of Contact/
-    expect(rendered).to match /Employer Information/
-    expect(rendered).to match /Office Locations/
+    expect(rendered).to match /Personal Information/
+    expect(rendered).to have_selector("input[name='first_name']")
+    expect(rendered).to have_selector("input[name='last_name']")
+    expect(rendered).to have_selector("input[name='dob']")
   end
 end

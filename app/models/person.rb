@@ -51,7 +51,7 @@ class Person
 
   field :is_active, type: Boolean, default: true
   field :updated_by, type: String
-  field :no_ssn, type: String #ConsumerRole TODO / Enumeration is from the form wtf?
+  field :no_ssn, type: String #ConsumerRole TODO TODOJF
   # Login account
   belongs_to :user
 
@@ -178,8 +178,8 @@ class Person
   scope :broker_role_decertified,   -> { where("broker_role.aasm_state" => { "$eq" => :decertified })}
   scope :broker_role_denied,        -> { where("broker_role.aasm_state" => { "$eq" => :denied })}
   scope :by_ssn,                    ->(ssn) { where(encrypted_ssn: Person.encrypt_ssn(ssn)) }
-  scope :matchable,                 ->(ssn, dob, last_name) { where(encrypted_ssn: Person.encrypt_ssn(ssn), dob: dob, last_name: last_name) }
   scope :unverified_persons,        -> {Person.in(:'consumer_role.aasm_state'=>['verifications_outstanding', 'verifications_pending'])}
+  scope :matchable,                 ->(ssn, dob, last_name) { where(encrypted_ssn: Person.encrypt_ssn(ssn), dob: dob, last_name: last_name) }
 
 
 #  ViewFunctions::Person.install_queries
@@ -324,16 +324,6 @@ class Person
     @full_name = [name_pfx, first_name, middle_name, last_name, name_sfx].compact.join(" ")
   end
 
-  def first_name_last_name_and_suffix
-    [first_name, last_name, name_sfx].compact.join(" ")
-    case name_sfx
-      when "ii" ||"iii" || "iv" || "v"
-        [first_name.capitalize, last_name.capitalize, name_sfx.upcase].compact.join(" ")
-      else
-        [first_name.capitalize, last_name.capitalize, name_sfx].compact.join(" ")
-      end
-  end
-
   def age_on(date)
     age = date.year - dob.year
     if date.month < dob.month || (date.month == dob.month && date.day < dob.day)
@@ -435,23 +425,15 @@ class Person
   end
 
   def has_active_employee_role?
-    active_employee_roles.any?
+    employee_roles.present? and employee_roles.active.present?
   end
 
   def active_employee_roles
-    employee_roles.select{|employee_role| employee_role.census_employee && employee_role.census_employee.is_active? }
-  end
-
-  def has_active_employer_staff_role?
-    employer_staff_roles.present? and employer_staff_roles.active.present?
-  end
-
-  def active_employer_staff_roles
-    employer_staff_roles.present? ? employer_staff_roles.active : []
+    employee_roles.present? ? employee_roles.active : []
   end
 
   def has_multiple_roles?
-    consumer_role.present? && active_employee_roles.present?
+    consumer_role.present? && employee_roles.present?
   end
 
   def residency_eligible?
@@ -561,59 +543,6 @@ class Person
                          ).selector
                )
     end
-
-    def staff_for_employer(employer_profile)
-      self.where(:employer_staff_roles => {
-        '$elemMatch' => {
-            employer_profile_id: employer_profile.id,
-            :aasm_state => :is_active
-        }
-        })
-    end
-
-    def staff_for_employer_including_pending(employer_profile)
-      self.where(:employer_staff_roles => {
-        '$elemMatch' => {
-            employer_profile_id: employer_profile.id,
-            :aasm_state.ne => :is_closed
-        }
-        })
-    end
-
-    # Adds employer staff role to person
-    # Returns status and message if failed
-    # Returns status and person if successful
-    def add_employer_staff_role(first_name, last_name, dob, email, employer_profile)
-      person = Person.where(first_name: /^#{first_name}$/i, last_name: /^#{last_name}$/i, dob: dob)
-
-      return false, 'Person count too high, please contact HBX Admin' if person.count > 1
-      return false, 'Person does not exist on the HBX Exchange' if person.count == 0
-
-      employer_staff_role = EmployerStaffRole.create(person: person.first, employer_profile_id: employer_profile._id)
-      employer_staff_role.save
-      return true, person.first
-    end
-
-    # Sets employer staff role to inactive
-    # Returns false if person not found
-    # Returns false if employer staff role not matches
-    # Returns true is role was marked inactive
-    def deactivate_employer_staff_role(person_id, employer_profile_id)
-
-      begin
-        person = Person.find(person_id)
-      rescue
-        return false, 'Person not found'
-      end
-      if role = person.employer_staff_roles.detect{|role| role.is_active? && role.employer_profile_id.to_s == employer_profile_id.to_s}
-        role.update_attributes!(:aasm_state => :is_closed)
-        return true, 'Employee Staff Role is inactive'
-      else
-        return false, 'No matching employer staff role'
-      end
-    end
-
-
   end
 
   # HACK
@@ -694,8 +623,6 @@ class Person
     agent = self.csr_role || self.assister_role || self.broker_role || self.hbx_staff_role
     !!agent
   end
-
-
 
   private
   def is_ssn_composition_correct?

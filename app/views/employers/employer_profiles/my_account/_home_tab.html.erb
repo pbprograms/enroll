@@ -35,12 +35,11 @@
           -->
           <%= render 'employers/employer_profiles/my_account/enrollment_progress_bar' %>
 
+
         <div class="information">
           <strong><%=  @current_plan_year.total_enrolled_count %></strong> out of <strong><%= @current_plan_year.eligible_to_enroll_count %></strong> have enrolled or waived coverage<br/>
           <% if @current_plan_year.start_on.to_date.month != 1 %>
-            <% if TimeKeeper.date_of_record.to_date <= @current_plan_year.open_enrollment_end_on.to_date %>
-              <strong><%= @current_plan_year.additional_required_participants_count.to_i %></strong> or more needed by <%= @current_plan_year.open_enrollment_end_on.to_date.to_formatted_s :long_ordinal %> to meet minimum requirement
-            <% end %>
+          <strong><%= @current_plan_year.additional_required_participants_count.to_i %></strong> or more needed by <%= @current_plan_year.open_enrollment_end_on.to_date.to_formatted_s :long_ordinal %> to meet minimum requirement
           <% end %>
         </div>
       </div>
@@ -112,9 +111,7 @@
           </td>
           <td>
             <p>
-              <% if bg.effective_on_kind == 'date_of_hire' && bg.effective_on_offset == 0 %>
-                <%= "#{bg.effective_on_kind.humanize}" %>
-              <% elsif bg.effective_on_kind == 'first_of_month' && bg.effective_on_offset == 0 %>
+              <% if bg.effective_on_offset == 0 %>
                 First of the month following or coinciding with date of hire
               <% else %>
                 <%= "#{bg.effective_on_kind.humanize} following #{bg.effective_on_offset} days" %>
@@ -348,7 +345,7 @@
 
     <% end %>
     <% else %>
-    <%= render partial: 'employers/employer_profiles/my_account/employer_welcome' %>
+    <h4>You have not yet published a plan year. Once you do, it will display here. To make your first plan year now, <%= link_to "click here", new_employers_employer_profile_plan_year_path(@employer_profile, tab: 'benefits') %>.</h4>
     <% end %>
   </div>
 </div>

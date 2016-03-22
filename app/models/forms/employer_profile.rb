@@ -18,15 +18,15 @@ module Forms
       nil
     end
 
-    def create_employer_staff_role(current_user, employer_profile, existing_company)
+    def create_employer_staff_role(current_user, employer_profile)
       person.user = current_user
-      person.employer_staff_roles << EmployerStaffRole.new(person: person, :employer_profile_id => employer_profile.id, is_owner: true, aasm_state: (existing_company ? 'is_applicant': 'is_active'))
+      person.employer_staff_roles << EmployerStaffRole.new(person: person, :employer_profile_id => employer_profile.id, is_owner: true)
       current_user.roles << "employer_staff" unless current_user.roles.include?("employer_staff")
       current_user.save!
       person.save!
     end
 
-    def save(current_user, employer_profile_id)
+    def save(current_user)
       return false unless valid?
       begin
         match_or_create_person(current_user)
@@ -38,28 +38,23 @@ module Forms
         errors.add(:base, "a person matching the provided personal information has already been claimed by another user.  Please contact HBX.")
         return false
       end
-      if !employer_profile_id.present?
-        existing_org = nil
-        begin
-          existing_org = check_existing_organization
-        rescue OrganizationAlreadyMatched
-          errors.add(:base, "a staff role for this organization has already been claimed.")
-          return false
-        end
-        employer_profile = nil
-        if existing_org
-          update_organization(existing_org)
-          @employer_profile = existing_org.employer_profile
-        else
-          org = create_new_organization
-          org.save!
-          @employer_profile = org.employer_profile
-        end
+      existing_org = nil
+      begin
+        existing_org = check_existing_organization
+      rescue OrganizationAlreadyMatched
+        errors.add(:base, "a staff role for this organization has already been claimed.")
+        return false
+      end
+      employer_profile = nil
+      if existing_org
+        update_organization(existing_org)
+        @employer_profile = existing_org.employer_profile
       else
-        #TODOJF TODO Change the variable name to organization id or fix the employer_profile.js
-        @employer_profile = Organization.find(employer_profile_id).employer_profile
-      end    
-      create_employer_staff_role(current_user, @employer_profile, employer_profile_id.present?)
+        org = create_new_organization
+        org.save!
+        @employer_profile = org.employer_profile
+      end
+      create_employer_staff_role(current_user, @employer_profile)
       true
     end
 

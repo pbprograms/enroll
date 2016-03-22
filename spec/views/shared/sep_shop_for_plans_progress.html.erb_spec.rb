@@ -80,11 +80,11 @@ describe "shared/_sep_shop_for_plans_progress.html.haml" do
     end
 
     it "should have confirm button" do
-      expect(rendered).to have_selector('a', text: /Continue/i)
+      expect(rendered).to have_selector('a', text: /Continue/)
     end
 
     it "should have link to family home page" do
-      expect(rendered).to have_selector('a[href="/families/home"]', text: 'CONTINUE')
+      expect(rendered).to have_selector('a[href="/families/home"]', text: 'Continue')
     end
 
   end

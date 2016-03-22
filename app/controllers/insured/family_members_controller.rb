@@ -116,13 +116,9 @@ private
 
   def init_address_for_dependent
     if @dependent.same_with_primary == "true"
-      @dependent.addresses = [Address.new(kind: 'home'), Address.new(kind: 'mailing')]
+      @dependent.addresses = Address.new(kind: 'home')
     elsif @dependent.addresses.is_a? ActionController::Parameters
-      addresses = []
-      @dependent.addresses.each do |k, address|
-        addresses << Address.new(address.permit!)
-      end
-      @dependent.addresses = addresses
+      @dependent.addresses = Address.new(@dependent.addresses.try(:permit!))
     end
   end
 end

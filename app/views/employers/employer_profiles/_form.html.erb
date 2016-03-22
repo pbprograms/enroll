@@ -6,31 +6,14 @@
 	<p class="starter">
 		Before we get started, we need to confirm the primary point of contact for your business. Please confirm that the name and email address listed below are correct, update the information or provide the name and email address for your primary point of contact. When you're finished, select 'Confirm'.
 	</p>
-	<p>
-	    Please enter the information for your company.   If you wish to become a staff point of contact for an existing company please select the company name.  This will be approved by the existing point of contact for the company.
-	</p>
 	<br/>
 </div>
 	<%= render "shared/organization_staff_search", f: f %>
+
 	<br>
 	<div class="row">
 		<div class="col-md-9 col-sm-9 col-xs-12">
-      <h4>
-        <div class="col-md-6 col-sm-6 col-xs-12 col-6" >New Employer Information
-        </div>
-        <div class="col-md-6 col-sm-6 col-xs-12 col-6">
-          <div class="row search-dropdown-wrapper">
-            <div class="col-md-12 col-sm-12 col-xs-12">
-              <div style='float: left'>Staff for Company</div>
-              <div class="col-md-6 col-sm-6 col-xs-12 input-group input-no-pd">
-                <input type="hidden" name="employer_id" id="employer_id" />
-                <input type="text" name="employer_name" id="employer_name" placeholder="Name" class="typeahead form-control" style='width:160px'/>
-              </div>
-            </div>
-          </div>
-        </div>
-      </h4>
-       <br/> <br/>
+			<h4>Employer Information</h4>
 			<div class="row no-buffer row-form-wrapper">
 				<%= render "shared/organizations/entity_name_and_type_fields", f: f, entity_kinds: Organization::ENTITY_KINDS %>
 			</div><br>

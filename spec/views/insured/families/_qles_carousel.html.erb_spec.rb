@@ -46,4 +46,23 @@ RSpec.describe "insured/families/_qles_carousel.html.erb" do
   it "shouldn't display Individual button for person without multiple roles" do
     expect(rendered).not_to match(/Individual/)
   end
+
+  context "QLE buttons for person with both roles" do
+    before :each do
+      assign(:multiroles, true)
+      render "insured/families/qles_carousel"
+    end
+
+    it "contain buttons group for QLE roles" do
+      expect(rendered).to have_selector('div.market-selection')
+    end
+
+    it "should have Employee button for person with multiple roles" do
+      expect(rendered).to match(/Employee/)
+    end
+
+    it "should have Individual button for person with multiple roles" do
+      expect(rendered).to match(/Individual/)
+    end
+  end
 end

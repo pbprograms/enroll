@@ -20,6 +20,7 @@ FactoryGirl.define do
     dob Date.new(1980, 1, 1)
   end
 
+
   factory(:consumer_role_object, {class: ::ConsumerRole}) do
     is_applicant true
     person { FactoryGirl.create(:consumer_role_person) }

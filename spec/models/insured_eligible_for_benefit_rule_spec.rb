@@ -53,10 +53,8 @@ RSpec.describe InsuredEligibleForBenefitRule, :type => :model do
       create_tax_household_for_mikes_family
       @consumer_role = mike.consumer_role
     end
-
-    let(:hbx_profile) { FactoryGirl.create(:hbx_profile) }
-    let(:benefit_package) { hbx_profile.benefit_sponsorship.benefit_coverage_periods.first.benefit_packages.first }
-    let(:benefit_package_with_current_date_start_on) { FactoryGirl.build(:benefit_package) }
+    let(:benefit_coverage_period) {FactoryGirl.build(:benefit_coverage_period, start_on: TimeKeeper.date_of_record)}
+    let(:benefit_package) {FactoryGirl.build(:benefit_package, benefit_coverage_period: benefit_coverage_period)}
 
     it "should return true when csr_kind is blank" do
       rule = InsuredEligibleForBenefitRule.new(ConsumerRole.new, benefit_package)
@@ -64,8 +62,7 @@ RSpec.describe InsuredEligibleForBenefitRule, :type => :model do
     end
 
     it "should return true when cost_sharing is blank" do
-      allow(benefit_package_with_current_date_start_on).to receive(:start_on).and_return(TimeKeeper.date_of_record)
-      rule = InsuredEligibleForBenefitRule.new(@consumer_role, benefit_package_with_current_date_start_on )
+      rule = InsuredEligibleForBenefitRule.new(@consumer_role, FactoryGirl.build(:benefit_package))
       expect(rule.is_cost_sharing_satisfied?).to eq true
     end
 
@@ -153,8 +150,7 @@ RSpec.describe InsuredEligibleForBenefitRule, :type => :model do
   end
 
   context "is_lawful_presence_status_satisfied?" do
-    let(:hbx_profile) { FactoryGirl.create(:hbx_profile) }
-    let(:benefit_package) { hbx_profile.benefit_sponsorship.benefit_coverage_periods.first.benefit_packages.first }
+    let(:benefit_package) {FactoryGirl.create(:benefit_package)}
     let(:benefit_eligibility_element_group) {FactoryGirl.build(:benefit_eligibility_element_group)}
     let(:role) {FactoryGirl.create(:consumer_role_object)}
     let(:rule) {InsuredEligibleForBenefitRule.new(role, benefit_package)}

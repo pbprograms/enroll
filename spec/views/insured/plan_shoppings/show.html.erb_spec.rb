@@ -13,8 +13,7 @@ RSpec.describe "insured/show" do
   let(:person) {FactoryGirl.create(:person, :first_name=> 'wilma', :last_name=>'flintstone')}
   let(:current_broker_user) { FactoryGirl.create(:user, :roles => ['broker_agency_staff'],
  		:person => broker_person) }
-  let(:consumer_role){FactoryGirl.create(:consumer_role)}
-  let(:consumer_user){FactoryGirl.create(:user, :roles => ['consumer'], :person => consumer_role.person)}
+  let(:consumer_user){FactoryGirl.create(:user, :roles => ['consumer'], :person => person)}
 
   before :each do
     allow(hbx_enrollment).to receive(:humanized_dependent_summary).and_return(2)
@@ -53,10 +52,13 @@ RSpec.describe "insured/show" do
     render :template => "insured/plan_shoppings/show.html.erb"
     expect(rendered).to have_selector('p', text:  @person.full_name)
     expect(rendered).to have_selector('p', text:  @benefit_group.plan_year.employer_profile.legal_name)
+
   end
 
   it 'should not identify Broker control in the header when signed in as Consumer' do
     sign_in consumer_user
+
+
     render :template => 'layouts/_header.html.erb'
     expect(rendered).to_not match(/I'm a Broker/)
     expect(rendered).to match(/Individual and Family/i)
