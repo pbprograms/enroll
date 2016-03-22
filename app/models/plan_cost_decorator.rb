@@ -19,7 +19,7 @@ class PlanCostDecorator < SimpleDelegator
     elsif @benefit_group.class == Quote
       benefit_group.start_on
     else
-      TimeKeeper.date_of_record.beginning_of_year
+      TimeKeeper.date_of_record.beginning_of_year + 5.months
     end
   end
 

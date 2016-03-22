@@ -47,7 +47,6 @@ class QuoteReferencePlan
       self.lowest_cost_plan_id  = plans_by_cost.first.id
       self.highest_cost_plan_id = plans_by_cost.last.id
     end
-
   end
 
 end

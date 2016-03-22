@@ -3,6 +3,7 @@ class QuoteMember
   include Mongoid::Timestamps
   include MongoidSupport::AssociationProxies
 
+  GENDER_KINDS = %W(male female)
 
   GENDER_KINDS = %W(male female)
 
@@ -20,14 +21,13 @@ class QuoteMember
   field :name_sfx, type: String
   field :gender, type: String
 
-
   validates_presence_of :dob
 
   validates :gender, allow_blank: true, inclusion: { in: GENDER_KINDS, message: "must be selected" }
   validates :employee_relationship, allow_blank: false, inclusion: { in: EMPLOYEE_RELATIONSHIP_KINDS, message: "must be selected" }
 
   embedded_in :quote_households
-
+  
   # age_on method returns the age of the member as of specific date (input parameter)
   def age_on(date)
     age = date.year - dob.year
