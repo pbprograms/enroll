@@ -266,6 +266,8 @@ RSpec.describe "employers/employer_profiles/my_account/_home_tab.html.erb" do
 
     it "should display a link to download employer guidance pdf" do
       expect(rendered).to have_selector(".icon-left-download", text: /Download Step-by-Step Instructions/i)
+    end
+
     it "should display a link to custom dental plans modal" do
       expect(rendered).to have_selector("a", text: "View Plans")
     end

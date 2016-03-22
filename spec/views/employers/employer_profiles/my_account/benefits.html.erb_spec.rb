@@ -61,6 +61,8 @@ RSpec.describe "employers/employer_profiles/my_account/_benefits.html.erb" do
     allow(benefit_group).to receive(:effective_on_offset).and_return 60
     render "employers/employer_profiles/my_account/benefits"
     expect(rendered).to match /first of month/i
+  end
+
   it "should display a link to custom dental plans modal" do
     render "employers/employer_profiles/my_account/benefits"
     expect(rendered).to have_selector("a", text: "View Plans")
