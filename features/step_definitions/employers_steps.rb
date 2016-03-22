@@ -312,12 +312,15 @@ And(/^.+ should be able to enter plan year, benefits, relationship benefits with
   fill_in "plan_year[benefit_groups_attributes][0][relationship_benefits_attributes][1][premium_pct]", :with => 50
   fill_in "plan_year[benefit_groups_attributes][0][relationship_benefits_attributes][2][premium_pct]", :with => 50
   fill_in "plan_year[benefit_groups_attributes][0][relationship_benefits_attributes][3][premium_pct]", :with => 50
+  page.execute_script "$('#plan_year_benefit_groups_attributes_0_relationship_benefits_attributes_0_premium_pct').change();"
 
   find(:xpath, '//li/label[@for="plan_year_benefit_groups_attributes_0_plan_option_kind_single_carrier"]').click
   find('.carriers-tab a').click
-  find('.reference-plans label').click
+  sleep(2)
+  find('.reference-plan label').click
+  sleep(2)
+  page.execute_script "$('.interaction-click-control-create-plan-year').trigger('click');"
 
-  find('.interaction-click-control-create-plan-year').trigger('click')
 end
 
 And(/^.+ should see a success message after clicking on create plan year button$/) do
