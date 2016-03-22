@@ -1,7 +1,7 @@
-class RelationshipBenefit
+class QuoteRelationshipBenefit
   include Mongoid::Document
 
-  embedded_in :benefit_group, polymorphic: true
+  embedded_in :quote
 
   field :relationship, type: String
   field :premium_pct, type: Float, default: 0.0
@@ -16,6 +16,7 @@ class RelationshipBenefit
   def premium_pct=(new_premium_pct)
     self[:premium_pct] = new_premium_pct.blank? ? 0.0 : new_premium_pct.try(:to_f).try(:round)
   end
+
 
   validates_numericality_of :premium_pct, greater_than_or_equal_to: 0.0, less_than_or_equal_to: 100.0
 end
