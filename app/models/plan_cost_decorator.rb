@@ -16,8 +16,10 @@ class PlanCostDecorator < SimpleDelegator
     #binding.pry
     if @benefit_group.present? && @benefit_group.class != Quote
       benefit_group.plan_year.start_on
+    elsif @benefit_group.class == Quote
+      benefit_group.start_on
     else
-      TimeKeeper.date_of_record.beginning_of_year + 5.months
+      TimeKeeper.date_of_record.beginning_of_year
     end
   end
 
