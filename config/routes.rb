@@ -241,6 +241,10 @@ Rails.application.routes.draw do
         get :messages
         get :staff_index
         get :agency_messages
+        get :build_employee_roster
+        post :build_employee_roster
+        get :upload_employee_roster
+        post :build_plan_year
       end
 
       resources :applicants

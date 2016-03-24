@@ -1,3 +1,5 @@
+require 'csv'
+
 class BrokerAgencies::ProfilesController < ApplicationController
   before_action :check_broker_agency_staff_role, only: [:new, :create]
   before_action :check_admin_staff_role, only: [:index]
@@ -164,7 +166,42 @@ class BrokerAgencies::ProfilesController < ApplicationController
     end
   end
 
+  def build_employee_roster
+    @employee_roster = parse_employee_roster_file 
+  end
+
+  def upload_employee_roster
+
+  end
+
+  def build_plan_year
+    @employee_roster = params[:employee_roster]
+    send_data(csv_for(@employee_roster), filename: "Employee_Roster.csv")
+  end
+
   private
+
+  def parse_employee_roster_file
+    begin
+      CSV.parse(params[:employee_roster_file].read) if params[:employee_roster_file].present?
+    rescue Exception => e
+      redirect_to build_employee_roster_broker_agencies_profiles_path, :flash => { :error => "Unable to parse the csv file" }
+    end
+  end
+
+  def csv_for(employee_roster)
+    (output = "").tap do
+      CSV.generate(output) do |csv|
+        csv << ["FamilyID", "Relationship", "DOB"]
+        employee_roster.each do |id,employee|
+          csv << [  employee[:family_id],
+                    employee[:relationship],
+                    employee[:dob]
+                  ]
+        end
+      end
+    end
+  end
 
   def find_hbx_profile
     @profile = current_user.person.hbx_staff_role.hbx_profile

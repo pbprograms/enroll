@@ -26,4 +26,17 @@ FactoryGirl.define do
       FactoryGirl.create(:broker_agency_profile, organization: organization)
     end
   end
+
+  factory :broker, class: Organization do
+    sequence(:legal_name) {|n| "Broker Agency#{n}" }
+    sequence(:dba) {|n| "Broker Agency#{n}" }
+    sequence(:fein, 200000000)
+    home_page   "http://www.example.com"
+    office_locations  { [FactoryGirl.build(:office_location, :primary),
+                         FactoryGirl.build(:office_location)] }
+    
+    before :create do |organization, evaluator|
+      organization.broker_agency_profile = FactoryGirl.build :broker_agency_profile, organization: organization
+    end
+  end
 end
