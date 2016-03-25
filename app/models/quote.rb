@@ -17,7 +17,7 @@ class Quote
   field :plan_year, type: Integer
   field :start_on, type: Date
   field :broker_agency_profile_id, type: BSON::ObjectId
-  field :quote_results, type: Array, default: []
+
 
 
 
@@ -111,6 +111,7 @@ class Quote
     qm.first_name = "Leonardo"
     qm.last_name = "Schaffert"
     qm.dob = Date.new(1991,1,10)
+
     qm.employee_relationship = "child_under_26"
 
     self.save
