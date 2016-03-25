@@ -17,6 +17,7 @@ class Quote
   field :plan_year, type: Integer
   field :start_on, type: Date
   field :broker_agency_profile_id, type: BSON::ObjectId
+  field :quote_results, type: Array, default: []
 
 
 
@@ -41,7 +42,6 @@ class Quote
     rp1.save
     #reference_plan=("56e6c4e53ec0ba9613008f6d")
 
-
     p = Plan.find(self.quote_reference_plans[0].reference_plan_id)
 
     puts "Calculating details for " + p.name
@@ -55,9 +55,7 @@ class Quote
         rp1.quote_results << pcd.get_family_details_hash
       end
 
-
       self.save
-
   end
 
   def gen_data
@@ -86,7 +84,6 @@ class Quote
     qm.last_name = "Schaffert"
     qm.dob = Date.new(2012,1,10)
     qm.employee_relationship = "child_under_26"
-
 
     qm = qh.quote_members.build
 
