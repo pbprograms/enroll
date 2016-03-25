@@ -50,11 +50,6 @@ class Quote
     #rp1.save
 
 
-
-    self.plan_option_kind = "single_carrier"
-    self.plan_year = 2016
-    self.start_on = Date.new(2016,5,2)
-
     rp1 = self.quote_reference_plans.build(reference_plan_id:  "56e6c4e53ec0ba9613008f6d")
     rp1.set_bounding_cost_plans
     rp1.save
@@ -79,9 +74,13 @@ class Quote
 
   def gen_data
 
+    self.plan_option_kind = "single_carrier"
+    self.plan_year = 2016
+    self.start_on = Date.new(2016,5,2)
+
     build_relationship_benefits
     self.relationship_benefit_for("employee").premium_pct=(70)
-    self.relationship_benefit_for("child_under_26").premium_pct=(70)
+    self.relationship_benefit_for("child_under_26").premium_pct=(100)
 
     qh = self.quote_households.build
 
@@ -124,7 +123,7 @@ class Quote
 
     qm.first_name = "Leonardo"
     qm.last_name = "Schaffert"
-    qm.dob = Date.new(1990,1,10)
+    qm.dob = Date.new(1991,1,10)
     qm.employee_relationship = "child_under_26"
 
     self.save
