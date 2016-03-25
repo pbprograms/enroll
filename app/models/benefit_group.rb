@@ -295,6 +295,7 @@ class BenefitGroup
   def monthly_min_employee_cost
     return 0 if targeted_census_employees.count > 100
     targeted_census_employees.active.collect do |ce|
+      binding.pry
       pcd = PlanCostDecorator.new(reference_plan, ce, self, reference_plan)
       pcd.total_employee_cost
     end.min
