@@ -1,4 +1,4 @@
-<div class="container" id="inbox_provider_form">
+<div class="container">
   <div class="row">
     <div class="col-md-12">
       <h3>Quotes</h3>
@@ -14,12 +14,13 @@
       <br>
 
       <%= form_tag(root_broker_agencies_quotes_path, method: :get) do  %>
-
+      <%= hidden_field_tag 'quote', @quotes.first.id.to_s %>
       <% #select_tag "plans[]", options_from_collection_for_select(@plans, "id", "name"), {id: 'broker_agency_plan_selection',  multiple: "multiple", class: "floatlabel form-control interaction-field-control-broker-agency-languages-spoken" } %>
 
       <div>
         <div class="btn-group" data-toggle="buttons">
           <% @plans.each do |p| %>
+
           <label class="btn btn-sm btn-primary <%= "active" if params['plans'].try(:include?, p.id.to_s) %>">
             <input name="plans[]" <%= "checked" if params['plans'].try(:include?, p.id.to_s) %> type="checkbox" autocomplete="off" value="<%= p.id %>"><%= p.name %>
           </label>
@@ -32,6 +33,38 @@
       <% end %>
     </div>
   </div>
+
+  <br>
+
+  <div>
+    <table border=1>
+      <!--<tr>
+        <td>Plan Name</td><td>Employee Cost</td><td>Employer Contribution</td>
+      </tr>-->
+          <tr><td>Name</td><td>Age</td>
+    <% @quote_results.each do |qr| %>
+      <td width="250" colspan="2"><%= qr[0] %></td>
+    <% end %>
+        </tr>
+    <% @quote_results.first[1].flatten.each_with_index do |qr, index| %>
+      <tr width="250">
+        <td>
+          <%= qr[:first_name] %>
+        </td>
+        <td>
+          <%= qr[:age] %>
+        </td>
+        <% @quote_results.keys.each do |de|
+          #@quote_results['Access PPO Basic'].flatten[index][:employee_cost]
+           %>
+          <td><%= @quote_results[de].flatten[index][:employee_cost] %></td>
+          <td><%= @quote_results[de].flatten[index][:employee_contribution] %></td>
+        <% end %>
+      </tr>
+    <% end %>
+      </table>
+  </div>
+
 </div>
 
 
