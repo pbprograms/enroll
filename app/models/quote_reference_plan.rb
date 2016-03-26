@@ -16,6 +16,9 @@ class QuoteReferencePlan
   field :highest_cost_plan_id, type: BSON::ObjectId
 
 
+  field :quote_results, type: Array, default: []
+
+
   def reference_plan=(new_reference_plan)
     raise ArgumentError.new("expected Plan") unless new_reference_plan.is_a? Plan
     self.reference_plan_id = new_reference_plan._id
@@ -48,6 +51,7 @@ class QuoteReferencePlan
       self.highest_cost_plan_id = plans_by_cost.last.id
 
     end
+
   end
 
 end

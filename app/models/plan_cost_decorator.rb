@@ -16,6 +16,8 @@ class PlanCostDecorator < SimpleDelegator
     #binding.pry
     if @benefit_group.present? && @benefit_group.class != Quote
       benefit_group.plan_year.start_on
+    elsif @benefit_group.class == Quote
+      benefit_group.start_on
     else
       TimeKeeper.date_of_record.beginning_of_year + 5.months
     end
@@ -121,4 +123,10 @@ class PlanCostDecorator < SimpleDelegator
       (sum + employee_cost_for(member)).round(2)
     end).round(2)
   end
+
+  def get_family_details#puts m.first_name + " " + employee_cost_for(m).to_s
+    members.collect{ |m| [m.first_name, m.employee_relationship, m.age_on(TimeKeeper.date_of_record), m.quote_households.id, employee_cost_for(m), employer_contribution_for(m)]}
+
+  end
+
 end
