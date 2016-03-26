@@ -48,12 +48,12 @@ function applySelectric() {
 
 function applyMultiLanguageSelect() {
   $('#broker_agency_language_select').multiselect({
-    nonSelectedText: 'Select Language',
+    nonSelectedText: 'Select Plans',
     maxHeight: 300
   });
   $('#broker_agency_language_select').multiselect('select', 'en', true);
   $('#broker_agency_language_select').on('selectric-init', function(element){
-    $('.language_multi_select .selectric-interaction-field-control-broker-agency-languages-spoken').hide();
+    $('.selectric-interaction-field-control-broker-agency-languages-spoken').hide();
   });
 };
 
