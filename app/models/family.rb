@@ -112,7 +112,7 @@ class Family
   scope :all_tax_households,                  ->{ exists(:"households.tax_households" => true) }
   scope :by_writing_agent_id,                 ->(broker_id){ where(broker_agency_accounts: {:$elemMatch=> {writing_agent_id: broker_id, is_active: true}})}
   scope :by_broker_agency_profile_id,         -> (broker_agency_profile_id) { where(broker_agency_accounts: {:$elemMatch=> {broker_agency_profile_id: broker_agency_profile_id, is_active: true}})}
-  
+
   scope :all_assistance_applying,       ->{ unscoped.exists(:"households.tax_households.eligibility_determinations" => true).order(
                                                    :"households.tax_households.eligibility_determinations.determined_at".desc) }
 
@@ -535,11 +535,24 @@ class Family
   end
 
   def enrollments_for_display
+
+
+Family.collection.aggregate([
+{"$unwind" => '$households'},
+{"$unwind" => '$households.hbx_enrollments'},
+{"$match" => {"households.hbx_enrollments.aasm_state" => "coverage_terminated",
+   "households.hbx_enrollments.terminated_on" => {"$gt" => TimeKeeper.date_of_record.beginning_of_year},
+   "households.hbx_enrollments.effective_on" => {"$lt" => TimeKeeper.date_of_record.beginning_of_year},
+   }},
+{"$project" => {'households.hbx_enrollments._id' => 1}}
+],:allow_disk_use => true)
+
+
     Family.collection.aggregate([
       {"$match" => {'_id' => self._id}},
       {"$unwind" => '$households'},
       {"$unwind" => '$households.hbx_enrollments'},
-      {"$match" => {"aasm_state" => {"$ne" => 'inactive'} }},
+      {"$match" => {"aasm_state" => {"$ne" => 'inactive'},  }},
       {"$sort" => {"households.hbx_enrollments.submitted_at" => -1 }},
       {"$group" => {'_id' => {
                   'year' => { "$year" => '$households.hbx_enrollments.effective_on'},
