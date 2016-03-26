@@ -125,8 +125,20 @@ class PlanCostDecorator < SimpleDelegator
   end
 
   def get_family_details#puts m.first_name + " " + employee_cost_for(m).to_s
-    members.collect{ |m| [m.first_name, m.employee_relationship, m.age_on(TimeKeeper.date_of_record), m.quote_households.id, employee_cost_for(m), employer_contribution_for(m)]}
-
+    members.collect{ |m| [@reference_plan.name, m.first_name, m.employee_relationship, m.age_on(TimeKeeper.date_of_record), m.quote_households.id, employee_cost_for(m), employer_contribution_for(m)]}
   end
+
+  def get_family_details_hash#puts m.first_name + " " + employee_cost_for(m).to_s
+    members.map{ |m|
+      {
+        :plan => @reference_plan.name,
+        :first_name => m.first_name,
+        :employee_relationship => m.employee_relationship,
+        :age => m.age_on(TimeKeeper.date_of_record),
+        :family_id => m.quote_households.id,
+        :employee_cost => employee_cost_for(m),
+        :employee_contribution => employer_contribution_for(m)}}
+  end
+
 
 end

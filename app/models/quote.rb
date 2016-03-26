@@ -68,7 +68,7 @@ class Quote
         puts "Employee Cost " + pcd.total_employee_cost.to_s
         puts "Employer Contribution " + pcd.total_employer_contribution.to_s
 
-        rp1.quote_results << pcd.get_family_details
+        rp1.quote_results << pcd.get_family_details_hash
       end
 
       self.save
