@@ -36,34 +36,52 @@
 
   <br>
 
-  <div>
-    <table border=1>
-      <!--<tr>
-        <td>Plan Name</td><td>Employee Cost</td><td>Employer Contribution</td>
-      </tr>-->
-          <tr><td>Name</td><td>Age</td>
-    <% @quote_results.each do |qr| %>
-      <td width="250" colspan="2"><%= qr[0] %></td>
+
+  <% if @quote_results %>
+
+  <div class="mygrid-wrapper-div">
+    <table width="100%">
+    <tr>
+      <td colspan="2">&nbsp;</td>
+    <%
+    @quote_results.each do |qr| %>
+      <td width="250" colspan="3" class="quote_detail_plan_header"><%= qr[0] %></td>
     <% end %>
-        </tr>
+    </tr>
+
+    <tr style="font-weight: bolder; ">
+      <td class="quote_detail_results_header">Name</td>
+      <td class="quote_detail_results_header">Age</td>
+      <% @quote_results.keys.each do |de| %>
+        <td class="quote_detail_results_header">Employee Cost</td>
+        <td class="quote_detail_results_header">Employer Contr</td>
+        <td class="quote_detail_results_header">Premium</td>
+      <% end %>
+    </tr>
     <% @quote_results.first[1].flatten.each_with_index do |qr, index| %>
-      <tr width="250">
-        <td>
+    <% #binding.pry
+      if index != 0  && @quote_results.first[1].flatten[index][:family_id] != @quote_results.first[1].flatten[index-1][:family_id]
+    %>
+      <tr><td>&nbsp;</td></tr>
+    <% end %>
+
+      <tr>
+        <td class="quote_detail_results">
           <%= qr[:first_name] %>
         </td>
-        <td>
+        <td class="quote_detail_results">
           <%= qr[:age] %>
         </td>
-        <% @quote_results.keys.each do |de|
-          #@quote_results['Access PPO Basic'].flatten[index][:employee_cost]
-           %>
-          <td><%= @quote_results[de].flatten[index][:employee_cost] %></td>
-          <td><%= @quote_results[de].flatten[index][:employee_contribution] %></td>
+        <% @quote_results.keys.each do |de| %>
+          <td class="quote_detail_results"><%= @quote_results[de].flatten[index][:employee_cost] %></td>
+          <td class="quote_detail_results"><%= @quote_results[de].flatten[index][:employee_contribution] %></td>
+          <td class="quote_detail_results"><b><%= @quote_results[de].flatten[index][:total_premium].round(2) %></b></td>
         <% end %>
       </tr>
     <% end %>
       </table>
   </div>
+  <% end %>
 
 </div>
 
