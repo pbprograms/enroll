@@ -259,8 +259,10 @@ Rails.application.routes.draw do
       end
     end
 
-    resource :quotes, only: [:index] do
+    resource :quotes, only: [:index,:new,:create,:save] do
       root 'quotes#index'
+      get :upload_employee_roster
+      post :build_employee_roster
     end
 
   end

@@ -29,6 +29,8 @@ class Quote
 
   embeds_many :quote_relationship_benefits, cascade_callbacks: true
 
+  accepts_nested_attributes_for :quote_households 
+
   def calc
     #plans = Plan.limit(10).where("active_year"=>2016,"coverage_kind"=>"health")
 
@@ -92,6 +94,7 @@ class Quote
 
     qm.first_name = "Tony"
     qm.last_name = "Schaffert"
+    qm.employee_id = 1
     qm.dob = Date.new(1980,7,26)
     qm.employee_relationship = "employee"
 
