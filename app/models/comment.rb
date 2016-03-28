@@ -2,32 +2,26 @@ class Comment
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  before_save :set_priority
+  PRIORITY_KINDS = %w[low normal high]
 
-  PRIORITY_TYPE = %W[low normal high]
-
-  field :content, type: String
-  field :is_priority, type: Boolean, default: false
+  field :text, type: String
   field :priority, type: String, default: "normal"
-  field :user, type: String
 
-  validates_inclusion_of :priority, in: PRIORITY_TYPE, message: "Invalid priority"
-  validates_presence_of :content
+  belongs_to :user
 
-  embedded_in :application_group
-  embedded_in :household
-  embedded_in :person
+  # Enable polymorphic associations
+  embedded_in :commentable, polymorphic: true
 
-  def high?
+  validates_presence_of   :text
+  validates_presence_of   :priority, message: "Choose a priority"
+  validates_inclusion_of  :priority, in: PRIORITY_KINDS, message: "%{value} is not a valid priority kind"
+
+  def priority=(new_priority)
+    write_attribute(:priority, new_priority.to_s.downcase)
+  end
+
+  def is_high_priority?
     priority == "high"
   end
 
-  def low?
-    priority == "low"
-  end
-
-  private
-    def set_priority
-      is_priority = true if high?
-    end
 end
