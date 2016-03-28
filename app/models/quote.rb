@@ -35,6 +35,8 @@ class Quote
 
   embeds_many :quote_relationship_benefits, cascade_callbacks: true
 
+  accepts_nested_attributes_for :quote_households 
+
   def calc
     rp1 = self.quote_reference_plans.build(reference_plan_id:  "56e6c4e53ec0ba9613008f6d")
     rp1.set_bounding_cost_plans
@@ -74,6 +76,7 @@ class Quote
 
     qm.first_name = "Tony"
     qm.last_name = "Schaffert"
+    qm.employee_id = 1
     qm.dob = Date.new(1980,7,26)
     qm.employee_relationship = "employee"
 

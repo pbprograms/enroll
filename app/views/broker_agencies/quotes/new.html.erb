@@ -1,0 +1,76 @@
+	
+	<div class="container">
+	  <div class="row">
+	    <%= link_to 'Add New Employee', "#", class: "btn btn-trans" ,id: "add_employee" %>
+	    <%= link_to 'Upload Employee Roster' , upload_employee_roster_broker_agencies_quotes_path , class: "btn btn-trans" , remote: true  ,id: "upload_employees" %>
+	  </div>
+	  <hr/>
+	  <div class="row">
+	  <!-- <form action="/broker_agencies/profiles/build_plan_year" method="post"> -->
+	  <%=form_tag broker_agencies_quotes_path , :method => "post" do %>
+	  <%= csrf_meta_tags %>
+	    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	      <div class="table-responsive">
+	        <table class="table table-wrapper" style="opacity: 1;">
+	        <thead>
+	          <tr>
+	            <th>Family ID</th>
+	            <th>Relationship</th>
+	            <th>DOB</th>
+	            <th></th>
+	          </tr>
+	        </thead>
+	        <tbody id="table-body">
+	          <% if @employee_roster
+	             @employee_roster.each_with_index do |employee,index|%>
+	            <tr>
+	              <td><%=text_field_tag("employee_roster[#{index}][family_id]" , employee[0], id: "family_id")%></td>
+	              <td><select name="employee_roster[#{index}][employee_relationship]" id="relationship" class="form-control">
+	                <%= options_for_select(['Employee', 'Spouse', 'Domestic partner',
+	                  'Child'], employee[1]) %></select></td>
+	              <td><%=text_field_tag("employee_roster[#{index}][dob]" , employee[2] ,id: "datepicker-#{index}")%></td>
+	              <td><button type="button" id="close_button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
+	            </tr>
+	            <%end%>
+	          <%end%>
+	        </tbody>
+	        </table>
+
+	      </div>
+	    </div>
+	    
+	    <%= link_to 'Download CSV', "#", class: "btn btn-trans" %>
+	    <input type="submit" class="btn btn-trans" value="Save Quote"/>
+	  <%end%>
+	  <hr/>
+	  </div>
+	</div>
+
+	<script type="text/javascript">
+	var counter = 1;
+	var close_handler = function(){
+	    $(this).parent().parent().remove();
+	  };
+
+	var date_handler = function() {
+	    $(this).datepicker();
+	    $(this).datepicker("show");
+	  };
+
+	  $("#upload_employees").click(function(){
+	    $('#myModal').modal('show');
+	  });
+
+	  $('#add_employee').click(function(){
+	  
+	  var relation_options = '<select name="employee_roster['+counter+'][employee_relationship]" class="form-control"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child">child</option></select>';
+
+	  table_row = $('<tr><td><input  name="employee_roster['+counter+'][family_id]" class="" type="text"></td><td>'+relation_options+'</td><td><input type="text" name="employee_roster['+counter+'][dob]" id="datepicker-'+counter+'" class=""></td><td><button type="button" id="close_button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td></tr>');
+
+	  $('#table-body').append(table_row);
+	  $("#table-body #datepicker-"+counter).focus(date_handler);
+	  $('#table-body #close_button').click(close_handler);
+	  counter+=1;
+	  });
+
+	</script>

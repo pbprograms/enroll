@@ -28,6 +28,10 @@ When(/^he visits the Roster Quoting tool$/) do
   click_link 'Roster Quoting Tool'
 end
 
+When(/^click on the New Quote button$/) do
+  click_link 'New Quote'
+end
+
 When(/^click on the Add New Employee button$/) do
   click_link "Add New Employee"
 end

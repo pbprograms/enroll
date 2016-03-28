@@ -1,4 +1,5 @@
-<div class="container">
+
+<div class="container" id="inbox_provider_form">
   <div class="row">
     <div class="col-md-12">
       <h3>Quotes</h3>
@@ -7,8 +8,18 @@
 
       <br><%= q.quote_name %>
 
+      <table>
+       <tr>
+         <td>Quote ID</td>
+         
+       </tr>
+       <% @quotes.each do |q| %>
+       <tr>
+         <td><br><%= q.id %></td>
+      </tr>
       <% end %>
-
+    </table>
+      <br><%=link_to "New Quote" , new_broker_agencies_quotes_path , class: "btn btn-trans"  %>
       <br>
 
       <%= form_tag(root_broker_agencies_quotes_path, method: :get) do  %>
