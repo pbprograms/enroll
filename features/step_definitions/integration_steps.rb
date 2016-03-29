@@ -196,11 +196,13 @@ When(/^(.+) creates? a new employer profile$/) do |named_person|
   #TODO bombs on selectric scroll sometimes...
   find('.selectric-interaction-choice-control-organization-entity-kind').click
   find(:xpath, "//div[@class='selectric-scroll']/ul/li[contains(text(), 'C Corporation')]").click
+  find(:xpath, "//select[@name='organization[entity_kind]']/option[@value='c_corporation']")
   step "I enter office location for #{default_office_location}"
   fill_in 'organization[email]', :with => Forgery('email').address
   fill_in 'organization[area_code]', :with => '202'
   fill_in 'organization[number]', :with => '5551212'
   fill_in 'organization[extension]', :with => '22332'
+  save_page
   find('.interaction-click-control-confirm').click
 end
 
@@ -209,15 +211,16 @@ When(/^(.*) logs on to the (.*)?/) do |named_person, portal|
 
   visit "/"
   portal_class = "interaction-click-control-#{portal.downcase.gsub(/ /, '-')}"
-  find("a.#{portal_class}").click
-  find('.interaction-click-control-sign-in-existing-account').click
+  portal_uri = find("a.#{portal_class}")["href"]
 
+  visit "/users/sign_in"
   fill_in "user[email]", :with => person[:email]
   find('#user_email').set(person[:email])
   fill_in "user[password]", :with => person[:password]
   #TODO this fixes the random login fails b/c of empty params on email
   fill_in "user[email]", :with => person[:email] unless find(:xpath, '//*[@id="user_email"]').value == person[:email]
   find('.interaction-click-control-sign-in').click
+  visit portal_uri
 end
 
 Then(/^.+ creates (.+) as a roster employee$/) do |named_person|
