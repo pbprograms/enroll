@@ -6,7 +6,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     if !params['plans'].nil? && params['plans'].count > 0
       #binding.pry
-      @q = Quote.find(params['quote'])
+      @q =  Quote.first #Quote.find(Quote.first.id)
 
       @quote_results = Hash.new
 
@@ -23,7 +23,6 @@ class BrokerAgencies::QuotesController < ApplicationController
 
         end
       end
-
     end
   end
 
@@ -31,7 +30,7 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def create
-  	quote = Quote.new
+  	quote = Quote.new(params.dup.permit(:quote_name))
     quote.build_relationship_benefits
     employee_roster = employee_roster_group_by_family_id
   	employee_roster.each do |family_id, family_members|
