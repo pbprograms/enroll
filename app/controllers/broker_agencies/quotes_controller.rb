@@ -32,16 +32,17 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def create
-  	quote = Quote.new	
+  	quote = Quote.new
+    quote.build_relationship_benefits
     employee_roster = employee_roster_group_by_family_id
   	employee_roster.each do |family_id, family_members|
       house_hold = QuoteHousehold.new
-      family_members.each do |family_member| 
+      family_members.each do |family_member|
   		  house_hold.quote_members << QuoteMember.new(family_member.permit(:family_id,:employee_relationship,:dob))
   		end
       quote.quote_households<< house_hold
     end
-    if quote.save 
+    if quote.save
       redirect_to  root_broker_agencies_quotes_path ,  :flash => { :notice => "Successfully saved the employee roster" }
     else
       render "new" , :flash => {:error => "Unable to save the employee roster" }
@@ -51,15 +52,15 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def show
   end
-	
+
 	def build_employee_roster
-    @employee_roster = parse_employee_roster_file 
+    @employee_roster = parse_employee_roster_file
     render "new"
   end
 
   def upload_employee_roster
 	end
- 
+
  private
 
  def employee_roster_group_by_family_id

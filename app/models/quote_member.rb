@@ -13,9 +13,9 @@ class QuoteMember
   field :employee_relationship, type: String
 
   # Optional fields
-  field :first_name, type: String
+  field :first_name, type: String, default: 'Sample'
   field :middle_name, type: String
-  field :last_name, type: String
+  field :last_name, type: String, default: 'Sample'
   field :name_sfx, type: String
   field :gender, type: String
   field :family_id, type: String
