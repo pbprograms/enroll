@@ -1,0 +1,14 @@
+<div class="row">
+  <div class="col-md-10 col-xs-offset-2">
+    <%= render partial: 'shared/intake_progress', progress_step: @progress_step %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-2">
+    <%= render partial: 'shared/intake_steps', step: @step %>
+  </div>
+  <div class="col-md-10">
+    <%= yield %>
+    <%= render partial: 'shared/intake_pager', step: @step %>
+    </div>
+  </div>

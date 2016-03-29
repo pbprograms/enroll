@@ -8,7 +8,8 @@ class Employers::EmployerProfilesController < Employers::EmployersController
   before_action :check_employer_staff_role, only: [:new]
   before_action :check_access_to_organization, only: [:edit]
   skip_before_action :verify_authenticity_token, only: [:show], if: :check_origin?
-  layout "two_column", except: [:new]
+    # TODOJF
+  layout "wizard"
 
   def index
     if params[:broker_agency_id].blank?
@@ -238,6 +239,13 @@ class Employers::EmployerProfilesController < Employers::EmployersController
     redirect_to employers_employer_profile_path(:id => current_user.person.employer_staff_roles.first.employer_profile_id)
   end
 
+
+  def wizard
+    @intake_steps = EmployerProfile::INTAKE_PROGRESS_STEP
+    @step = params[:step].to_i
+    @progress_step = params[:progress_step].to_i
+    @progress_step_name = "#{params[:progress_step_name]}".to_sym
+  end
 
   private
   def paginate_employees

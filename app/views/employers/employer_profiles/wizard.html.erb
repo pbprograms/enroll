@@ -1,0 +1,53 @@
+<div class="module wizard">
+  <div class="tab-content" data-url="<%= employers_employer_profiles_path %>">
+    <% @intake_steps[@progress_step_name].each do |k, v| %>
+      <div role="tabpanel" class="tab-pane <% if k == @step %>in active<% end %>" id="<%= "#{v}".parameterize.underscore %>">
+        <i class="fa fa-spinner fa-spin fa-2x"></i>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    $('.wizard .step-pager li').on('click', function() {
+      var active_li = $('.intake-steps .active');
+      var active_step = $( ".intake-steps li" ).index( active_li );
+      var step_length = $( ".intake-steps li" ).length
+      var loader = "<i class=\"fa fa-spinner fa-spin fa-2x\"></i>"
+
+      if ( $(this).hasClass('skip') ) {
+        if ( active_step < step_length - 1 ) {
+          $($('.intake-steps li').get(active_step+1)).find('a').tab('show');
+          $($('.tab-content .tab-pane').get(active_step)).html(loader);
+        } else {
+        }
+      } else {
+        if ( active_step > 0 ) {
+          $($('.intake-steps li').get(active_step-1)).find('a').tab('show');
+          $($('.tab-content .tab-pane').get(active_step)).html(loader);
+        } else {
+        }
+      }
+      $.ajax({
+        type: "GET",
+        dataType: 'script',
+        url: $(".tab-content").data("url") + "/" + $(".intake-steps .active a").data("url"),
+        data: {
+          tab_pane: $(".intake-steps .active a").data("url")
+        }
+      }).done(function() {
+
+      });
+    });
+    $.ajax({
+      type: "GET",
+      dataType: 'script',
+      url: $(".tab-content").data("url") + "/" + $(".tab-content .tab-pane.active").attr("id"),
+      data: {
+        tab_pane: $(".intake-steps .active a").data("url")
+      }
+    }).done(function() {
+    });
+  });
+</script>

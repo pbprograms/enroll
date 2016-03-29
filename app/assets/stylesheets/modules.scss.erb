@@ -1,6 +1,13 @@
+
+
 $primary-color: #007bc4;
 $primay-active-button-text-color: #ffffff;
 $primary-bold: 600;
+$primary-green: #69A30D;
+$light-green: #B5C989;
+
+
+
 
 .module {
 	&.update-browser-warning {
@@ -55,4 +62,85 @@ $primary-bold: 600;
       }
     }
   }
+  	&.wizard {
+			.intake-progress {
+				.nav {
+					li {
+						&.active {
+							a {
+								background-color: $primary-green;
+								font-weight: 600;
+								color: #fff;
+								&:hover {
+									color: #fff;
+								}
+							}
+						}
+						a {
+							background-color: #fff;
+							text-transform: capitalize;
+							border: none;
+							&:hover {
+								color: #bbbbbb;
+							}
+							.step-number {
+								font-size: 1.5vw;
+							}
+							.step-text {
+							}
+						}
+						.fa {
+							&.fa-caret-down {
+								display: block;
+								text-align: center;
+								margin-top: -5px;
+								color: $primary-green;
+							}
+						}
+					}
+				}
+			}
+			.intake-steps {
+				.nav-tabs {
+					border-bottom: none;
+					li {
+						&.active {
+							position: relative;
+							a {
+								background-color: $primary-green;
+								color: #fff;
+							}
+							.fa {
+								&.fa-caret-right {
+									position: absolute;
+									margin-top: -7px;
+									right: -4px;
+									top: 50%;
+									color: $primary-green;
+									display: block;
+								}
+							}
+						}
+						.fa {
+							&.fa-caret-right {
+								display: none;
+							}
+						}
+						a {
+							color: #333;
+						}
+					}
+				}
+			}
+			.tab-content {
+				.tab-pane {
+					.fa {
+						color: $primary-color;
+						display: block;
+						text-align: center;
+						padding: 5% 0;
+					}
+				}
+			}
+		}
 }

@@ -1,0 +1,12 @@
+<div class="module wizard">
+  <div class="intake-steps">
+    <ul class="nav nav-pills nav-stacked nav-tabs" role="tablist">
+      <% @intake_steps[@progress_step_name].each do |k,v| %>
+        <li role="presentation" class="<% if k == @step %>active<% end %>">
+          <a href="<%= "#"+"#{v}".parameterize.underscore %>" data-url='<%= "#{v}".parameterize.underscore %>' aria-controls="<%= v %>" role="tab" data-toggle="tab"><%= v %></a>
+          <i class="fa fa-caret-right fa-lg"></i>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

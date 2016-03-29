@@ -186,7 +186,14 @@ Rails.application.routes.draw do
         get 'search'
         post 'match'
         get 'inbox'
+        get 'wizard'
+        EmployerProfile::INTAKE_PROGRESS_STEP.keys.each do |ips|
+          EmployerProfile::INTAKE_PROGRESS_STEP[ips].each do |k,v|
+            get "#{v}".downcase.tr(" ", "_"), :action => "#{v}".downcase.tr(" ", "_")
+          end
+        end        
       end
+
       resources :plan_years do
         get 'reference_plans'
         get 'plan_details' => 'plan_years#plan_details', on: :collection
