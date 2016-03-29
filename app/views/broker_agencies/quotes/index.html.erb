@@ -4,25 +4,7 @@
     <div class="col-md-12">
       <h3>Quotes</h3>
 
-      <table>
-       <tr>
-         <td>Quote ID</td>
-
-       </tr>
-       <% @quotes.each do |q| %>
-       <tr>
-         <td><br><%= q.id %></td>
-      </tr>
-      <% end %>
-    </table>
-      <br><%=link_to "New Quote" , new_broker_agencies_quotes_path , class: "btn btn-trans"  %>
-      <br>
-
       <%= form_tag(root_broker_agencies_quotes_path, method: :get) do  %>
-      <%=
-      #hidden_field_tag 'quote', @quotes.first.id.to_s
-      puts "test"
-      %>
       <%= select_tag "quote", options_from_collection_for_select(@quotes, "id", "quote_name"), { } %>
 
       <div>
@@ -92,7 +74,22 @@
       </table>
   </div>
   <% end %>
-
+  <div class="col-md-12 col-sm-12">
+    <div class="table-responsive">
+      <table class="table table-wrapper" style="opacity: 1;">
+        <tr>
+          <td>Quote ID</td>
+          <td>Quote Name</td>
+        </tr>
+         <% @quotes.each do |q| %>
+        <tr>
+           <td><%= q.id %></td>
+           <td><%= q.quote_name %></td>
+        </tr>
+        <% end %>
+      </table>
+      <br><%=link_to "New Quote" , new_broker_agencies_quotes_path , method: :get, class: "btn btn-trans", id: "new_quote"%>
+      <br>
 </div>
 
 
