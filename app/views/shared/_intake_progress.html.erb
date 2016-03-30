@@ -4,7 +4,7 @@
       <% @intake_steps.each_with_index do |(key), index| %>
         <% index = index + 1 %>
         <li role="presentation" class="<% if index == @progress_step %>active<% end %>">
-          <%= link_to "<span class='step-number'>#{index}&nbsp;</span>".html_safe+"<span class='step-text'>#{key}</span>".html_safe, wizard_employers_employer_profiles_path(progress_step_name: key, progress_step: index, step: 1) %>
+          <%= link_to "<span class='step-number'>#{index}&nbsp;</span>".html_safe+"<span class='step-text'>#{key}</span>".html_safe, wizard_broker_agencies_profiles_path(id: BrokerAgencyProfile.first.id, progress_step_name: key, progress_step: index, step: 1) %>
           <% if index == @progress_step %><i class="fa fa-caret-down fa-lg"></i><% end %>
         </li>
       <% end %>

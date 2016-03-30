@@ -187,8 +187,8 @@ Rails.application.routes.draw do
         post 'match'
         get 'inbox'
         get 'wizard'
-        EmployerProfile::INTAKE_PROGRESS_STEP.keys.each do |ips|
-          EmployerProfile::INTAKE_PROGRESS_STEP[ips].each do |k,v|
+        EMPLOYER_INTAKE_PROGRESS_STEP.keys.each do |ips|
+          EMPLOYER_INTAKE_PROGRESS_STEP[ips].each do |k,v|
             get "#{v}".downcase.tr(" ", "_"), :action => "#{v}".downcase.tr(" ", "_")
           end
         end        
@@ -248,6 +248,13 @@ Rails.application.routes.draw do
         get :messages
         get :staff_index
         get :agency_messages
+
+        get 'wizard'
+        BROKER_AGENCY_STEP.keys.each do |ips|
+          BROKER_AGENCY_STEP[ips].each do |k,v|
+            get "#{v}".downcase.tr(" ", "_"), :action => "#{v}".downcase.tr(" ", "_")
+          end
+        end
       end
 
       resources :applicants

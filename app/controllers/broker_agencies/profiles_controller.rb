@@ -4,13 +4,20 @@ class BrokerAgencies::ProfilesController < ApplicationController
   before_action :find_hbx_profile, only: [:index]
   before_action :find_broker_agency_profile, only: [:show, :edit, :update, :employers]
   before_action :set_current_person, only: [:staff_index]
-
+  layout "wizard"
   def index
     @broker_agency_profiles = BrokerAgencyProfile.all
   end
 
   def new
     @organization = ::Forms::BrokerAgencyProfile.new
+  end
+
+  def wizard
+    @intake_steps = BROKER_AGENCY_STEP
+    @step = (params[:step] && params[:step].to_i) || 1
+    @progress_step = (params[:progress_step] && params[:progress_step].to_i)  || 1
+    @progress_step_name = (params[:progress_step_name]  && "#{params[:progress_step_name]}".to_sym) || ('dashboard'.to_sym)
   end
 
   def create

@@ -241,7 +241,7 @@ class Employers::EmployerProfilesController < Employers::EmployersController
 
 
   def wizard
-    @intake_steps = EmployerProfile::INTAKE_PROGRESS_STEP
+    @intake_steps = EMPLOYER_INTAKE_PROGRESS_STEP
     @step = params[:step].to_i
     @progress_step = params[:progress_step].to_i
     @progress_step_name = "#{params[:progress_step_name]}".to_sym
