@@ -41,7 +41,7 @@ class BrokerAgencies::QuotesController < ApplicationController
       quote.quote_households<< house_hold
     end
     if quote.save
-      redirect_to  root_broker_agencies_quotes_path ,  :flash => { :notice => "Successfully saved the employee roster" }
+      redirect_to  broker_agencies_quotes_root_path ,  :flash => { :notice => "Successfully saved the employee roster" }
     else
       render "new" , :flash => {:error => "Unable to save the employee roster" }
     end
@@ -49,6 +49,8 @@ class BrokerAgencies::QuotesController < ApplicationController
 
 
   def show
+    @quote = Quote.find(params[:id])
+    @employee_roster = @quote.quote_households.map(&:quote_members).flatten
   end
 
 	def build_employee_roster
