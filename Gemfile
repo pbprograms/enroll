@@ -41,6 +41,8 @@ gem 'mongo', '2.1.2'
 gem 'carrierwave-mongoid', :require => 'carrierwave/mongoid'
 gem "mongoid-autoinc"
 gem 'mongoid-versioning'
+gem 'mongoid-history', '~> 0.5.0'
+gem 'mongoid_userstamp', '~> 0.4.0'
 
 gem 'money-rails', '~> 1.3.0'
 gem "mongoid-enum"
