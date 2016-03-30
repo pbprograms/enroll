@@ -35,6 +35,12 @@ RSpec.describe Insured::GroupSelectionController, :type => :controller do
     allow(person).to receive(:consumer_role).and_return(nil)
     allow(person).to receive(:consumer_role?).and_return(false)
     allow(user).to receive(:last_portal_visited).and_return('/')
+    allow(HbxProfile).to receive(:current_hbx).and_return hbx_profile
+    allow(hbx_profile).to receive(:benefit_sponsorship).and_return benefit_sponsorship
+    allow(benefit_sponsorship).to receive(:current_benefit_period).and_return(bcp)
+    allow(hbx_enrollment).to receive(:can_complete_shopping?).and_return(true)
+    allow(household).to receive(:hbx_enrollments).and_return(hbx_enrollments)
+    allow(hbx_enrollments).to receive_message_chain(:shop_market, :active){ [hbx_enrollment] }
   end
 
   context "GET new" do
@@ -72,6 +78,18 @@ RSpec.describe Insured::GroupSelectionController, :type => :controller do
       sign_in user
       get :new, person_id: person.id, employee_role_id: employee_role.id
       expect(assigns(:person)).to eq person
+    end
+
+    it "should get hbx_enrollment when has active hbx_enrollments and in qle flow" do
+      sign_in user
+      get :new, person_id: person.id, employee_role_id: employee_role.id, change_plan: 'change_by_qle'
+      expect(assigns(:hbx_enrollment)).to eq hbx_enrollment
+    end
+
+    it "should not get hbx_enrollment when has active hbx_enrollments and not in qle flow" do
+      sign_in user
+      get :new, person_id: person.id, employee_role_id: employee_role.id
+      expect(assigns(:hbx_enrollment)).not_to eq hbx_enrollment
     end
 
     context "individual" do
