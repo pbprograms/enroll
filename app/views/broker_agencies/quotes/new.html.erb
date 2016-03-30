@@ -8,7 +8,8 @@
 	  <div class="row">
 	  <%=form_tag broker_agencies_quotes_path , :method => "post" do %>
 	    <%= csrf_meta_tags %>
-	  	<%=label_tag 'Name of the Quote'%> <%= text_field_tag name="quote_name" , value="New_quote_#{DateTime.now().strftime("%m_%d_%y_%H")}"%> <br>
+	  	<%=label_tag 'Name of the Quote'%> <%= text_field_tag name="quote_name" , value="New_quote_#{DateTime.now().strftime("%Y%m%d%H%M%S")}"%> <br>
+	  	<hr/>
 	    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	      <div class="table-responsive">
 	        <table class="table table-wrapper" style="opacity: 1;">
@@ -35,14 +36,14 @@
 	          <%end%>
 	        </tbody>
 	        </table>
-
 	      </div>
 	    </div>
 	    <br>
 	    </div>
+	    <hr/>
 	    <div class="row">
 	    <%= link_to 'Download CSV', "#", class: "btn btn-trans" %>
-	    <input type="submit" class="btn btn-trans" value="Save Quote"/>
+	    <input type="submit" class= "btn btn-trans" value="Save Quote"/>
 	  	</div>
 	  <%end%>
 	  <hr/>
