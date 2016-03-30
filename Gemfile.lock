@@ -177,6 +177,7 @@ GEM
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
     diff-lcs (1.2.5)
+    easy_diff (1.0.0)
     email_spec (2.0.0)
       htmlentities (~> 4.3.3)
       launchy (~> 2.1)
@@ -270,11 +271,19 @@ GEM
       tzinfo (>= 0.3.37)
     mongoid-autoinc (5.0.1)
       mongoid (~> 5.0.0)
+    mongoid-compatibility (0.3.1)
+      activesupport
+      mongoid (>= 2.0)
     mongoid-enum (0.4.0)
       mongoid (~> 5.0)
     mongoid-grid_fs (2.2.1)
       mime-types (>= 1.0, < 3.0)
       mongoid (>= 3.0, < 6.0)
+    mongoid-history (0.5.0)
+      activesupport
+      easy_diff
+      mongoid (>= 3.0)
+      mongoid-compatibility
     mongoid-rspec (1.10.0)
       mongoid (>= 3.0.1)
       rake
@@ -282,6 +291,8 @@ GEM
     mongoid-versioning (1.2.0)
       activesupport (~> 4.0)
       mongoid (>= 4.0.0, <= 6.0.0)
+    mongoid_userstamp (0.4.0)
+      mongoid (>= 3.0.4)
     multi_json (1.11.2)
     multi_test (0.1.2)
     net-scp (1.2.1)
@@ -534,8 +545,10 @@ DEPENDENCIES
   mongoid (= 5.0.1)
   mongoid-autoinc
   mongoid-enum
+  mongoid-history (~> 0.5.0)
   mongoid-rspec
   mongoid-versioning
+  mongoid_userstamp (~> 0.4.0)
   newrelic_rpm
   nokogiri (= 1.6.7.2)
   nokogiri-happymapper
