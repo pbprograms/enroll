@@ -1,17 +1,27 @@
 require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
-  it { should validate_presence_of :text }
+  it { should validate_presence_of :body }
   it { should validate_presence_of :priority }
+  it { should validate_presence_of :user }
 
   let(:valid_params) do
     {
-      text: "Enroll App team rocks!",
+      body: "Enroll App team rocks!",
     }
   end
 
-  context 'Priority Kind parameter' do
+  context 'User parameter' do
+    context 'when empty' do
+      let(:params){valid_params.deep_merge!({user: nil})}
+      it 'is invalid' do
+        expect(Comment.create(**params).errors[:user].any?).to be_truthy
+        expect(Comment.create(**params).errors[:user]).to eq ["can't be blank"]
+      end
+    end
+  end
 
+  context 'Priority Kind parameter' do
     context 'when empty' do
       let(:params){valid_params.deep_merge!({priority: ""})}
       it 'is invalid' do
@@ -30,7 +40,7 @@ RSpec.describe Comment, type: :model do
 
     valid_priorities = Comment::PRIORITY_KINDS
     valid_priorities.each do |priority|
-      context("when valid comment priority value is #{priority}") do
+      context("when priority value is #{priority}") do
         let(:params){valid_params}
         it 'is valid' do
           params.deep_merge!({priority: priority})
@@ -41,5 +51,7 @@ RSpec.describe Comment, type: :model do
       end
     end
   end
+
+
 
 end
