@@ -2,7 +2,7 @@ class Person
   include Mongoid::Document
   include SetCurrentUser
   include Mongoid::Timestamps
-  include Mongoid::Versioning
+  # include Mongoid::History::Trackable
 
   include Notify
   include UnsetableSparseFields
@@ -46,6 +46,7 @@ class Person
   field :is_tobacco_user, type: String, default: "unknown"
   field :language_code, type: String
 
+  field :is_homeless, type: Boolean
   field :no_dc_address, type: Boolean, default: false
   field :no_dc_address_reason, type: String, default: ""
 
@@ -105,6 +106,12 @@ class Person
   validates :gender,
     allow_blank: true,
     inclusion: { in: Person::GENDER_KINDS, message: "%{value} is not a valid gender" }
+
+  # track_history   on: [:title, :body],              # track title and body fields only, default is :all
+  #                 modifier_field: :modifier,        # adds "belongs_to :modifier" to track who made the change, default is :modifier
+  #                 modifier_field_inverse_of: :nil,  # adds an ":inverse_of" option to the "belongs_to :modifier" relation, default is not set
+  #                 version_field: :version           # adds "field :version, :type => Integer" to track current version, default is :version
+
 
   before_save :generate_hbx_id
   before_save :update_full_name
@@ -318,6 +325,10 @@ class Person
 
   def families
     Family.find_all_by_person(self)
+  end
+
+  def to_s
+    full_name
   end
 
   def full_name
