@@ -20,12 +20,10 @@ class Quote
 
   field :start_on, type: Date, default: TimeKeeper.date_of_record.beginning_of_year
 
-  field :broker_agency_profile_id, type: BSON::ObjectId
+  field :broker_role_id, type: BSON::ObjectId
 
 
-
-
-  associated_with_one :broker_agency_profile, :broker_agency_profile_id, "BrokerAgencyProfile"
+  associated_with_one :broker_role, :broker_role_id, "BrokerRole"
 
   field :contribution_pct_as_int, type: Integer, default: 0
   field :employee_max_amt, type: Money, default: 0
@@ -39,7 +37,7 @@ class Quote
   embeds_many :quote_reference_plans, cascade_callbacks: true
   embeds_many :quote_households
 
-  has_one :broker_agency_profile
+  has_one :broker_role
 
   embeds_many :quote_relationship_benefits, cascade_callbacks: true
   

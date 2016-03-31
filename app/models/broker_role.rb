@@ -15,6 +15,7 @@ class BrokerRole
   }
 
   embedded_in :person
+  has_many :quotes
 
   field :aasm_state, type: String
 

@@ -30,10 +30,27 @@ class BrokerAgencies::QuotesController < ApplicationController
   def new
   end
 
+
+  def update 
+    @quote = Quote.find(params[:id])
+    if @quote
+      employee_roster = employee_roster_group_by_family_id
+      employee_roster.each do |family_id, family_members|
+        family_members.each do |family_member|
+          fm = QuoteMember.where(:_id => family_member[:id]).first
+          fm.update_attributes(family_member.permit(:family_id,:employee_relationship,:dob))
+        end
+      end
+      redirect_to  broker_agencies_quotes_root_path ,  :flash => { :notice => "Successfully Updateds the employee roster" }
+    else
+      redirect_to  broker_agencies_quotes_root_path ,  :flash => { :error => "Unable to updates employee roster" }
+    end
+  end
+
   def create
   	quote = Quote.new(params.permit(:quote_name))
     quote.build_relationship_benefits
-    quote.broker_agency_profile_id= current_user.person(:try).broker_role.broker_agency_profile_id
+    quote.broker_role_id= current_user.person(:try).broker_role.id
     employee_roster = employee_roster_group_by_family_id
   	employee_roster.each do |family_id, family_members|
       house_hold = QuoteHousehold.new
@@ -63,6 +80,13 @@ class BrokerAgencies::QuotesController < ApplicationController
   def upload_employee_roster
 	end
 
+  def download_employee_roster
+    @quote = Quote.find(params[:id])
+    @employee_roster = @quote.quote_households.map(&:quote_members).flatten
+    send_data(csv_for(@employee_roster), :type => 'text/csv; charset=iso-8859-1; header=present',
+    :disposition => "attachment; filename=Employee_Roster.csv")
+  end
+
  private
 
   def employee_roster_group_by_family_id
@@ -84,10 +108,10 @@ class BrokerAgencies::QuotesController < ApplicationController
     (output = "").tap do
       CSV.generate(output) do |csv|
         csv << ["FamilyID", "Relationship", "DOB"]
-        employee_roster.each do |id,employee|
-          csv << [  employee[:family_id],
-                    employee[:relationship],
-                    employee[:dob]
+        employee_roster.each do |employee|
+          csv << [  employee.family_id,
+                    employee.employee_relationship,
+                    employee.dob
                   ]
         end
       end

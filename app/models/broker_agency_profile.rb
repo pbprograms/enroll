@@ -5,7 +5,6 @@ class BrokerAgencyProfile
   include AASM
 
   embedded_in :organization
-  has_many :quotes
 
   MARKET_KINDS = %W[individual shop both]
 
