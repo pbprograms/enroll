@@ -4,7 +4,7 @@
 	  <div class="row">
 	  <%=form_tag broker_agencies_quotes_path , :method => "post" do %>
 	    <%= csrf_meta_tags %>
-	  	<%=label_tag 'Name of the Quote'%> <%= text_field_tag name="quote_name" , value="New_quote_#{DateTime.now().strftime("%Y%m%d%H%M%S")}"%> <br>
+	  	<%=label_tag 'Name of the Quote'%> <%= text_field_tag name="quote_name" , value="#{@quote.quote_name}"%> <br>
 	  	<hr/>
 	    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	      <div class="table-responsive">
@@ -37,6 +37,7 @@
 	    </div>
 	    <hr/>
 	    <div class="row">
+	    <input type="button" onclick="history.back();" class="btn btn-trans" value="Back">
 	    <input type="submit" class="btn btn-trans" value="Save Quote"/>
 	  	</div>
 	  	</div>
