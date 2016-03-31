@@ -74,17 +74,19 @@
       </table>
   </div>
   <% end %>
-  <div class="col-md-12 col-sm-12">
+  <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="table-responsive">
       <table class="table table-wrapper" style="opacity: 1;">
         <tr>
-          <td>Quote ID</td>
-          <td>Quote Name</td>
+          <th>Quote ID</th>
+          <th>Quote Name</th>
+          <th></th>
         </tr>
          <% @quotes.each do |q| %>
         <tr>
            <td><%=link_to "#{q.id}" , "/broker_agencies/quotes/#{q.id}" %></td>
            <td><%= q.quote_name %></td>
+           <td><button type="button" id="close_button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
         </tr>
         <% end %>
       </table>
@@ -95,20 +97,11 @@
 
 
 <script type="text/javascript">
+  var close_handler = function(){
+      $(this).parent().parent().remove();
+    };
 
-/*function applyMultiPlanSelect() {
-  $('#broker_agency_plan_selection').multiselect({
-    nonSelectedText: 'Select Plans',
-    maxHeight: 400
-  });
-  $('#broker_agency_plan_selection').multiselect('select', 'en', true);
-  $('#broker_agency_plan_selection').on('selectric-init', function(element){
-    $('.selectric-interaction-field-control-broker-agency-languages-spoken').hide();
-  });
-};
+  $('#close_button').click(close_handler);
 
 
-  $(function() {
-    applyMultiPlanSelect();
-  });*/
 </script>

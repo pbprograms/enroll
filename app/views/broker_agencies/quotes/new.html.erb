@@ -1,6 +1,7 @@
-	
+
 	<div class="container">
 	  <div class="row">
+	  <hr/>
 	    <%= link_to 'Add New Employee', "#", class: "btn btn-trans" ,id: "add_employee" %>
 	    <%= link_to 'Upload Employee Roster' , upload_employee_roster_broker_agencies_quotes_path , class: "btn btn-trans" , remote: true  ,id: "upload_employees" %> <br>
 	  </div>
@@ -43,7 +44,7 @@
 	    <hr/>
 	    <div class="row">
 	    <input type="button" onclick="history.back();" class="btn btn-trans" value="Back">
-	    <%= link_to 'Download CSV', "#", class: "btn btn-trans" %>
+	    
 	    <input type="submit" class= "btn btn-trans" value="Save Quote"/>
 	  	</div>
 	  <%end%>
