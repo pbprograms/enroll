@@ -27,8 +27,10 @@ class Quote
   embeds_many :quote_reference_plans, cascade_callbacks: true
   embeds_many :quote_households
 
-  embeds_many :quote_relationship_benefits, cascade_callbacks: true
+  has_one :broker_agency_profile
 
+  embeds_many :quote_relationship_benefits, cascade_callbacks: true
+  
   accepts_nested_attributes_for :quote_households
 
   def calc

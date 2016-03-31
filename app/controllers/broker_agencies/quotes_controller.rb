@@ -1,4 +1,5 @@
 class BrokerAgencies::QuotesController < ApplicationController
+  
 
   def index
     @quotes = Quote.all
@@ -30,8 +31,9 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def create
-  	quote = Quote.new(params.dup.permit(:quote_name))
+  	quote = Quote.new(params.permit(:quote_name))
     quote.build_relationship_benefits
+    quote.broker_agency_profile_id= current_user.person(:try).broker_role.broker_agency_profile_id
     employee_roster = employee_roster_group_by_family_id
   	employee_roster.each do |family_id, family_members|
       house_hold = QuoteHousehold.new
@@ -57,18 +59,18 @@ class BrokerAgencies::QuotesController < ApplicationController
     @employee_roster = parse_employee_roster_file
     render "new"
   end
-
+    
   def upload_employee_roster
 	end
 
  private
 
- def employee_roster_group_by_family_id
+  def employee_roster_group_by_family_id
     params[:employee_roster].inject({}) do  |new_hash,e|
       new_hash[e[1][:family_id]].nil? ? new_hash[e[1][:family_id]] = [e[1]]  : new_hash[e[1][:family_id]] << e[1]
       new_hash
     end
- end
+  end
 
   def parse_employee_roster_file
     begin
