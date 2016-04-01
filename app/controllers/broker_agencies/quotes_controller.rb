@@ -44,9 +44,9 @@ class BrokerAgencies::QuotesController < ApplicationController
           fm.update_attributes(family_member.permit(:family_id,:employee_relationship,:dob))
         end
       end
-      redirect_to  broker_agencies_quotes_root_path ,  :flash => { :notice => "Successfully Updateds the employee roster" }
+      redirect_to  broker_agencies_quotes_root_path ,  :flash => { :notice => "Successfully Updated the employee roster" }
     else
-      redirect_to  broker_agencies_quotes_root_path ,  :flash => { :error => "Unable to updates employee roster" }
+      redirect_to  broker_agencies_quotes_root_path ,  :flash => { :error => "Unable to update employee roster" }
     end
   end
 
@@ -84,6 +84,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 	end
 
   def download_employee_roster
+    @quote = Quote.find(params[:id])
     @employee_roster = @quote.quote_households.map(&:quote_members).flatten
     send_data(csv_for(@employee_roster), :type => 'text/csv; charset=iso-8859-1; header=present',
     :disposition => "attachment; filename=Employee_Roster.csv")
