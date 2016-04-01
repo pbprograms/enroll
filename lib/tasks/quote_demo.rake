@@ -68,14 +68,14 @@ namespace :quote_demo do
       qm = qh.quote_members.build
 
       qm.first_name = "Tony"
-      qm.last_name = "Schaffert"
+      qm.last_name = "Maloney"
       qm.dob = Date.new(1980,7,26)
       qm.employee_relationship = "employee"
 
       qm = qh.quote_members.build
 
       qm.first_name = "Gabriel"
-      qm.last_name = "Schaffert"
+      qm.last_name = "Escobar"
       qm.dob = Date.new(2012,1,10)
       qm.employee_relationship = "child_under_26"
 
@@ -83,28 +83,28 @@ namespace :quote_demo do
       qm = qh.quote_members.build
 
       qm.first_name = "Steve"
-      qm.last_name = "Schaffert"
+      qm.last_name = "Onder"
       qm.dob = Date.new(2012,1,10)
       qm.employee_relationship = "child_under_26"
 
       qm = qh.quote_members.build
 
       qm.first_name = "Lucas"
-      qm.last_name = "Schaffert"
+      qm.last_name = "Nartz"
       qm.dob = Date.new(2012,1,10)
       qm.employee_relationship = "child_under_26"
 
       qm = qh.quote_members.build
 
       qm.first_name = "Enzo"
-      qm.last_name = "Schaffert"
+      qm.last_name = "Menzo"
       qm.dob = Date.new(2012,1,10)
       qm.employee_relationship = "child_under_26"
 
       qm = qh.quote_members.build
 
-      qm.first_name = "Leonardo"
-      qm.last_name = "Schaffert"
+      qm.first_name = "Leo"
+      qm.last_name = "Pardo"
       qm.dob = Date.new(1991,1,10)
       qm.employee_relationship = "child_under_26"
 
@@ -113,15 +113,15 @@ namespace :quote_demo do
       qh = q.quote_households.build
       qm = qh.quote_members.build
 
-      qm.first_name = "Andressa"
-      qm.last_name = "Schaffert"
+      qm.first_name = "Dengo"
+      qm.last_name = "Mengo"
       qm.dob = Date.new(1988,9,27)
       qm.employee_relationship = "employee"
 
       qm = qh.quote_members.build
 
       qm.first_name = "Alice"
-      qm.last_name = "Schaffert"
+      qm.last_name = "Wonder"
       qm.dob = Date.new(2014,1,13)
       qm.employee_relationship = "child_under_26"
       q.save
