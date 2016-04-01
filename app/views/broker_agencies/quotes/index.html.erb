@@ -17,7 +17,6 @@
           <% end %>
         </div>
       </div>
-
       <br>
       <%= submit_tag "Submit", class: 'btn btn-primary', id: 'waiver_reason_submit' %>
       <% end %>
@@ -86,7 +85,7 @@
         <tr>
            <td><%=link_to "#{q.id}" , "/broker_agencies/quotes/#{q.id}" %></td>
            <td><%= q.quote_name %></td>
-           <td><button type="button" id="close_button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
+           <td><button type="button" id="close_button" data-quote-id="<%=q.id%>" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
         </tr>
         <% end %>
       </table>
@@ -98,10 +97,19 @@
 
 <script type="text/javascript">
   var close_handler = function(){
-      $(this).parent().parent().remove();
-    };
+    $.ajax({
+        type: "POST",
+        url: "/broker_agencies/quotes/" + this.getAttribute("data-quote-id"),
+        dataType: "js",
+        data: {"_method":"delete"},
+        complete: function(){
+          alert("Deleted successfully");
+        }
+    });
+    this.parentElement.parentElement.remove(); 
+    event.preventDefault();
+  };
 
-  $('#close_button').click(close_handler);
-
+$('.table #close_button').click(close_handler);
 
 </script>
