@@ -27,34 +27,12 @@ class Quote
   embeds_many :quote_reference_plans, cascade_callbacks: true
   embeds_many :quote_households
 
-  has_one :broker_role
 
   embeds_many :quote_relationship_benefits, cascade_callbacks: true
-  
+
   accepts_nested_attributes_for :quote_households
 
   def calc
-    #plans = Plan.limit(10).where("active_year"=>2016,"coverage_kind"=>"health")
-
-    #plans.each do |p|
-    #  puts p.id
-    #  puts Caches::PlanDetails.lookup_rate(p.id, TimeKeeper.date_of_record, 18)
-    #end
-
-#Caches::PlanDetails.lookup_rate("56e6c4e53ec0ba9613008f6d", Date.new(2016,5,1), 35)
-#Caches::PlanDetails.lookup_rate(ObjectId("56e6c4e53ec0ba9613008f6d"), TimeKeeper.date_of_record, 18)
-
-#[7] pry(main)> Caches::PlanDetails.lookup_rate(BSON::ObjectId("56e6c4e53ec0ba9613008f6d"), Date.new(2016,5,1), 35)
-
-#[8] pry(main)> Caches::PlanDetails.lookup_rate(BSON::ObjectId("56e6c4e53ec0ba9613008f6d"), Date.new(2016,5,1), 4)
-
-    #self.plan_option_kind = "single_plan"
-
-    #rp1 = self.quote_reference_plans.build(reference_plan_id:  "56e6c4e53ec0ba9613008f6d")
-    #rp1.set_bounding_cost_plans
-    #rp1.save
-
-
 
     rp1 = self.quote_reference_plans.build(reference_plan_id:  "56e6c4e53ec0ba9613008f6d")
     rp1.set_bounding_cost_plans

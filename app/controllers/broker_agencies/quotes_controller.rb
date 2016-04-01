@@ -1,8 +1,11 @@
 class BrokerAgencies::QuotesController < ApplicationController
-  
+
 
   def index
-    @quotes = Quote.all
+
+
+    @quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
+    #@quotes = Quote.all
     @plans = Plan.where("active_year" => 2016).limit(15)
 
     if !params['plans'].nil? && params['plans'].count > 0
@@ -31,7 +34,7 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
 
-  def update 
+  def update
     @quote = Quote.find(params[:id])
     if @quote
       employee_roster = employee_roster_group_by_family_id
@@ -76,7 +79,7 @@ class BrokerAgencies::QuotesController < ApplicationController
     @employee_roster = parse_employee_roster_file
     render "new"
   end
-    
+
   def upload_employee_roster
 	end
 
