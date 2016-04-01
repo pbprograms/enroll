@@ -57,3 +57,27 @@ Then(/^the broker should see the data in the table$/) do
   expect(page).to have_selector(:xpath,"//table//input[contains(@id, 'family_id')]",count: 3)
   expect(page).to have_selector(:xpath,"//table//select[contains(@id, 'relationship')]",count: 3)
 end
+
+
+When(/^the broker enters valid information$/) do
+  fill_in 'employee_roster[1][family_id]', with: '2'
+  select "Employee", :from => "employee_roster[1][employee_relationship]"
+  fill_in 'employee_roster[1][dob]', with: '11/11/1991'
+end
+
+When(/^the broker clicks on the Save Quote button$/) do
+  find('.interaction-click-control-save-quote').click
+end
+
+Then(/^the broker should see a successful message$/) do
+  expect(page).to have_content('Successfully saved the employee roster')
+end
+
+
+When(/^the broker clicks on the close button$/) do
+  find(:xpath, "//table//button[contains(@id, 'close_button')]").click
+end
+
+Then(/^the Quote should be deleted$/) do
+  page.should have_no_xpath("//table//input[contains(@id, 'family_id')]")
+end
