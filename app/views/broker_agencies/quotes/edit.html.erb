@@ -1,0 +1,53 @@
+
+	<div class="container">
+	  <hr/>
+
+
+
+	<%= form_for @quote, url: {action: "update"} do |f| %>
+
+	Quote Name: <%= f.label :quote_name %>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+
+	<%= f.fields_for :quote_households do |qhh| %>
+		  <div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="headingOne">
+					<h4 class="panel-title">
+						<a role="button" data-toggle="collapse" data-parent="#accordion" href="#col<%= qhh.object._id.to_s %>" aria-expanded="true" aria-controls="col<%= qhh.object.id.to_s %>">
+				Family Id: <%= qhh.text_field :family_id %>
+						</a>
+						<button type="button" class="btn btn-default" aria-label="Left Align" onclick="addEmployeeRowToFamily('<%=qhh.object.id.to_s%>','<%= qhh.index %>')">
+							<span class="glyphicon glyphicon-user" aria-hidden="true"></span> Add member to this family
+						</button>
+					</h4>
+				</div>
+				<div id="col<%= qhh.object.id.to_s %>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading<%= qhh.object.id.to_s %>">
+					<div class="panel-body" id="family-<%= qhh.object.id.to_s %>">
+		<%= qhh.fields_for :quote_members do |qm| %>
+			<div>
+				DOB <%= qm.text_field :dob %> First Name <%= qm.text_field :first_name %> Employee Relationship <%= qm.text_field :employee_relationship %>
+			</div>
+		<% end %>
+	</div>
+</div>
+			</div>
+		<% end %>
+		<%= submit_tag("submit") %>
+		<% end %>
+
+		</div>
+
+<script>
+function addEmployeeRowToFamily(family, idx) {
+	console.log('family called ' + family)
+	table_row = $('<div>'
+	+ 'DOB <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][dob]"/> First Name <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][first_name]"  /> Employee Relationship <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][employee_relationship]"  />'
+	+ '</div>');
+
+	console.log(table_row);
+
+
+	$('#family-' + family).append(table_row);
+}
+</script>

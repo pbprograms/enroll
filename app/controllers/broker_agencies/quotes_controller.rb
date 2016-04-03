@@ -1,6 +1,6 @@
 class BrokerAgencies::QuotesController < ApplicationController
 
-  before_action :find_quote , :only => [:destroy ,:show,:edit]
+  before_action :find_quote , :only => [:destroy ,:show]
 
   def index
 
@@ -31,23 +31,34 @@ class BrokerAgencies::QuotesController < ApplicationController
     end
   end
 
-  def new
+  def edit
+    @quote = Quote.find(params[:id])
+
+    binding.pry
+
+    qhh = QuoteHousehold.new
+    qm = QuoteMember.new
+
+    qhh.quote_members << qm
+    @quote.quote_households << qhh
   end
 
   def update
+
     @quote = Quote.find(params[:id])
-    if @quote
-      employee_roster = employee_roster_group_by_family_id
-      employee_roster.each do |family_id, family_members|
-        family_members.each do |family_member|
-          fm = QuoteMember.find(family_member[:id])
-          fm.update_attributes(family_member.permit(:family_id,:employee_relationship,:dob))
-        end
-      end
-      redirect_to  broker_agencies_quotes_root_path ,  :flash => { :notice => "Successfully Updated the employee roster" }
-    else
-      redirect_to  broker_agencies_quotes_root_path ,  :flash => { :error => "Unable to update employee roster" }
-    end
+
+    params.permit!
+    @quote.update_attributes(params[:quote].permit(
+      #:employer_profile_attributes => [ :entity_kind, :dba, :legal_name],
+      :quote_name,
+      :quote_households_attributes => [
+        :id,
+        :family_id,
+        :quote_members_attributes => [:id, :first_name, :dob, :employee_relationship]]
+    ))
+    #redirect_to edit_broker_agencies_quote_path(@quote)
+    redirect_to edit_broker_agencies_quote_path(@quote)
+
   end
 
   def create
