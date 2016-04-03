@@ -1,12 +1,7 @@
-
 <div class="container" id="inbox_provider_form">
   <div class="row">
     <div class="col-md-12">
       <h3>Quotes</h3>
-      <%
-      @quotes.each do |q| %>
-
-      <br><%= q.quote_name %>
 
       <%= form_tag(broker_agencies_quotes_root_path, method: :get) do  %>
       <%= select_tag "quote", options_from_collection_for_select(@quotes, "id", "quote_name"), { } %>
@@ -113,7 +108,5 @@
     this.parentElement.parentElement.remove(); 
     event.preventDefault();
   };
-
 $('.table #close_button').click(close_handler);
-
 </script>
