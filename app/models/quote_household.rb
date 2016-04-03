@@ -3,10 +3,13 @@ class QuoteHousehold
   include Mongoid::Timestamps
   include MongoidSupport::AssociationProxies
 
-  field :family_id, type: String
+
 
   embedded_in :quote
   embeds_many :quote_members
+
+
+  field :family_id, type: String
 
   accepts_nested_attributes_for :quote_members
 

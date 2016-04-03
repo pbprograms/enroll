@@ -2,6 +2,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   before_action :find_quote , :only => [:destroy ,:show]
 
+
   def index
 
 

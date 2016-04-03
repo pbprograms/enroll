@@ -15,7 +15,6 @@ class QuoteReferencePlan
   field :lowest_cost_plan_id, type: BSON::ObjectId
   field :highest_cost_plan_id, type: BSON::ObjectId
 
-
   field :quote_results, type: Array, default: []
 
 

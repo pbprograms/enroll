@@ -17,12 +17,14 @@ class Quote
   field :plan_year, type: Integer, default: TimeKeeper.date_of_record.year
 
   field :start_on, type: Date, default: TimeKeeper.date_of_record.beginning_of_year
+
   field :broker_role_id, type: BSON::ObjectId
 
 
   associated_with_one :broker_role, :broker_role_id, "BrokerRole"
 
   field :plan_option_kind, type: String, default: "single_carrier"
+
 
   embeds_many :quote_reference_plans, cascade_callbacks: true
   embeds_many :quote_households
@@ -85,7 +87,6 @@ class Quote
     qm.last_name = "Schaffert"
     qm.dob = Date.new(2012,1,10)
     qm.employee_relationship = "child_under_26"
-
 
     qm = qh.quote_members.build
 

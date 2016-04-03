@@ -177,6 +177,7 @@ class Family
   def enrollments
     return [] if  latest_household.blank?
     latest_household.hbx_enrollments.show_enrollments
+
   end
 
   def primary_family_member
@@ -490,6 +491,10 @@ class Family
 
   def enrolled_hbx_enrollments
     latest_household.try(:enrolled_hbx_enrollments)
+  end
+
+  def enrolled_including_waived_hbx_enrollments
+    latest_household.try(:enrolled_including_waived_hbx_enrollments)
   end
 
   def save_relevant_coverage_households

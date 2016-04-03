@@ -27,6 +27,25 @@ FactoryGirl.define do
     end
   end
 
+  factory :employer, class: Organization do
+    legal_name { Forgery(:name).company_name }
+    dba { legal_name }
+
+    fein do
+      Forgery('basic').text(:allow_lower   => false,
+                            :allow_upper   => false,
+                            :allow_numeric => true,
+                            :allow_special => false, :exactly => 9)
+    end
+
+    office_locations  { [FactoryGirl.build(:office_location, :primary),
+                         FactoryGirl.build(:office_location)] }
+
+    before :create do |organization, evaluator|
+      organization.employer_profile = FactoryGirl.create :employer_profile, organization: organization
+    end
+  end
+
   factory :broker, class: Organization do
     sequence(:legal_name) {|n| "Broker Agency#{n}" }
     sequence(:dba) {|n| "Broker Agency#{n}" }
@@ -34,7 +53,7 @@ FactoryGirl.define do
     home_page   "http://www.example.com"
     office_locations  { [FactoryGirl.build(:office_location, :primary),
                          FactoryGirl.build(:office_location)] }
-    
+
     before :create do |organization, evaluator|
       organization.broker_agency_profile = FactoryGirl.build :broker_agency_profile, organization: organization
     end

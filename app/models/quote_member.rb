@@ -18,8 +18,6 @@ class QuoteMember
   field :last_name, type: String, default: 'Sample'
   field :name_sfx, type: String
   field :gender, type: String
-  field :family_id, type: String
-
 
   validates_presence_of :dob
 
