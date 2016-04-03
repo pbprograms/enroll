@@ -5,8 +5,6 @@ class QuoteMember
 
   GENDER_KINDS = %W(male female)
 
-  GENDER_KINDS = %W(male female)
-
   EMPLOYEE_RELATIONSHIP_KINDS = %W[employee self spouse domestic_partner child_under_26  child_26_and_over disabled_child_26_and_over]
   
   # Required Fields
@@ -20,7 +18,6 @@ class QuoteMember
   field :last_name, type: String, default: 'Sample'
   field :name_sfx, type: String
   field :gender, type: String
-  field :family_id, type: String
 
   validates_presence_of :dob
 
