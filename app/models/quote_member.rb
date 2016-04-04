@@ -10,7 +10,7 @@ class QuoteMember
   # Required Fields
   # The required fields below are the minimum necessary data for plan cost calculation
   field :dob, type: Date
-  field :employee_relationship, type: String
+  field :employee_relationship, type: String, default: 'employee'
 
   # Optional fields
   field :first_name, type: String, default: 'Sample'

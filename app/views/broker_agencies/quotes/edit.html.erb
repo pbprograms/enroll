@@ -15,8 +15,9 @@
 				<div class="panel-heading" role="tab" id="headingOne">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#accordion" href="#col<%= qhh.object._id.to_s %>" aria-expanded="true" aria-controls="col<%= qhh.object.id.to_s %>">
-				Family Id: <%= qhh.text_field :family_id %>
+							Family Id:
 						</a>
+						<%= qhh.text_field :family_id %>
 						<button type="button" class="btn btn-default" aria-label="Left Align" onclick="addEmployeeRowToFamily('<%=qhh.object.id.to_s%>','<%= qhh.index %>')">
 							<span class="glyphicon glyphicon-user" aria-hidden="true"></span> Add member to this family
 						</button>

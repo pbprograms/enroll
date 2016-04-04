@@ -35,8 +35,6 @@ class BrokerAgencies::QuotesController < ApplicationController
   def edit
     @quote = Quote.find(params[:id])
 
-    binding.pry
-
     qhh = QuoteHousehold.new
     qm = QuoteMember.new
 
@@ -48,15 +46,28 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     @quote = Quote.find(params[:id])
 
+    sanitize_quote_roster_params
+
     params.permit!
-    @quote.update_attributes(params[:quote].permit(
+
+    #binding.pry
+
+    if (@quote.update_attributes(params[:quote].permit(
       #:employer_profile_attributes => [ :entity_kind, :dba, :legal_name],
       :quote_name,
       :quote_households_attributes => [
         :id,
         :family_id,
         :quote_members_attributes => [:id, :first_name, :dob, :employee_relationship]]
-    ))
+    )))
+      puts "Saved!"
+    else
+      puts "Error!"
+      puts @quote.errors.messages.inspect
+    end
+
+    binding.pry
+
     #redirect_to edit_broker_agencies_quote_path(@quote)
     redirect_to edit_broker_agencies_quote_path(@quote)
 
@@ -111,6 +122,12 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
  private
+
+ def sanitize_quote_roster_params
+   params[:quote][:quote_households_attributes].each do |key, fid|
+     params[:quote][:quote_households_attributes].delete(key) if fid['family_id'].blank?
+   end
+ end
 
   def employee_roster_group_by_family_id
     params[:employee_roster].inject({}) do  |new_hash,e|
