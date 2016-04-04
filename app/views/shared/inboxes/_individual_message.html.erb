@@ -1,13 +1,25 @@
-<tr class='<%=message.message_read==true ? "msg-inbox-read" : ""%>'>
-  <td> <%= message.try(:from) if @folder == 'Inbox' %>
+<tr class='<%=message.message_read==true ? "msg-inbox-read" : ""%>' onclick="window.location='<%=retrieve_show_path(provider, message) %>'">
+  <td> <%= message.try(:from) if @folder == 'Inbox' || @folder == 'Deleted' %>
    <%= message.try(:to)   if @folder == 'Sent'%>
  </td>
  <td> <%=message.created_at %>
   <td> <%= message.try(:subject) %> </td>
   <td> <%#= link_to "show", polymorphic_path([:insured, :family, provider.inbox, message]), class: "btn btn-primary", remote: true %>
-    <%= link_to "show", retrieve_show_path(provider, message), class: "btn btn-primary show_msg mz", remote: true %>
-    <%- if @folder != 'Deleted' %>
-    <%= link_to "Delete", retrieve_show_path(provider, message), class: "btn btn-trans", remote: true, method: :delete %>
+    <%- if @folder != 'Deleted' && @folder != 'Sent' %>
+        <% if @employer_profile.present? %>
+        <%= link_to '<i class="fa fa-trash-o fa-2x"></i>'.html_safe, employers_inbox_path(provider, message, message_id: message.id, employer_profile: @employer_profile), class: "pull-right", method: :delete %>
+        <% elsif @person.present? %>
+        <%= link_to '<i class="fa fa-trash-o fa-2x"></i>'.html_safe, insured_inbox_path(provider, message, person_id: provider.id, message_id: message.id, insured: @person), class: "pull-right", method: :delete %>
+        <% elsif @profile.present? %>
+        <%= link_to '<i class="fa fa-trash-o fa-2x"></i>'.html_safe, exchanges_inbox_path(provider, message, person_id: provider.id, message_id: message.id), class: "pull-right", method: :delete %>
+        <% elsif @broker_agency_profile.present? && params.has_key?(:user)%>
+        <%= link_to '<i class="fa fa-trash-o fa-2x"></i>'.html_safe, broker_agencies_inbox_path(provider, message, person_id: provider.id, message_id: message.id,
+         user: 'admin'), class: "pull-right", method: :delete %>
+         <% elsif @broker_agency_profile.present? && params.has_key?(:mailbox) %>
+         <%= link_to '<i class="fa fa-trash-o fa-2x"></i>'.html_safe, broker_agencies_inbox_path(provider, message, person_id: provider.id, message_id: message.id, broker_agency_profile: @broker_agency_profile, mailbox: 'agency'), class: "pull-right", method: :delete %>
+        <% elsif @broker_agency_profile.present? %>
+        <%= link_to '<i class="fa fa-trash-o fa-2x"></i>'.html_safe, broker_agencies_inbox_path(provider, message, person_id: provider.id, message_id: message.id, broker_agency_profile: @broker_agency_profile), class: "pull-right", method: :delete %>
+      <% end %>
     <% end %>
   </td>
 </tr>

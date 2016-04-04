@@ -1,0 +1,138 @@
+<h1 class="darkblue">Messages</h1>
+<% if provider.inbox.messages.size > 0 %>
+  <div id="inbox_form">
+    <span class="inboxes">
+        	<% if params.has_key?(:user) %>
+            <% if params[:folder] == 'inbox' %>
+          <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'inbox', user: 'admin'), class: 'active') do %>
+            Inbox &nbsp;<span class="badge message-badge pull-right"><%= provider.inbox.unread_messages.size %></span>
+          <% end %> |
+          <% else %>
+          <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'inbox', user: 'admin')) do %>
+            Inbox &nbsp;<span class="badge message-badge pull-right"><%= provider.inbox.unread_messages.size %></span>
+          <% end %> |
+            <% end %>
+          <% if @sent_box == true %>
+          <% if params[:folder] == 'sent' %>
+
+            <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'sent', user: 'admin'), class: 'active') do %>
+              Sent
+              <% end %> |
+            <% else %>
+            <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'sent', user: 'admin')) do %>
+              Sent
+            <% end %> |
+            <% end %>
+          <% end %>
+          <% if params[:folder] == 'deleted' %>
+
+            <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'deleted', user: 'admin'), class: 'active') do %>
+              Deleted
+            <% end %>
+            <% else %>
+            <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'deleted', user: 'admin')) do %>
+              Deleted
+            <% end %>
+          <% end %>
+          </span>
+          <% elsif params.has_key?(:mailbox) %>
+
+      <% if params[:folder] == 'inbox' %>
+    <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'inbox', mailbox: 'agency'), class: 'active') do %>
+      Inbox &nbsp;<span class="badge message-badge pull-right"><%= provider.inbox.unread_messages.size %></span>
+    <% end %> |
+    <% else %>
+    <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'inbox', mailbox: 'agency')) do %>
+      Inbox &nbsp;<span class="badge message-badge pull-right"><%= provider.inbox.unread_messages.size %></span>
+    <% end %> |
+      <% end %>
+    <% if @sent_box == true %>
+    <% if params[:folder] == 'sent' %>
+
+      <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'sent', mailbox: 'agency'), class: 'active') do %>
+        Sent
+        <% end %> |
+      <% else %>
+      <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'sent', mailbox: 'agency')) do %>
+        Sent
+      <% end %> |
+      <% end %>
+    <% end %>
+    <% if params[:folder] == 'deleted' %>
+
+      <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'deleted', mailbox: 'agency'), class: 'active') do %>
+        Deleted
+      <% end %>
+      <% else %>
+      <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'deleted', mailbox: 'agency')) do %>
+        Deleted
+      <% end %>
+    <% end %>
+    </span>
+    <% else %>
+
+
+      <% if params[:folder] == 'inbox' %>
+    <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'inbox'), class: 'active') do %>
+      Inbox &nbsp;<span class="badge message-badge pull-right"><%= provider.inbox.unread_messages.size %></span>
+    <% end %> |
+    <% else %>
+    <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'inbox')) do %>
+      Inbox &nbsp;<span class="badge message-badge pull-right"><%= provider.inbox.unread_messages.size %></span>
+    <% end %> |
+      <% end %>
+    <% if @sent_box == true %>
+    <% if params[:folder] == 'sent' %>
+
+      <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'sent'), class: 'active') do %>
+        Sent
+        <% end %> |
+      <% else %>
+      <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'sent')) do %>
+        Sent
+      <% end %> |
+      <% end %>
+    <% end %>
+    <% if params[:folder] == 'deleted' %>
+
+      <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'deleted'), class: 'active') do %>
+        Deleted
+      <% end %>
+      <% else %>
+      <%= link_to(broker_agencies_profile_path(@provider, tab: 'inbox', folder: 'deleted')) do %>
+        Deleted
+      <% end %>
+    <% end %>
+    </span>
+    <% end %>
+</div>
+  <%- @folder = (@folder||'Inbox').capitalize %>
+  <div class="col-xs-12 table-responsive" id="message_list_form">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th> <%= @folder %>: FROM</th>
+          <th> Date  </th>
+          <th>Subject</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <%- if provider.try(:inbox).try(:messages) %>
+        <%= render partial: "shared/inboxes/individual_message", :collection => @provider.inbox.messages.select{|m| @folder == (m.folder.try(:capitalize) || 'Inbox') }, :as => :message, locals: {provider: provider} %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div id="show_message_form"></div>
+  <% else %>
+  <h4 class="starter">Your inbox is currently empty.</h4>
+  <% end %>
+  <div class="col-xs-12">
+    <div class="row">
+      <br/>
+      <%= link_to "Send Secure Message to #{HbxProfile::ShortName}".html_safe, broker_agencies_inbox_msg_to_portal_path(inbox_id: @provider.id,
+           to: 'HBX_Admin', from: @provider.try(:full_name)||@provider.try(:legal_name), remote: true), class: "btn btn-trans" %>
+    </div>
+  </div>

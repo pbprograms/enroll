@@ -1,32 +1,56 @@
 <div class="col-xs-12 bottom-pd messages-tab" id='inbox-messages'>
   <div class="no_margin">
-    <h1>Messages</h1>
+    <h1 class="darkblue mz">Messages</h1>
   </div>
 
-  <div class="no_margin">
-    <div id="inbox_form" class="col-lg-2 col-md-3 col-sm-4 col-xs-12 no-pd">
-      <ul class="list-group">
-        <%= link_to(employers_employer_profile_show_profile_path(:employer_profile_id=>@employer_profile.id, tab: 'inbox'), remote: true) do%>
-        <li class="list-group-item">Inbox <span class="badge message-badge pull-right"><%= @employer_profile.inbox.unread_messages.size %></span></li>
+  <% if @provider.present? && @provider.inbox.messages.size > 0 || @employer_profile.present? && @employer_profile.inbox.messages.size > 0 %>
+  <div>
+  <div id="inbox_form" class="col-xs-12 no-pd">
+    <span class="inboxes">
+    <% if params[:folder] == 'inbox' %>
+    <%= link_to(employers_employer_profile_path(:employer_profile_id=>@employer_profile.id, tab: 'inbox', folder: 'inbox'), class: 'active') do %>
+      Inbox &nbsp;<span class="badge message-badge pull-right"><%= @employer_profile.inbox.unread_messages.size %></span>
+    <% end %> |
+    <% else %>
+    <%= link_to(employers_employer_profile_path(:employer_profile_id=>@employer_profile.id, tab: 'inbox', folder: 'inbox')) do %>
+      Inbox &nbsp;<span class="badge message-badge pull-right"><%= @employer_profile.inbox.unread_messages.size %></span>
+    <% end %> |
+      <% end %>
+    <% if @sent_box == true %>
+    <% if params[:folder] == 'inbox' %>
+
+      <%= link_to(employers_employer_profile_path(:employer_profile_id=>@employer_profile.id, tab: 'inbox', folder: 'Sent'), class: 'active') do %>
+        Sent
         <% end %>
-        <% if @sent_box == true %>
-          <%= link_to(employers_employer_profile_show_profile_path(:employer_profile_id=>@employer_profile.id, tab: 'inbox', folder: 'Sent'), remote: true) do%>
-            <li class="list-group-item">Sent</li>
-          <% end %>
-        <% end %>
-        <%= link_to(employers_employer_profile_show_profile_path(:employer_profile_id=>@employer_profile.id, tab: 'inbox', folder: 'Deleted'), remote: true) do%>
-          <li class="list-group-item">Deleted</li>
-        <% end %>
-      </ul>
-    </div>
+      <% else %>
+      <%= link_to(employers_employer_profile_path(:employer_profile_id=>@employer_profile.id, tab: 'inbox', folder: 'Sent')) do %>
+        Sent
+      <% end %>
+      <% end %>
+    <% end %>
+    <% if params[:folder] == 'deleted' %>
+
+      <%= link_to(employers_employer_profile_path(:employer_profile_id=>@employer_profile.id, tab: 'inbox', folder: 'deleted'), class: 'active') do %>
+        Deleted
+      <% end %>
+      <% else %>
+      <%= link_to(employers_employer_profile_path(:employer_profile_id=>@employer_profile.id, tab: 'inbox', folder: 'deleted')) do %>
+        Deleted
+      <% end %>
+    <% end %>
+    </span>
+  </div>
+
    <% @folder = (@folder||'Inbox').capitalize %>
-    <div class="col-lg-10 col-md-9 col-sm-8 col-xs-12 table-responsive" id="message_list_form">
+ <div class="row">
+    <div class="col-xs-12 table-responsive" id="message_list_form">
       <table class="table table-hover">
         <thead>
           <tr>
             <th> <%= @folder %>: FROM</th>
             <th> Date  </th>
             <th>Subject</th>
+            <th></th>
           </tr>
         </thead>
 
@@ -37,6 +61,10 @@
         </tbody>
       </table>
     </div>
+  </div>
     <div id="show_message_form"></div>
   </div>
+  <% else %>
+  <h4 class="starter">Your inbox is currently empty.<!-- To view your deleted messages, <%= link_to 'click here',employers_employer_profile_path(:employer_profile_id=>@employer_profile.id, tab: 'inbox', folder: 'deleted') %>.--></h4>
+  <% end %>
 </div>

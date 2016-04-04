@@ -1,11 +1,19 @@
 <% content_for :navigation do %>
-<%= render 'navigation' %>
+  <%= render 'navigation' %>
 <% end %>
-
-<div class="my-account-page col-md-12">
-  <h1>Messages</h1>
-</div>
-
-<div class="col-md-12">
-  <%= render 'inbox', provider: current_user.person %>
+<div class="col-xs-12">
+  <% if params.has_key?(:message_id) %>
+    <div class="row">
+      <%= render partial: 'shared/inboxes/message', locals: {message: @message} %>
+    </div>
+  <% else %>
+    <h1 class="darkblue mz">
+      Messages
+    </h1>
+      <% if current_user.has_hbx_staff_role? %>
+      <%= render 'inbox', provider: @person %>
+      <% else %>
+      <%= render 'inbox', provider: current_user.person %>
+      <% end %>
+    <% end %>
 </div>

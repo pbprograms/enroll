@@ -30,7 +30,102 @@ class InboxesController < ApplicationController
   end
 
   def destroy
-    #@message.destroy
+    if current_user.has_hbx_staff_role?
+      ### BROKER INBOX AS HBX ADMIN
+      if params.has_key?(:user)
+        person = Person.find(params[:id])
+        message = person.inbox.messages.where(id: params[:message_id]).first
+        message.update_attributes(folder: Message::FOLDER_TYPES[:deleted])
+        if person.inbox.save
+          flash[:notice] = "Successfully deleted inbox message."
+          redirect_to broker_agencies_profile_path(person, :user=>'admin', :folder=>'inbox')
+        end
+
+      ### BRROKER AGENCY INBOX AS HBXADMIN
+      # elsif params.has_key?(:broker_agency_profile)
+      #   binding.pry
+      #   person = BrokerAgencyProfile.find(params[:person_id])
+      #   message = person.inbox.messages.where(id: params[:message_id]).first
+      #   message.update_attributes(folder: Message::FOLDER_TYPES[:deleted])
+      #   if person.inbox.save
+      #     flash[:notice] = "Successfully deleted inbox message."
+      #     redirect_to broker_agencies_profile_path(person, :mailbox=>'agency', :folder=>'inbox')
+      #   end
+
+      ### INSURED INBOX AS HBXADMIN
+      elsif params.has_key?(:insured)
+        person = Person.find(params[:person_id])
+        message = person.inbox.messages.where(id: params[:message_id]).first
+        message.update_attributes(folder: Message::FOLDER_TYPES[:deleted])
+        if person.inbox.save
+          flash[:notice] = "Successfully deleted inbox message."
+          redirect_to inbox_insured_families_path(person.id, :tab=>'messages', :folder=>'inbox')
+        end
+
+      ### EMPLOYER PROFILE INBOX AS HBXADMIN
+      elsif params.has_key?(:employer_profile)
+        employer = EmployerProfile.find(params["id"])
+        message = employer.inbox.messages.where(id: params[:message_id]).first
+        message.update_attributes(folder: Message::FOLDER_TYPES[:deleted])
+        if employer.inbox.save
+          flash[:notice] = "Successfully deleted inbox message."
+          redirect_to employers_employer_profile_path(employer.id, :tab=>'inbox', :folder=>'inbox')
+        end
+
+      ### ADMIN INBOX AS HBXADMIN
+      else
+        person = HbxProfile.find(params[:id])
+        message = person.inbox.messages.where(id: params[:message_id]).first
+        message.update_attributes(folder: Message::FOLDER_TYPES[:deleted])
+        if person.inbox.save
+          flash[:notice] = "Successfully deleted inbox message."
+          redirect_to exchanges_hbx_profiles_path(person, :tab=>'inbox', :folder=>'inbox')
+        end
+      end
+
+    ### BROKER AGENCY INBOX
+    elsif params.has_key?(:mailbox)
+      person = BrokerAgencyProfile.find(params[:person_id])
+      message = person.inbox.messages.where(id: params[:message_id]).first
+      message.update_attributes(folder: Message::FOLDER_TYPES[:deleted])
+      if person.inbox.save
+        flash[:notice] = "Successfully deleted inbox message."
+        redirect_to broker_agencies_profile_path(person, :mailbox=>'agency', :folder=>'inbox')
+      end
+
+    ### BROKER INBOX
+    elsif current_user.has_broker_role?
+      person = Person.find(params[:id])
+      message = person.inbox.messages.where(id: params[:message_id]).first
+      message.update_attributes(folder: Message::FOLDER_TYPES[:deleted])
+      if person.inbox.save
+        flash[:notice] = "Successfully deleted inbox message."
+        redirect_to broker_agencies_profile_path(person, :tab=>'inbox', :folder=>'inbox')
+      end
+    end
+
+    ### EMPLOYER INBOX
+    if current_user.has_employer_staff_role?
+      employer = EmployerProfile.find(params["id"])
+      message = employer.inbox.messages.where(id: params[:message_id]).first
+      message.update_attributes(folder: Message::FOLDER_TYPES[:deleted])
+      if employer.inbox.save
+        flash[:notice] = "Successfully deleted inbox message."
+        redirect_to employers_employer_profile_path(employer.id, :tab=>'inbox', :folder=>'inbox')
+      end
+    end
+
+    ### INSURED INBOX
+    if current_user.has_consumer_role? || current_user.has_employee_role?
+      person = Person.find(params[:person_id])
+      message = person.inbox.messages.where(id: params[:message_id]).first
+      message.update_attributes(folder: Message::FOLDER_TYPES[:deleted])
+      if person.inbox.save
+        flash[:notice] = "Successfully deleted inbox message."
+        redirect_to inbox_insured_families_path(person.id, :tab=>'messages', :folder=>'inbox')
+      end
+    end
+
     @message.update_attributes(folder: Message::FOLDER_TYPES[:deleted])
   end
 

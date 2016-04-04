@@ -1,3 +1,4 @@
+<% @person.inspect %>
 <nav class="row">
   <ul>
     <li <%= menu_tab_class(@tab, 'home') %>>
@@ -9,10 +10,10 @@
       </li>
     <% end %>
     <li <%= menu_tab_class(@tab, 'documents') %>>
-      <%= link_to "Documents",  documents_index_insured_families_path(tab: 'documents') %>
+      <%= link_to "Documents", documents_index_insured_families_path(tab: 'documents') %>
     </li>
     <li <%= menu_tab_class(@tab, 'messages') %>>
-      <%= link_to(inbox_insured_families_path(tab: 'messages')) do  %>
+      <%= link_to(inbox_insured_families_path(tab: 'messages', folder: 'inbox')) do  %>
         Messages <span class="badge message-unread"><%= @person.inbox.unread_messages.try(:count) %></span>
       <% end %>
     </li>

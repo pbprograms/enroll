@@ -23,8 +23,8 @@
             <td><%= link_to broker_agency_profile.legal_name, broker_agencies_profile_path(broker_agency_profile) %></td>
             <td><%= broker_agency_profile.dba %></td>
             <td><%= broker_agency_profile.fein %></td>
-            <td><%= broker_agency_profile.entity_kind.titleize %></td>
-            <td><%= broker_agency_profile.market_kind.titleize %></td>
+            <td><%= broker_agency_profile.entity_kind %></td>
+            <td><%= broker_agency_profile.market_kind %></td>
             <td><%= link_to 'Send Secure Message'.html_safe,
             new_broker_agencies_inbox_path(id: broker_agency_profile.id, profile_id: @profile._id), class: "btn btn-default", remote: true %></td>
           </tbody>

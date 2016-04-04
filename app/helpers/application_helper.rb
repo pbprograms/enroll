@@ -292,16 +292,17 @@ module ApplicationHelper
   end
 
   def retrieve_show_path(provider, message)
-    return broker_agencies_inbox_path(provider, message_id: message.id) if provider.try(:broker_role)
+    return broker_agencies_profile_path(provider, message_id: message.id, folder: 'inbox', user: 'admin') if provider.try(:broker_role) && params.has_key?(:user)
+    return broker_agencies_profile_path(provider, message_id: message.id, folder: 'inbox') if provider.try(:broker_role)
     case(provider.model_name.name)
     when "Person"
-      insured_inbox_path(provider, message_id: message.id)
+      inbox_insured_families_path(provider, message_id: message.id, tab: 'messages')
     when "EmployerProfile"
-      employers_inbox_path(provider, message_id: message.id)
+      employers_employer_profile_path(provider, message_id: message.id, tab: 'inbox')
     when "BrokerAgencyProfile"
-      broker_agencies_inbox_path(provider, message_id: message.id)
+      broker_agencies_profile_path(provider, message_id: message.id, folder: 'inbox', mailbox: 'agency')
     when "HbxProfile"
-      exchanges_inbox_path(provider, message_id: message.id)
+      exchanges_hbx_profiles_path(provider, message_id: message.id)
     end
   end
 

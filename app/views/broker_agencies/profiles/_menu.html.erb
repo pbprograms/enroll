@@ -36,8 +36,8 @@
 
       <% end %>
       <li role="presentation" id="inbox-tab" <%= menu_tab_class(active_tab, "inbox-tab") %>>
-       <%= link_to(messages_broker_agencies_profiles_path(id: @provider), :remote => true, "aria-expanded" => "true", "aria-controls" => "inbox", "role" => "tab") do  %>
-          <span class="badge message-unread"><%=begin; @provider.inbox.unread_messages.try(:count); rescue; return 0; end %></span>
+        <%= link_to(broker_agencies_profile_path(id: @broker_agency_profile, folder: 'inbox'), "aria-expanded" => "true", "aria-controls" => "inbox", "role" => "tab") do  %>
+        <span class="badge message-unread"><%=begin; @broker_agency_profile.inbox.unread_messages.try(:count); rescue; return 0; end %></span>
         Broker Mail
        <% end %>
       </li>

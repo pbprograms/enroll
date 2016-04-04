@@ -1,27 +1,49 @@
 <div class="row">
-  <div id="inbox_form" class="col-md-3 col-sm-4 col-xs-12">
-    <ul class="list-group">
-      <%= link_to(inbox_insured_families_path(provider)) do%>
-      <li class="list-group-item">Inbox <span class="badge message-badge pull-right"><%= provider.inbox.unread_messages.size %></span></li>
+  <% if @person.inbox.messages.size > 0 %>
+  <div id="inbox_form" class="col-xs-12">
+    <span class="inboxes">
+      <% if params[:folder] == 'inbox' %>
+    <%= link_to(inbox_insured_families_path(provider, tab: 'inbox', folder: 'inbox'), class: 'active') do %>
+      Inbox &nbsp;<span class="badge message-badge pull-right"><%= provider.inbox.unread_messages.size %></span>
+    <% end %> |
+    <% else %>
+    <%= link_to(inbox_insured_families_path(provider, tab: 'inbox', folder: 'inbox')) do %>
+      Inbox &nbsp;<span class="badge message-badge pull-right"><%= provider.inbox.unread_messages.size %></span>
+    <% end %> |
       <% end %>
-      <%- if @sent_box == true %>
-      <%= link_to(inbox_insured_families_path(provider, folder: 'Sent')) do%>
-      <li class="list-group-item">Sent</li>
+    <% if @sent_box == true %>
+    <% if params[:folder] == 'inbox' %>
+
+      <%= link_to(inbox_insured_families_path(provider, tab: 'inbox', folder: 'Sent'), class: 'active') do %>
+        Sent
+        <% end %>
+      <% else %>
+      <%= link_to(inbox_insured_families_path(provider, tab: 'inbox', folder: 'Sent')) do %>
+        Sent
       <% end %>
       <% end %>
-      <%= link_to(inbox_insured_families_path(provider, folder: 'Deleted')) do%>
-      <li class="list-group-item">Deleted</li>
+    <% end %>
+    <% if params[:folder] == 'deleted' %>
+
+      <%= link_to(inbox_insured_families_path(provider, tab: 'inbox', folder: 'deleted'), class: 'active') do %>
+        Deleted
       <% end %>
-    </ul>
+      <% else %>
+      <%= link_to(inbox_insured_families_path(provider, tab: 'inbox', folder: 'deleted')) do %>
+        Deleted
+      <% end %>
+    <% end %>
+    </span>
   </div>
   <%- @folder = (@folder||'Inbox').capitalize %>
-  <div class="col-md-9 col-sm-8 col-xs-12 table-responsive" id="message_list_form">
+  <div class="col-xs-12 table-responsive" id="message_list_form">
     <table class="table table-hover">
       <thead>
         <tr>
           <th> <%= @folder %>: FROM</th>
           <th> Date  </th>
           <th>Subject</th>
+          <th></th>
         </tr>
       </thead>
 
@@ -33,4 +55,7 @@
     </table>
   </div>
   <div id="show_message_form"></div>
+  <% else %>
+  <h4 class="starter">Your inbox is currently empty.<!-- To view your deleted messages, <%= link_to 'click here',employers_employer_profile_path(:employer_profile_id=>@employer_profile.id, tab: 'inbox', folder: 'deleted') %>.--></h4>
+  <% end %>
 </div>

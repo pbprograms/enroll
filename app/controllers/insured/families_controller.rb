@@ -114,6 +114,10 @@ class Insured::FamiliesController < FamiliesController
   def inbox
     @tab = params['tab']
     @folder = params[:folder] || 'Inbox'
+    if params.has_key?(:message_id)
+      @message = @person.inbox.messages.where(id: params[:message_id]).first
+      @message.update_attributes(message_read: true)
+    end
     @sent_box = false
   end
 

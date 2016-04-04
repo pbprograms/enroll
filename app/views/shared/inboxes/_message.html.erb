@@ -1,13 +1,28 @@
-<div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 padding_none">
-  <h3 style="margin-top: 0;"> Message Details </h3>
-</div>
+<% message ||= @message if @message %>
+<div class="col-xs-12 content-bottom">
+  <h1 class="darkblue mz">
+    Message Details
+  </h1>
+  <br>
 <%- if message.present? %>
-<div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 padding_none">
   <ul class="list-group">
     <li class="list-group-item"> Sent By:  <%= "System Admin" %> <br></li>
-    <li class="list-group-item"> Subject:  <%= message.try(:subject).html_safe %> <br></li>
-    <li class="list-group-item"> <%= message.try(:body).html_safe %> <br></li>
+    <li class="list-group-item"> Subject:  <%= message.subject.to_s.html_safe %> <br></li>
+    <li class="list-group-item"> <%= message.body.to_s.html_safe %> <br></li>
   </ul>
-  <a class="btn btn-danger msg_cancel_btn" href="#"><i class="fa fa-times interaction-control-inbox-cancel"></i> Cancel</a>
+  <br/>
+  <% if @employer_profile.present? %>
+  <%= link_to '<i class="fa fa-chevron-left"></i> Back'.html_safe, employers_employer_profile_path(@employer_profile.id, :tab=>'inbox', :folder=>'inbox'), class: 'btn btn-trans' %>
+  <% elsif @person.present? %>
+  <%= link_to '<i class="fa fa-chevron-left"></i> Back'.html_safe, family_account_path(@provider, tab: 'messages', :folder=>'inbox'), class: 'btn btn-trans' %>
+  <% elsif @profile.present? %>
+  <%= link_to '<i class="fa fa-chevron-left"></i> Back'.html_safe, exchanges_hbx_profiles_path(@provider, tab: 'inbox', :folder=>'inbox'), class: 'btn btn-trans' %>
+  <% elsif @provider.present? && params.has_key?(:user) %>
+  <%= link_to '<i class="fa fa-chevron-left"></i> Back'.html_safe, broker_agencies_profile_path(@provider, :folder=>'inbox', :user=>'admin'), class: 'btn btn-trans' %>
+  <% elsif @provider.present? && params.has_key?(:mailbox) %>
+  <%= link_to '<i class="fa fa-chevron-left"></i> Back'.html_safe, broker_agencies_profile_path(@provider, :folder=>'inbox', :mailbox=>'agency'), class: 'btn btn-trans' %>
+  <% elsif @provider.present? %>
+  <%= link_to '<i class="fa fa-chevron-left"></i> Back'.html_safe, broker_agencies_profile_path(@provider, :folder=>'inbox'), class: 'btn btn-trans' %>
+  <% end %>
+  <% end %>
 </div>
-<% end %>
