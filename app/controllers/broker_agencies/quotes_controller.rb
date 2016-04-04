@@ -10,7 +10,7 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     if !params['plans'].nil? && params['plans'].count > 0
 
-      @q =  Quote.first #Quote.find(Quote.first.id)
+      @q =  Quote.find(params[:quote]) #Quote.find(Quote.first.id)
 
       @quote_results = Hash.new
 
