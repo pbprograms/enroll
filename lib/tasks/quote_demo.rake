@@ -14,6 +14,7 @@ namespace :quote_demo do
 
     if BrokerRole.find_by_npn("1234567")
       puts "Broker already exists. Run bundle exec rake quote_demo:clear to reset data"
+      return
     end
 
     puts "::: Generating Broker for Quote Demo :::"
@@ -64,6 +65,7 @@ namespace :quote_demo do
       q.relationship_benefit_for("child_under_26").premium_pct=(100)
 
       qh = q.quote_households.build
+      qh.family_id = "1"
 
       qm = qh.quote_members.build
 
@@ -111,6 +113,7 @@ namespace :quote_demo do
       q.save
 
       qh = q.quote_households.build
+      qh.family_id = "2"
       qm = qh.quote_members.build
 
       qm.first_name = "Dengo"
@@ -131,14 +134,16 @@ namespace :quote_demo do
 
 
     puts "::: Generating Broker Roles :::"
-    bk0 = p0.build_broker_role(npn: npn0, provider_kind: "assister")
+    bk0 = p0.build_broker_role(npn: npn0, provider_kind: "broker")
+    bk0.save
     generate_approved_broker(bk0, wk_addr, wk_phone, wk_email, 'quote.demo@dc.gov')
 
 
 
     office0 = OfficeLocation.new(address: {kind: "work", address_1: "Quote St", city: "Washington", state: "DC", zip: "20001"}, phone: {kind: "work", area_code: "202", number: "555-1212"})
     org0 = Organization.new(legal_name: "Quote Agency", fein: "000777000", office_locations: [office0], dba: "Acme")
-    org0.create_broker_agency_profile(primary_broker_role: bk0, market_kind: "both", entity_kind: "c_corporation")
+    org0.create_broker_agency_profile(primary_broker_role: bk0, broker_agency_contacts: [p0], market_kind: "both", entity_kind: "c_corporation")
+    org0.save
 
     p0.broker_role.broker_agency_profile_id  = org0.broker_agency_profile.id
 
