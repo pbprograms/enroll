@@ -5,13 +5,11 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def index
 
-
     @quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
-    #@quotes = Quote.all
     @plans = Plan.where("active_year" => 2016).limit(15)
 
     if !params['plans'].nil? && params['plans'].count > 0
-      #binding.pry
+
       @q =  Quote.first #Quote.find(Quote.first.id)
 
       @quote_results = Hash.new
@@ -26,7 +24,6 @@ class BrokerAgencies::QuotesController < ApplicationController
             detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employee_contribution]] }
           end
           @quote_results[p.name] = detailCost
-
         end
       end
     end
@@ -50,8 +47,6 @@ class BrokerAgencies::QuotesController < ApplicationController
 
     params.permit!
 
-    #binding.pry
-
     if (@quote.update_attributes(params[:quote].permit(
       #:employer_profile_attributes => [ :entity_kind, :dba, :legal_name],
       :quote_name,
@@ -66,9 +61,6 @@ class BrokerAgencies::QuotesController < ApplicationController
       puts @quote.errors.messages.inspect
     end
 
-    binding.pry
-
-    #redirect_to edit_broker_agencies_quote_path(@quote)
     redirect_to edit_broker_agencies_quote_path(@quote)
 
   end

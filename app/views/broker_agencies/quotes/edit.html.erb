@@ -2,9 +2,7 @@
 	<div class="container">
 	  <hr/>
 
-
-
-	<%= form_for @quote, url: {action: "update"} do |f| %>
+	<%= form_for @quote, url: {action: "update"}, class: "form-inline" do |f| %>
 
 	Quote Name: <%= f.label :quote_name %>
 
@@ -26,29 +24,34 @@
 				<div id="col<%= qhh.object.id.to_s %>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading<%= qhh.object.id.to_s %>">
 					<div class="panel-body" id="family-<%= qhh.object.id.to_s %>">
 		<%= qhh.fields_for :quote_members do |qm| %>
-			<div>
-				DOB <%= qm.text_field :dob %> First Name <%= qm.text_field :first_name %> Employee Relationship <%= qm.text_field :employee_relationship %>
-			</div>
+		<div class="form-inline">
+			<div class="form-group col-sm-4">DOB: <%= qm.text_field :dob %></div>
+			<div class="form-group col-sm-4">Name: <%= qm.text_field :first_name %></div>
+			<div class="form-group col-sm-4"><%= qm.select(:employee_relationship, [['Employee','employee'], ['Spouse','spouse'], ['Domestic partner','domestic_partner'],['Child','child_under_26']], {}, {:class => "floatlabel"})  %></div>
+		</div>
 		<% end %>
 	</div>
 </div>
 			</div>
 		<% end %>
-		<%= submit_tag("submit") %>
+		<%= submit_tag "Update Roster", class: 'btn btn-primary' %>
 		<% end %>
 
 		</div>
 
 <script>
+
+
 function addEmployeeRowToFamily(family, idx) {
-	console.log('family called ' + family)
-	table_row = $('<div>'
-	+ 'DOB <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][dob]"/> First Name <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][first_name]"  /> Employee Relationship <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][employee_relationship]"  />'
+	console.log('family called ' + family);
+	var relation_options = '<select name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][employee_relationship]"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child_under_26">child</option></select>';
+	table_row = $('<div class="form-inline">'
+	+ '<div class="form-group col-sm-4">DOB: <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][dob]"/></div><div class="form-group col-sm-4">Name: <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][first_name]"  /></div><div class="form-group col-sm-4">' + relation_options + '</div>'
 	+ '</div>');
 
 	console.log(table_row);
 
-
 	$('#family-' + family).append(table_row);
+	$('select').selectric('refresh');
 }
 </script>

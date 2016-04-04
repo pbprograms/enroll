@@ -18,7 +18,7 @@
         </div>
       </div>
       <br>
-      <%= submit_tag "Submit", class: 'btn btn-primary', id: 'waiver_reason_submit' %>
+      <%= submit_tag "Submit", class: 'btn btn-primary', id: 'QuoteCalculation' %>
       <% end %>
     </div>
   </div>
@@ -83,7 +83,7 @@
         </tr>
          <% @quotes.each do |q| %>
         <tr>
-           <td><%=link_to "#{q.id}" , "/broker_agencies/quotes/#{q.id}" %></td>
+           <td><%=link_to "#{q.id}" , "/broker_agencies/quotes/#{q.id}/edit" %></td>
            <td><%= q.quote_name %></td>
            <td><button type="button" id="close_button" data-quote-id="<%=q.id%>" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
         </tr>
@@ -109,12 +109,7 @@
     this.parentElement.parentElement.remove();
     event.preventDefault();
   };
-<<<<<<< HEAD
 
 $('.table #close_button').click(close_handler);
 
 </script>
-=======
-$('.table #close_button').click(close_handler);
-</script>
->>>>>>> c09c3c000a0bdff6085cf85a1ab27b5ce0eb6a49
