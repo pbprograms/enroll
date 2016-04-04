@@ -1,20 +1,28 @@
+# bundle exec rake quote_demo:gen
+# bundle exec rake quote_demo:clear 
+
 namespace :quote_demo do
   desc "generate demo data"
 
   task :clear => :environment do
+
+    puts "::: Clear Existing Demo Data :::"
+
+
     BrokerRole.find_by_npn("1234567").try(:destroy)
     Person.where("first_name" => "Quote", "last_name" => "Demo").first.try(:destroy)
     User.by_email("quote.demo@dc.gov").try(:destroy)
+    Organization.where("fein" => "000777000").try(:destroy)
+
     puts "Broker for Demo Deleted"
   end
 
   task :gen => :environment do
 
-    puts "::: Clear Existing Demo Data :::"
-
+    puts "::: Checking if Demo data exists :::"
     if BrokerRole.find_by_npn("1234567")
       puts "Broker already exists. Run bundle exec rake quote_demo:clear to reset data"
-      return
+      exit
     end
 
     puts "::: Generating Broker for Quote Demo :::"
