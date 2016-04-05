@@ -1,0 +1,45 @@
+<% if @carriers %>
+
+    <div class='row plan_selectors'>
+        <table class='table-striped table-hover table-sm' style='float: left' id='carriers'>
+            <th ><td> <b>Carriers</b> </td></th>
+            <%- @carriers.each do |carrier| %>	
+                 <tr id="<%=carrier[1]%>" class='criteria'><td></td><td> <%=carrier[0] %> </td></tr>
+            <% end %>
+        </table>   
+        <div style='min-width:20px; float:left'>&nbsp;&nbsp;&nbsp;</div>
+        <table class='table-striped table-hover '  style='float: left' id='metals'>
+            <th><td> <b>Metal Levels</b> </td></th>
+          <%- @metals.each do |metal| %>	
+            <tr id="<%=metal%>"  class='criteria'><td></td><td> <%= metal %> </td></tr>
+          <% end %>
+        </table>   
+      
+        <div style='min-width:20px; float:left'>&nbsp;&nbsp;&nbsp;</div>
+        <table class='table-striped table-hover '  style='float: left' id='plan_types'>
+            <th><td> <b>Plan Types</b> </td></th>
+          <%- @plan_types.each do |type| %>    
+            <tr id="<%=type%>" class='criteria'><td></td><td> <%= type %> </td></tr>
+          <% end %>
+        </table> 
+
+       <div style='min-width:20px; float:left'>&nbsp;&nbsp;&nbsp;</div>
+        <table class='table-striped table-hover '  style='float: left' id='dc_in_network'>
+            <th ><td> <b>DC Network</b> </td></th>
+          <%- @dc_network.each do |choice| %>    
+            <tr  id="<%=choice%>"class='criteria'><td></td><td> <%= choice %> </td></tr>
+          <% end %>
+        </table> 
+
+        <div style='min-width:20px; float:left'>&nbsp;&nbsp;&nbsp;</div>
+        <table class='table-striped table-hover '  style='float: left' id='nationwide'>
+            <th><td> <b>Nationwide</b> </td></th>
+          <%- @nationwide.each do |choice| %>    
+            <tr id="<%=choice%>" class='criteria'><td></td><td> <%= choice %> </td></tr>
+          <% end %>
+        </table> 
+
+    </div>
+    <br/>
+
+<% end %>

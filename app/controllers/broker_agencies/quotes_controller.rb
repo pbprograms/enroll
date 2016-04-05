@@ -4,10 +4,9 @@ class BrokerAgencies::QuotesController < ApplicationController
 
 
   def index
-
     @quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
-    @plans = Plan.where("active_year" => 2016).limit(15)
-
+    @plans =  Plan.shop_health_by_active_year(2016)
+    @plan_quote_criteria  = []
     if !params['plans'].nil? && params['plans'].count > 0
 
       @q =  Quote.find(params[:quote]) #Quote.find(Quote.first.id)
@@ -26,7 +25,20 @@ class BrokerAgencies::QuotesController < ApplicationController
           @quote_results[p.name] = detailCost
         end
       end
+    else
+      #CACHE ME PLEASE
+      #TODO
+      @plans.each{|p| @plan_quote_criteria << [p.metal_level, p.carrier_profile.organization.legal_name, p.plan_type,
+       p.deductible.gsub(/\$/,'').gsub(/,/,'').to_i, p.id.to_s, p.carrier_profile.abbrev, p.nationwide, p.dc_in_network]
+      }
+      @metals =      @plan_quote_criteria.map{|p| p[0]}.uniq.append('any')
+      @carriers =    @plan_quote_criteria.map{|p| [ p[1], p[5] ] }.uniq.append(['any','any'])
+      @plan_types =  @plan_quote_criteria.map{|p| p[2]}.uniq.append('any')
+      @dc_network =  ['true', 'false', 'any']
+      @nationwide =  ['true', 'false', 'any']
+      @select_detail = @plan_quote_criteria.to_json
     end
+
   end
 
   def edit
