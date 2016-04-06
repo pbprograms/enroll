@@ -5,6 +5,8 @@ RSpec.describe "employers/employer_profiles/my_account/_home_tab.html.erb" do
 
     let(:start_on){TimeKeeper.date_of_record.beginning_of_year}
     let(:end_on){TimeKeeper.date_of_record.end_of_year}
+    let(:end_on_negative){ TimeKeeper.date_of_record.beginning_of_year - 2.years }
+
 
     def new_organization
       instance_double(
@@ -250,6 +252,11 @@ RSpec.describe "employers/employer_profiles/my_account/_home_tab.html.erb" do
 
     it "should display a link to custom dental plans modal" do
       expect(rendered).to have_selector("a", text: "View Plans")
+    end
+
+    it "should not display minimum participation requirement" do
+        assign :end_on, end_on_negative
+        expect(rendered).to_not match(/or more needed by/i)
     end
 
   end
