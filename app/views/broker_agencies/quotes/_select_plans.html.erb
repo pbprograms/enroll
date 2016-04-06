@@ -38,8 +38,15 @@
             <tr id="<%=choice%>" class='criteria'><td></td><td> <%= choice %> </td></tr>
           <% end %>
         </table> 
-
-    </div>
+   <div style='min-width:20px; float:left'>&nbsp;&nbsp;&nbsp;</div>
+   <div style='float:left; width 550px; display: block' >
+<div> Limit maximum deductible 0-$6000 </div>
+<input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="6000" data-slider-step="1" data-slider-value="5000" style='width:500px'/>
+<br/><br/>
+<div> Limit total employer roster cost $3,000-$20,000 </div>
+<input id="ex2" data-slider-id='ex2Slider' type="text" data-slider-min="0" data-slider-max="20000" data-slider-step="1" data-slider-value="5000" style='width:500px'/>
+</div>
     <br/>
-
+</div>
+<br>
 <% end %>

@@ -37,6 +37,7 @@ class BrokerAgencies::QuotesController < ApplicationController
       @dc_network =  ['true', 'false', 'any']
       @nationwide =  ['true', 'false', 'any']
       @select_detail = @plan_quote_criteria.to_json
+      @max_deductible = 6000
     end
 
   end
