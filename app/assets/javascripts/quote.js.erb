@@ -1,0 +1,29 @@
+function plan_test(plan, criteria){
+  result = true
+  critters = criteria.length
+  for (var j=0; j< critters; j++){
+    criteria_type = criteria[j][0]
+    criteria_value = criteria[j][1]
+    if ((criteria_type == 'carriers') && (criteria_value != plan[5]))   {result=false; break; }
+    if ((criteria_type == 'metals') && (criteria_value != plan[0]))     {result=false; break; }
+    if ((criteria_type == 'plan_types') && (criteria_value != plan[2])) {result=false; break; }
+    if ((criteria_type == 'nationwide') && (criteria_value != String(plan[6]))) {result=false; break; }
+    if ((criteria_type == 'dc_in_network') && (criteria_value != String(plan[7]))) {result=false; break; }
+  }
+   if (plan[3] > deductible_value) {result=false}
+  return result
+}
+function toggle_plans(){
+  window.criteria = []
+  $.each($('.plan_selectors .active'), function() {
+      criteria_type = this.parentNode.parentNode.id
+      criteria_value = this.id
+      if (criteria_value != 'any') {window.criteria.push([criteria_type,criteria_value])}
+    })
+  for(var i = 0; i < plan_count; i++) {
+      plan = window.select_plans[i]
+      value = "[value~=" + plan[4] + "]"
+      display = plan_test(plan, window.criteria) ? 'inline' : 'none'
+      $(value).parent().css('display', display)
+  }
+}

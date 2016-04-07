@@ -6,14 +6,20 @@
       <%= render partial: 'select_plans' %>
 
       <%= form_tag(broker_agencies_quotes_root_path, method: :get) do  %>
+
+     <input name='pct_employer' value='50' type='hidden'>
+     <input name='pct_spouse' value='0' type='hidden'>
+     <input name='pct_partner' value='0' type='hidden'>
+     <input name='pct_child' value='0' type='hidden'>
+    <%= hidden_field_tag(rb_emp: '777') %>
       <%= select_tag "quote", options_from_collection_for_select(@quotes, "id", "quote_name"), { } %>
 
+      <%= render partial: 'benefit_sliders'%>
       <div>
         <div class="btn-group" data-toggle="buttons" style='height: 400px; overflow-y: scroll'>
           <% @plans.each_with_index do |p,index| %>
 
-          <label class="btn btn-small btn-primary <%= "active" if params['plans'].try(:include?, p.id.to_s) %>"
-            data-behavior = <%="plan_quote_#{index}"%>    >
+          <label class="btn btn-small btn-primary <%= "active" if params['plans'].try(:include?, p.id.to_s) %>" >
             <input name="plans[]" <%= "checked" if params['plans'].try(:include?, p.id.to_s) %> type="checkbox" autocomplete="off" value="<%= p.id %>"><%= p.name %>
           </label>
           <% end %>
@@ -116,58 +122,29 @@
 
 $('.table #close_button').click(close_handler);
 
-function plan_test(plan, criteria){
-  result = true
-  critters = criteria.length
-  for (var j=0; j< critters; j++){
-    criteria_type = criteria[j][0]
-    criteria_value = criteria[j][1]
-    if ((criteria_type == 'carriers') && (criteria_value != plan[5]))   {result=false; break; }
-    if ((criteria_type == 'metals') && (criteria_value != plan[0]))     {result=false; break; }
-    if ((criteria_type == 'plan_types') && (criteria_value != plan[2])) {result=false; break; }
-    if ((criteria_type == 'nationwide') && (criteria_value != String(plan[6]))) {result=false; break; }
-    if ((criteria_type == 'dc_in_network') && (criteria_value != String(plan[7]))) {result=false; break; }
-    console.log('hi', plan[3], deductible_value)
-    if (plan[3] > deductible_value) {return false; break;}
-  }
-  return result
-}
 $('.plan_selectors .criteria').on('click',function(){
                               selected=this; sibs = $(selected).siblings();
                               $.each(sibs, function(){ this.className='criteria' }) ;
                               selected.className='active'
                             })
-
-window.select_plans = <%=raw @plan_quote_criteria %>
-select_deductible = <%= @max_deductible %>
-deductible_value = select_deductible
-plan_count = window.select_plans.length
-$('.plan_selectors table').on('click', function() {
-  window.criteria = []
-  $.each($('.plan_selectors .active'), function() {
-      criteria_type = this.parentNode.parentNode.id
-      criteria_value = this.id
-      if (criteria_value != 'any') {window.criteria.push([criteria_type,criteria_value])}
+$(document).on('ready page:load', function () {
+    window.select_plans = <%=raw @plan_quote_criteria %>
+    var select_deductible = 0
+    select_deductible = <%= @max_deductible %>
+    deductible_value = select_deductible
+    plan_count = window.select_plans.length
+    $('.plan_selectors table').on('click', function() {
+      toggle_plans()
     })
-  for(var i = 0; i < plan_count; i++) {
-      plan = window.select_plans[i]
-      value = "[value~=" + plan[4] + "]"
-      display = plan_test(plan, window.criteria) ? 'inline' : 'none'
-      $(value).parent().css('display', display)
-  }
+    $('#ex1').bootstrapSlider({});
+    $('#ex2').bootstrapSlider({});
+    $('#pct_employee').bootstrapSlider({});
+    $('#pct_spouse').bootstrapSlider({});
+    $('#pct_partner').bootstrapSlider({});
+    $('#pct_child').bootstrapSlider({});
+    $('#ex1').on('slideStop', function(){deductible_value = this.value; 
+      toggle_plans();
+      console.log(this.value, 'v')})
 })
-$('#ex1').bootstrapSlider({
-  formatter: function(value) {
-    return 'Current value: ' + value;
-  }
-});
-$('#ex1').on('slideStop', function(){deductible_value = this.value; 
-  $('.plan_selectors table').trigger('click')
-  console.log(this.value)})
-$('#ex2').bootstrapSlider({
-  formatter: function(value) {
-    return 'Current value: ' + value;
-  }
-});
 
 </script>
