@@ -45,7 +45,7 @@ class Quote
     cost.round(2)
   end
 
-  def roster_employee_contribution(plan_id)
+  def roster_employeer_contribution(plan_id)
     p = Plan.find(plan_id)
     cost = 0
     self.quote_households.each do |hh|
