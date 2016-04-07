@@ -32,7 +32,8 @@ class Quote
 
   embeds_many :quote_relationship_benefits, cascade_callbacks: true
 
-  accepts_nested_attributes_for :quote_households
+  # accepts_nested_attributes_for :quote_households 
+  accepts_nested_attributes_for :quote_households, reject_if: :all_blank
 
 
   def roster_employee_cost(plan_id)

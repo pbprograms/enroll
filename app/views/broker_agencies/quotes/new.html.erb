@@ -1,81 +1,73 @@
 
 	<div class="container">
-	  <div class="row">
 	  <hr/>
-	    <%= link_to 'Add New Employee', "#", class: "btn btn-trans" ,id: "add_employee" %>
-	    <%= link_to 'Upload Employee Roster' , upload_employee_roster_broker_agencies_quotes_path , class: "btn btn-trans" , remote: true  ,id: "upload_employees" %> <br>
-	  </div>
-	  <hr/>
-	  <div class="row">
-	  <%=form_tag broker_agencies_quotes_path , :method => "post" do %>
-	    <%= csrf_meta_tags %>
-	  	<%=label_tag 'Name of the Quote'%> <%= text_field_tag name="quote_name" , value="New_quote_#{DateTime.now().strftime("%Y%m%d%H%M%S")}"%> <br>
-	  	<hr/>
-	    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-	      <div class="table-responsive">
-	        <table class="table table-wrapper" style="opacity: 1;">
-	        <thead>
-	          <tr>
-	            <th>Family ID</th>
-	            <th>Relationship</th>
-	            <th>DOB</th>
-	            <th></th>
-	          </tr>
-	        </thead>
-	        <tbody id="table-body">
-	          <% if @employee_roster
-	             @employee_roster.each_with_index do |employee,index|%>
-	            <tr>
-	              <td><%=text_field_tag("employee_roster[#{index}][family_id]" , employee[0], id: "family_id")%></td>
-	              <td><select name="employee_roster[#{index}][employee_relationship]" id="relationship" class="form-control">
-	                <%= options_for_select(['Employee', 'Spouse', 'Domestic partner',
-	                  'Child'], employee[1]) %></select></td>
-	              <td><%=text_field_tag("employee_roster[#{index}][dob]" , employee[2] ,id: "datepicker-#{index}")%></td>
-	              <td><button type="button" id="close_button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
-	            </tr>
-	            <%end%>
-	          <%end%>
-	        </tbody>
-	        </table>
-	      </div>
-	    </div>
-	    <br>
-	    </div>
-	    <hr/>
-	    <div class="row">
-	    <input type="button" onclick="history.back();" class="btn btn-trans" value="Back">
-	    
-	    <input type="submit" class= "btn btn-trans" value="Save Quote" id="submit"/>
-	  	</div>
-	  <%end%>
-	  <hr/>
-	</div>
+	  <%= link_to 'Upload Employee Roster' , upload_employee_roster_broker_agencies_quotes_path , class: "btn btn-trans" , remote: true  ,id: "upload_employees" %> <br>
 
-	<script type="text/javascript">
-	var counter = 1;
-	var close_handler = function(){
+	<%= form_for @quote, url: {action: "create"}, metion: "post" , class: "form-inline" do |f| %>
+		<hr/>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+
+	<%= f.fields_for :quote_households do |qhh| %>
+		  <div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="headingOne">
+					<h4 class="panel-title">
+						<a role="button" data-toggle="collapse" data-parent="#accordion" href="#col<%= qhh.object._id.to_s %>" aria-expanded="true" aria-controls="col<%= qhh.object.id.to_s %>">
+							Family Id:
+						</a>
+
+						<%= qhh.text_field :family_id %>
+						<button type="button" class="btn btn-default" aria-label="Left Align" onclick="addEmployeeRowToFamily('<%=qhh.object.id.to_s%>',counter)">
+							<span class="glyphicon glyphicon-user" aria-hidden="true"></span> Add member to this family
+						</button>
+					</h4>
+				</div>
+				<div id="col<%= qhh.object.id.to_s %>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading<%= qhh.object.id.to_s %>">
+					<div class="panel-body" id="family-<%= qhh.object.id.to_s %>">
+		<%= qhh.fields_for :quote_members do |qm| %>
+		<div class="row form-inline">
+			<div class="form-group col-sm-4">DOB: <%= qm.text_field :dob , {:class => "uidatepicker", :name=>"quote[quote_households_attributes][0][quote_members_attributes][0][dob]" } %></div>
+			<div class="form-group col-sm-4">Name: <%= qm.text_field :first_name  , {:name =>"quote[quote_households_attributes]['+idx+'][quote_members_attributes][0][first_name]"} %></div>
+			<div class="form-group col-sm-3"><%= qm.select(:employee_relationship, [['Employee','employee'], ['Spouse','spouse'], ['Domestic partner','domestic_partner'],['Child','child_under_26']], {}, {:class => "floatlabel",:name => "quote[quote_households_attributes][0][quote_members_attributes][0][employee_relationship]"})  %></div>
+			<div class="form-group col-sm-1"><button type="button" id="remove_member_button"  class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+		</div>
+		<% end %>
+	</div>
+</div>
+			</div>
+		<% end %>
+		<hr/>
+		<input type="button" onclick="history.back();" class="btn btn-trans" value="Back">
+		<input type="submit" class= "btn btn-trans" value="Save Quote" id="submit"/>
+		<% end %>
+
+		</div>
+
+<script>
+var counter= 1;
+$(".uidatepicker").datepicker();
+var remove_member_handler = function(){
 	    $(this).parent().parent().remove();
 	  };
+$('button#remove_member_button').click(remove_member_handler);
 
-	var date_handler = function() {
+var date_handler = function() {
 	    $(this).datepicker();
 	    $(this).datepicker("show");
-	  };
+	};
 
-	  $("#upload_employees").click(function(){
-	    $('#myModal').modal('show');
-	  });
+function addEmployeeRowToFamily(family, idx) {
+	console.log('family called ' + family);
+	var relation_options = '<select name="quote[quote_households_attributes][0][quote_members_attributes]['+idx+'][employee_relationship]"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child_under_26">child</option></select>';
+	table_row = $('<div class="row form-inline">'
+	+ '<div class="form-group col-sm-4">DOB: <input type="text" class="uidatepicker" name="quote[quote_households_attributes][0][quote_members_attributes]['+idx+'][dob]"/></div><div class="form-group col-sm-4">Name: <input type="text" name="quote[quote_households_attributes][0][quote_members_attributes]['+idx+'][first_name]"  /></div><div class="form-group col-sm-3">' + relation_options + '</div>' + 
+		'<div class="form-group col-sm-1"><button type="button" id="close_button" data-quote-id="" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
+	+ '</div>');
 
-	  $('#add_employee').click(function(){
-	  
-	  var relation_options = '<select name="employee_roster['+counter+'][employee_relationship]" class="form-control"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child">child</option></select>';
-
-	  table_row = $('<tr><td><input  name="employee_roster['+counter+'][family_id]" class="" type="text"></td><td>'+relation_options+'</td><td><input type="text" name="employee_roster['+counter+'][dob]" id="datepicker-'+counter+'" class=""></td><td><button type="button" id="close_button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td></tr>');
-
-	  $('#table-body').append(table_row);
-	  $("#table-body #datepicker-"+counter).focus(date_handler);
-	  $('#table-body #close_button').click(close_handler);
-	  counter+=1;
-	  });
-
-	</script>
+	console.log(table_row);
+	counter += 1 ;
+	$('#family-' + family).append(table_row);
+	$(".uidatepicker").focus(date_handler);
+	$('select').selectric('refresh');
+}
+</script>

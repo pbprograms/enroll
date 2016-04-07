@@ -52,44 +52,27 @@ class BrokerAgencies::QuotesController < ApplicationController
     @quote.quote_households << qhh
   end
 
+  def new
+    @quote = Quote.new
+    @quote.quote_households.build
+  end
+
   def update
-
     @quote = Quote.find(params[:id])
-
     sanitize_quote_roster_params
-
-    params.permit!
-
-    if (@quote.update_attributes(params[:quote].permit(
-      #:employer_profile_attributes => [ :entity_kind, :dba, :legal_name],
-      :quote_name,
-      :quote_households_attributes => [
-        :id,
-        :family_id,
-        :quote_members_attributes => [:id, :first_name, :dob, :employee_relationship]]
-    )))
-      puts "Saved!"
+    if (@quote.update_attributes(quote_params))
+      redirect_to  broker_agencies_quotes_root_path ,  :flash => { :notice => "Successfully updated the employee roster" }
     else
-      puts "Error!"
       puts @quote.errors.messages.inspect
+      render "edit" , :flash => {:error => "Unable to update the employee roster" }
     end
-
     redirect_to edit_broker_agencies_quote_path(@quote)
-
   end
 
   def create
-  	quote = Quote.new(params.permit(:quote_name))
+    quote = Quote.new(quote_params)
     quote.build_relationship_benefits
     quote.broker_role_id= current_user.person(:try).broker_role.id
-    employee_roster = employee_roster_group_by_family_id
-  	employee_roster.each do |family_id, family_members|
-      house_hold = QuoteHousehold.new
-      family_members.each do |family_member|
-  		  house_hold.quote_members << QuoteMember.new(family_member.permit(:family_id,:employee_relationship,:dob))
-  		end
-      quote.quote_households<< house_hold
-    end
     if quote.save
       redirect_to  broker_agencies_quotes_root_path ,  :flash => { :notice => "Successfully saved the employee roster" }
     else
@@ -100,7 +83,6 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def show
     @quote = Quote.find(params[:id])
-    @employee_roster = @quote.quote_households.map(&:quote_members).flatten
   end
 
 	def build_employee_roster
@@ -127,6 +109,15 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
  private
+
+ def quote_params
+    params.require(:quote).permit(
+                    :quote_name, 
+                    :broker_role_id,
+                    :quote_households_attributes => [ :id, :family_id , 
+                                       :quote_members_attributes => [ :id, :first_name ,:dob, 
+                                                                      :employee_relationship,:_delete ] ] )
+ end
 
  def sanitize_quote_roster_params
    params[:quote][:quote_households_attributes].each do |key, fid|
