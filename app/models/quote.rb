@@ -41,7 +41,7 @@ class Quote
     cost = 0
     self.quote_households.each do |hh|
       pcd = PlanCostDecorator.new(p, hh, self, p)
-      cost = cost + pcd.total_employee_cost
+      cost = cost + pcd.total_employee_cost.round(2)
     end
     cost.round(2)
   end
@@ -51,7 +51,7 @@ class Quote
     cost = 0
     self.quote_households.each do |hh|
       pcd = PlanCostDecorator.new(p, hh, self, p)
-      cost = cost + pcd.total_employer_contribution
+      cost = cost + pcd.total_employer_contribution.round(2)
     end
     cost.round(2)
   end
