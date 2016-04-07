@@ -34,6 +34,48 @@ class Quote
 
   accepts_nested_attributes_for :quote_households
 
+
+  def roster_employee_cost(plan_id)
+    p = Plan.find(plan_id)
+    cost = 0
+    self.quote_households.each do |hh|
+      pcd = PlanCostDecorator.new(p, hh, self, p)
+      cost = cost + pcd.total_employee_cost
+    end
+    cost.round(2)
+  end
+
+  def roster_employee_contribution(plan_id)
+    p = Plan.find(plan_id)
+    cost = 0
+    self.quote_households.each do |hh|
+      pcd = PlanCostDecorator.new(p, hh, self, p)
+      cost = cost + pcd.total_employer_contribution
+    end
+    cost.round(2)
+  end
+
+  def build_relationship_benefits
+    self.quote_relationship_benefits = PERSONAL_RELATIONSHIP_KINDS.map do |relationship|
+       self.quote_relationship_benefits.build(relationship: relationship, offered: true)
+    end
+  end
+
+  def calc_by_plan(plan_id)
+
+    if quote_households.exists?
+
+      quote_households.each do |hh|
+        puts "Found household of size " + hh.quote_members.count.to_s
+      end
+    end
+  end
+
+  def relationship_benefit_for(relationship)
+    quote_relationship_benefits.where(relationship: relationship).first
+  end
+
+
   def calc
 
     rp1 = self.quote_reference_plans.build(reference_plan_id:  "56e6c4e53ec0ba9613008f6d")
@@ -54,7 +96,6 @@ class Quote
 
         rp1.quote_results << pcd.get_family_details_hash
       end
-
 
 
       self.save
@@ -136,26 +177,6 @@ class Quote
 
     self.calc
 
-  end
-
-  def build_relationship_benefits
-    self.quote_relationship_benefits = PERSONAL_RELATIONSHIP_KINDS.map do |relationship|
-       self.quote_relationship_benefits.build(relationship: relationship, offered: true)
-    end
-  end
-
-  def calc_by_plan(plan_id)
-
-    if quote_households.exists?
-
-      quote_households.each do |hh|
-        puts "Found household of size " + hh.quote_members.count.to_s
-      end
-    end
-  end
-
-  def relationship_benefit_for(relationship)
-    quote_relationship_benefits.where(relationship: relationship).first
   end
 
 end
