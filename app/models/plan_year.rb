@@ -328,10 +328,50 @@ class PlanYear
   end
 
   def total_enrolled_count
-    if self.employer_profile.census_employees.count < 100
-      enrolled.count { |e| e.has_active_health_coverage? }
-    else
-      0
+#    if self.employer_profile.census_employees.count < 100
+#      enrolled.count # { |e| e.has_active_health_coverage? }
+#    else
+#      0
+#    end
+    total_enrolled_using_pipeline
+  end
+
+  def total_enrolled_using_pipeline
+    bga_ids = enrolled_benefit_group_ids
+    total_enrolled_policies_from_benefit_group_ids(bga_ids)
+  end
+
+  def total_enrolled_policies_from_benefit_group_ids(bga_ids)
+    Family.collection.aggregate([
+      {"$match" =>
+         { "households.hbx_enrollments.benefit_group_assignment_id" => { "$in" => bga_ids} } },
+      {"$unwind" => "$households"},
+      {"$unwind" => "$households.hbx_enrollments"},
+      {"$match" => {
+        "households.hbx_enrollments.coverage_kind" => "health",
+        "households.hbx_enrollments.benefit_group_assignment_id" => { "$in" => bga_ids},
+        "households.hbx_enrollments.aasm_state" => {"$in" => (HbxEnrollment::ENROLLED_STATUSES + HbxEnrollment::RENEWAL_STATUSES)}
+      }},
+      {"$group" => {"_id" => "$_id"}}
+    ]).count
+  end
+
+  def enrolled_benefit_group_ids
+    bg_ids = benefit_groups.map(&:id)
+    bga_records = CensusEmployee.collection.aggregate([
+      { "$match" => 
+        { "benefit_group_assignments.benefit_group_id" => {"$in" => bg_ids} } },
+      { "$unwind" => "$benefit_group_assignments" },
+      { "$match" => {
+        "benefit_group_assignments.benefit_group_id" => {"$in" => bg_ids},
+    #    "benefit_group_assignments.is_active" => true,
+        "benefit_group_assignments.aasm_state" => {"$in" => BenefitGroupAssignment::COUNTS_TOWARD_EMPLOYER_TOTAL_STATES},
+        "aasm_state" => {"$in" => CensusEmployee::EMPLOYMENT_ACTIVE_STATES}
+      }},
+      {"$group" => {"_id" => "$benefit_group_assignments._id"}}
+    ])
+    bga_records.map do |bgar|
+      bgar["_id"]
     end
   end
 
@@ -360,7 +400,7 @@ class PlanYear
   end
 
   def is_open_enrollment_closed?
-    open_enrollment_end_on.end_of_day < TimeKeeper.date_of_record.beginning_of_day
+    open_enrollment_end_on < TimeKeeper.date_of_record
   end
 
   # Determine enrollment composition compliance with HBX-defined guards

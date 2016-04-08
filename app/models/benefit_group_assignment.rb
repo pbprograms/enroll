@@ -23,6 +23,8 @@ class BenefitGroupAssignment
 
   scope :renewing,       ->{ any_in(aasm_state: RENEWING) }
 
+  COUNTS_TOWARD_EMPLOYER_TOTAL_STATES = %w(coverage_selected coverage_waived)
+
   def self.by_benefit_group_id(bg_id)
     census_employees = CensusEmployee.where({
       "benefit_group_assignments.benefit_group_id" => bg_id
@@ -187,7 +189,7 @@ class BenefitGroupAssignment
     self.errors.add(:benefit_group, "benefit_group required") unless benefit_group.present?
 
     if coverage_selected?
-      self.errors.add(:hbx_enrollment, "hbx_enrollment required") if hbx_enrollment.blank?
+      self.errors.add(:hbx_enrollment, "hbx_enrollment required") if hbx_enrollment_id.blank?
     end
 
     if hbx_enrollment.present?

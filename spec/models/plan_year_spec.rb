@@ -1,5 +1,9 @@
 require 'rails_helper'
 
+RSpec::Matchers.define :array_order_agnostic_arg do |x|
+    match { |actual| x.sort == actual.sort }
+end
+
 describe PlanYear, :type => :model, :dbclean => :after_each do
   it { should validate_presence_of :start_on }
   it { should validate_presence_of :end_on }
@@ -860,12 +864,23 @@ describe PlanYear, :type => :model, :dbclean => :after_each do
                 end
 
                 context "and three of the six employees have enrolled" do
+                  let(:family_collection_mock) { double }
+
                   before do
+                    bga_ids = []
                     census_employees[1..employee_count - 4].each do |ee|
-                      ee.active_benefit_group_assignment.select_coverage
-                      ee.save
+                      bga = ee.active_benefit_group_assignment
+                      bga.hbx_enrollment_id = BSON::ObjectId.new
+                      bga.select_coverage!
+                      ee.save!
                     end
-                    allow(HbxEnrollment).to receive(:find_shop_and_health_by_benefit_group_assignment).and_return [hbx_enrollment]
+                    census_employees.each do |ee|
+                      bga = ee.active_benefit_group_assignment
+                      if bga.aasm_state.in?(BenefitGroupAssignment::COUNTS_TOWARD_EMPLOYER_TOTAL_STATES)
+                        bga_ids << bga.id
+                      end
+                    end
+                    allow(workflow_plan_year_with_benefit_group).to receive(:total_enrolled_policies_from_benefit_group_ids).with(array_order_agnostic_arg(bga_ids)).and_return(bga_ids.count)
                   end
 
                   it "should include all eligible employees" do
@@ -884,14 +899,6 @@ describe PlanYear, :type => :model, :dbclean => :after_each do
                     expect(workflow_plan_year_with_benefit_group.additional_required_participants_count).to eq 1.0
                   end
 
-                  context "greater than 100 employees " do
-                    let(:employee_count)    { 101 }
-
-                    it "return 0" do
-                      expect(workflow_plan_year_with_benefit_group.total_enrolled_count).to eq 0
-                    end
-                  end
-                  
                   context "and the plan effective date is Jan 1" do
                     before do
                       workflow_plan_year_with_benefit_group.start_on = Date.new(2016, 1, 1)
@@ -914,8 +921,18 @@ describe PlanYear, :type => :model, :dbclean => :after_each do
 
                   context "and five of the six employees have enrolled or waived coverage" do
                     before do
-                      census_employees[employee_count - 1].active_benefit_group_assignment.select_coverage
-                      census_employees[employee_count - 1].save
+                      bga_ids = []
+                      new_bga = census_employees[employee_count - 1].active_benefit_group_assignment
+                      new_bga.hbx_enrollment_id = BSON::ObjectId.new
+                      new_bga.select_coverage!
+                      census_employees[employee_count - 1].save!
+                      census_employees.each do |ee|
+                        bga = ee.active_benefit_group_assignment
+                        if bga.aasm_state.in?(BenefitGroupAssignment::COUNTS_TOWARD_EMPLOYER_TOTAL_STATES)
+                          bga_ids << bga.id
+                        end
+                      end
+                      allow(workflow_plan_year_with_benefit_group).to receive(:total_enrolled_policies_from_benefit_group_ids).with(array_order_agnostic_arg(bga_ids)).and_return(bga_ids.count)
                     end
 
                     it "should NOT raise enrollment errors" do
@@ -924,6 +941,14 @@ describe PlanYear, :type => :model, :dbclean => :after_each do
 
                     context "and open enrollment ends" do
                       before do
+                        bga_ids = []
+                        census_employees.each do |ee|
+                          bga = ee.active_benefit_group_assignment
+                          if bga.aasm_state.in?(BenefitGroupAssignment::COUNTS_TOWARD_EMPLOYER_TOTAL_STATES)
+                            bga_ids << bga.id
+                          end
+                        end
+                        allow_any_instance_of(PlanYear).to receive(:total_enrolled_policies_from_benefit_group_ids).with(array_order_agnostic_arg(bga_ids)).and_return(bga_ids.count)
                         TimeKeeper.set_date_of_record(workflow_plan_year_with_benefit_group.open_enrollment_end_on + 1.day)
                       end
 

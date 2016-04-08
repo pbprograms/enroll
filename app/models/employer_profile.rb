@@ -386,6 +386,7 @@ class EmployerProfile
         orgs = Organization.exists(:"employer_profile.employer_profile_account._id" => true).not_in(:"employer_profile.employer_profile_account.aasm_state" => %w(canceled terminated))
         orgs.each do |org|
           org.employer_profile.employer_profile_account.advance_billing_period!
+          org.save!
           if org.employer_profile.active_plan_year.present?
             Factories::EmployerRenewal(org.employer_profile) if org.employer_profile.today == (org.employer_profile.active_plan_year.end_on - 3.months + 1.day)
           end
@@ -434,8 +435,7 @@ class EmployerProfile
         org.employer_profile.today = new_date
         org.employer_profile.advance_date! if org.employer_profile.may_advance_date?
         plan_year = org.employer_profile.published_plan_year
-        plan_year.advance_date! if plan_year && plan_year.may_advance_date?
-        plan_year
+        (plan_year.advance_date! && plan_year.save!) if plan_year && plan_year.may_advance_date?
       end
     end
   end

@@ -106,7 +106,7 @@ describe EmployerProfileAccount, type: :model, dbclean: :after_each do
       let(:new_employer_profile_account) { persisted_employer_profile.employer_profile_account }
 
       def persisted_new_employer_profile_account
-        EmployerProfileAccount.find(new_employer_profile_account.id)
+        EmployerProfile.find(persisted_employer_profile.id).employer_profile_account
       end
 
       let(:benefit_group_assignment)    { BenefitGroupAssignment.new(
@@ -119,10 +119,15 @@ describe EmployerProfileAccount, type: :model, dbclean: :after_each do
                                             benefit_group_assignments: [benefit_group_assignment]
                                           ) }
 
-      before do
+      let(:hbx_enrollment_id) { BSON::ObjectId.new }
+
+      before(:each) do
         plan_year.publish!
-        allow_any_instance_of(CensusEmployee).to receive(:has_active_health_coverage?).and_return(true)
-        census_employee.active_benefit_group_assignment.select_coverage!
+        bga = census_employee.benefit_group_assignments.where({:benefit_group_id => benefit_group.id}).first
+        bga.hbx_enrollment_id = hbx_enrollment_id
+        bga.select_coverage!
+        allow_any_instance_of(PlanYear).to receive(:total_enrolled_policies_from_benefit_group_ids).with([bga.id]).and_return(1)
+
 
         TimeKeeper.set_date_of_record(open_enrollment_end_on + 1.day)
         new_employer_profile_account
