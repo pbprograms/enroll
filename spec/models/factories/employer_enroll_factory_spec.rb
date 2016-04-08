@@ -29,7 +29,7 @@ RSpec.describe Factories::EmployerEnrollFactory, type: :model, dbclean: :after_e
         next if ce.is_business_owner?
         enrollment.update_attributes(:aasm_state => 'coverage_selected')
       end
-
+      org.reload
       org
     }
 
@@ -137,7 +137,7 @@ RSpec.describe Factories::EmployerEnrollFactory, type: :model, dbclean: :after_e
         employer_enroll_factory.employer_profile = employer_profile
         employer_enroll_factory.begin
 
-        renewing_plan_year = employer_profile.plan_years.detect{|py| (py.start_on..py.end_on).cover?(date_of_record_to_use) }
+        renewing_plan_year = employer_profile.plan_years.detect{ |py| (py.start_on..py.end_on).cover?(date_of_record_to_use) }
         expect(renewing_plan_year.aasm_state).to eq 'active'
 
         employer_profile.census_employees.each do |ce|

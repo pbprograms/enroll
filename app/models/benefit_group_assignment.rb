@@ -189,7 +189,7 @@ class BenefitGroupAssignment
     self.errors.add(:benefit_group, "benefit_group required") unless benefit_group.present?
 
     if coverage_selected?
-      self.errors.add(:hbx_enrollment, "hbx_enrollment required") if hbx_enrollment_id.blank?
+      self.errors.add(:hbx_enrollment, "hbx_enrollment required") if (hbx_enrollment.blank? && hbx_enrollment_id.blank?)
     end
 
     if hbx_enrollment.present?
