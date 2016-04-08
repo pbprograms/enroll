@@ -2,9 +2,9 @@
 	<div class="container">
 	  <hr/>
 
-<%= form_for @quote, url: {action: "update"}, class: "form-inline" do |f| %>
+<%= form_for @quote, url: {action: "update"}, method: "put", class: "form-inline" do |f| %>
 
-	<%=label_tag 'Name of the Quote'%> <%= text_field_tag name="quote_name" , value="New_quote_#{DateTime.now().strftime("%Y%m%d%H%M%S")}"%> <br>
+	<%=label_tag 'Name of the Quote'%> <%= text_field_tag name="quote_name"%> <br>
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
 
