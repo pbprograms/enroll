@@ -1,0 +1,56 @@
+	<%= fields_for :quote_households do |qhh| %>
+	<% index= "#{Time.now.to_i}" %>
+		<div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="headingOne">
+					<h4 class="panel-title">
+						<a role="button" data-toggle="collapse" data-parent="#accordion" href="#" aria-expanded="true" aria-controls="col">
+							Family Id:
+						</a>
+
+						<%= qhh.text_field :family_id , {:name =>"quote[quote_households_attributes][#{index}][family_id]"}  %>
+						<button id="btn_add_emp" data-index="<%=index%>" type="button" class="btn btn-default" aria-label="Left Align">
+							<span class="glyphicon glyphicon-user" aria-hidden="true"></span> Add member to this family
+						</button>
+					</h4>
+				</div>
+				<div id="col" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading">
+					<div class="panel-body" id="family">
+		<%= qhh.fields_for :quote_members do |qm| %>
+		<div class="row form-inline">
+			<!-- Dynamically add the quote memeber -->
+		</div>
+		<% end %>
+	</div>
+</div>
+</div>
+<% end %>
+
+<script>
+var counter= 1;
+$(".uidatepicker").datepicker();
+var date_handler = function() {
+	    $(this).datepicker();
+	    $(this).datepicker("show");
+	};
+
+var remove_member_handler = function(){
+	$(this).parent().parent().remove();
+};
+
+$("button#btn_add_emp").click( function(){
+		var idx = $(this).attr("data-index");
+		var relation_options = '<select name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][employee_relationship]"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child_under_26">child</option></select>';
+		
+		table_row = $('<div class="row form-inline">'
+								+ '<div class="form-group col-sm-4">DOB: <input type="text" class="uidatepicker" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][dob]"/></div><div class="form-group col-sm-4">Name: <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][first_name]"  /></div><div class="form-group col-sm-3">' + relation_options + '</div>' + 
+									'<div class="form-group col-sm-1"><button type="button" id="remove_member_button" data-quote-id="" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'	
+									+ '</div>');
+
+								counter += 1 ;
+								$(this).parent().parent().parent().find("#col .panel-body").append(table_row);
+								$(".uidatepicker").focus(date_handler);
+								$('button#remove_member_button').click(remove_member_handler);
+								$('select').selectric('refresh');
+
+}); // add emp click end
+</script>
