@@ -16,7 +16,7 @@ function plan_test(plan, criteria){
 function toggle_plans(){
   window.criteria = []
   $.each($('.plan_selectors .active'), function() {
-      criteria_type = this.parentNode.parentNode.id
+      criteria_type = this.parentNode.id
       criteria_value = this.id
       if (criteria_value != 'any') {window.criteria.push([criteria_type,criteria_value])}
     })

@@ -2,9 +2,13 @@
 <div class="container" id="inbox_provider_form">
   <div class="row">
     <div class="col-md-12">
-      <h3>Compare Quotes</h3>
+      <h4>Compare Quotes</h4>
       <%= render partial: 'select_plans' %>
 
+      <%= render partial: 'benefit_sliders'%>
+    </div>
+    <div class='col-md-12'>
+      <br><br>
       <%= form_tag(broker_agencies_quotes_root_path, method: :get) do  %>
 
      <input name='pct_employer' value='50' type='hidden'>
@@ -14,7 +18,6 @@
     <%= hidden_field_tag(rb_emp: '777') %>
       <%= select_tag "quote", options_from_collection_for_select(@quotes, "id", "quote_name"), { } %>
 
-      <%= render partial: 'benefit_sliders'%>
       <div>
         <div class="btn-group" data-toggle="buttons" style='height: 400px; overflow-y: scroll'>
           <% @plans.each_with_index do |p,index| %>
@@ -133,7 +136,7 @@ $(document).on('ready page:load', function () {
     select_deductible = <%= @max_deductible %>
     deductible_value = select_deductible
     plan_count = window.select_plans.length
-    $('.plan_selectors table').on('click', function() {
+    $('.plan_selectors .criteria').on('click', function() {
       toggle_plans()
     })
     $('#ex1').bootstrapSlider({});
@@ -141,7 +144,9 @@ $(document).on('ready page:load', function () {
     $('#pct_employee').bootstrapSlider({});
     $('#pct_spouse').bootstrapSlider({});
     $('#pct_partner').bootstrapSlider({});
-    $('#pct_child').bootstrapSlider({});
+    $('#under_26').bootstrapSlider({});
+    $('#over_26').bootstrapSlider({});
+
     $('#ex1').on('slideStop', function(){deductible_value = this.value; 
       toggle_plans();
       console.log(this.value, 'v')})

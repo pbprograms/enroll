@@ -1,53 +1,49 @@
 <% if @carriers %>
+    <div class=' plan_selectors'>
 
-    <div class='row plan_selectors'>
-        <table class='table-striped table-hover table-sm' style='float: left' id='carriers'>
-            <th ><td> <b>Carriers</b> </td></th>
-            <%- @carriers.each do |carrier| %>	
-                 <tr id="<%=carrier[1]%>" class='criteria'><td></td><td> <%=carrier[0] %> </td></tr>
+        <div  id='carriers' style='width: 148px;'>
+            <b>Carriers</b><br/>
+            <%- @carriers.each do |carrier| %>
+                   <div id="<%=carrier[1]%>"  class="criteria <%=carrier[0]=='any' && 'active'%>" style='width: 148px;'><%=carrier[0] %> </div>
+             <% end %>
+        </div>
+
+        <div id='metals'>
+            <b>Metal Levels</b> </br>
+            <%- @metals.each do |metal| %>
+                <div id="<%=metal%>"  class="criteria <%=metal=='any' && 'active'%>"> <%= metal %> </div>
             <% end %>
-        </table>   
-        <div style='min-width:20px; float:left'>&nbsp;&nbsp;&nbsp;</div>
-        <table class='table-striped table-hover '  style='float: left' id='metals'>
-            <th><td> <b>Metal Levels</b> </td></th>
-          <%- @metals.each do |metal| %>	
-            <tr id="<%=metal%>"  class='criteria'><td></td><td> <%= metal %> </td></tr>
-          <% end %>
-        </table>   
+        </div>
       
-        <div style='min-width:20px; float:left'>&nbsp;&nbsp;&nbsp;</div>
-        <table class='table-striped table-hover '  style='float: left' id='plan_types'>
-            <th><td> <b>Plan Types</b> </td></th>
-          <%- @plan_types.each do |type| %>    
-            <tr id="<%=type%>" class='criteria'><td></td><td> <%= type %> </td></tr>
-          <% end %>
-        </table> 
+        <div id='plan_types'>
+            <b>Plan Types</b> <br>
+            <%- @plan_types.each do |type| %>
+                <div id="<%=type%>" class="criteria <%=type=='any' && 'active'%>"> <%= type %> </div>
+            <% end %>
+        </div>
 
-       <div style='min-width:20px; float:left'>&nbsp;&nbsp;&nbsp;</div>
-        <table class='table-striped table-hover '  style='float: left' id='dc_in_network'>
-            <th ><td> <b>DC Network</b> </td></th>
+        <div id='dc_in_network'>
+             <b>DC Network</b> <br>
           <%- @dc_network.each do |choice| %>    
-            <tr  id="<%=choice%>"class='criteria'><td></td><td> <%= choice %> </td></tr>
+            <div  id="<%=choice%>" class="criteria <%=choice=='any' && 'active'%>"> <%= choice %> </div>
           <% end %>
-        </table> 
+        </div>
 
-        <div style='min-width:20px; float:left'>&nbsp;&nbsp;&nbsp;</div>
-        <table class='table-striped table-hover '  style='float: left' id='nationwide'>
-            <th><td> <b>Nationwide</b> </td></th>
+        <div id='nationwide'>
+            <b>Nationwide</b> <br>
           <%- @nationwide.each do |choice| %>    
-            <tr id="<%=choice%>" class='criteria'><td></td><td> <%= choice %> </td></tr>
+            <div id="<%=choice%>" class="criteria <%=choice=='any' && 'active'%>"><%= choice %> </div>
           <% end %>
-        </table> 
-    <div style='min-width:20px; float:left'>&nbsp;&nbsp;&nbsp;</div>
-    <div style='float:left; width 550px; display: block' >
+        </div>
+    </div>
+
+    <div style='min-width:40px; float:left'>&nbsp;&nbsp;&nbsp;</div>
+    <div style='float:left; width 350px; display: block' >
         <div> Limit maximum deductible 0-$6000 </div>
-        <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="6000" data-slider-step="1" data-slider-value="6000" style='width:500px'
+        <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="6000" data-slider-step="1" data-slider-value="6000" style='width:300px'
           data-slider-ticks="[0, 2000, 4000, 6000]"
           data-slider-ticks-labels='["$0", "$2000", "$4000", "$6000"]'
         />
-        <br/><br/>
-        <div> Limit total employer roster cost $3,000-$20,000 </div>
-        <input id="ex2" data-slider-id='ex2Slider' type="text" data-slider-min="0" data-slider-max="20000" data-slider-step="1" data-slider-value="5000" style='width:500px'/>
     </div>
       <br/>
 </div>

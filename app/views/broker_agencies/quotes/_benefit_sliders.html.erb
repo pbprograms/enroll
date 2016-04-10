@@ -1,33 +1,52 @@
-<div style= 'width: 100%; float: left; display: block; background-color: #ddd'>
-	<b> Relationship Benefits </b> <br/>
-
-    <div style='float: left; width: 255px; margin: 10px; margin-left: 30px'>
-    Employee Pct:
+<div style= 'width: 100%; float: left; display: block; background-color: #ddd; margin-top: 10px;'>
+      
+    <div style='float: left; width: 255px;  margin-left: 30px'>
+    Employee Pct paid by employer:
     <input id="pct_employee" data-slider-id='pct_employeeSlider' type="text" data-slider-min="0" data-slider-max="101" data-slider-step="5" data-slider-value="50" 
        style='width:225px'
        data-slider-ticks="[0, 50, 100]"
        data-slider-ticks-labels='["0%", "50", "100"]'
     />
     </div>
-    <div style='float: left; width: 255px; margin: 10px;'>
+    <div style='float: left; width: 255px; margin-left: 30px;'>
     Spouse Pct:
     <input id="pct_spouse" data-slider-id='pct_spouseSlider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="5" data-slider-value="0" style='width:225px'
         data-slider-ticks="[0, 50, 100]"
         data-slider-ticks-labels='["0%", "50", "100"]'
     />
     </div>
-    <div style='float: left; width: 255px; margin:10px'>
-    Partner Pct:
+    <div style='float: left; width: 255px; margin-left:30px'>
+    Domestic Partner Pct:
     <input id="pct_partner" data-slider-id='pct_partnerSlider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="5" data-slider-value="0" style='width:225px'
        data-slider-ticks="[0, 50, 100]"
        data-slider-ticks-labels='["0%", "50", "100"]'
     />
     </div>
-    <div style='float: left; width: 255px; margin:10px'>
-    Child Pct:
-    <input id="pct_child" data-slider-id='pct_child' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="5" data-slider-value="0" style='width:225px'
+    <div style='float: left; width: 255px; margin-left:30px'>
+    Child under 26 Pct:
+    <input id="under_26" data-slider-id='under_26Slider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="5" data-slider-value="0" style='width:225px'
         data-slider-ticks="[0, 50, 100]"
         data-slider-ticks-labels='["0%", "50", "100"]'
     />
     </div>
+
+    <div style='float: left; width: 255px; margin-left:30px'>
+    Child 26 and over Pct:
+    <input id="over_26" data-slider-id='over_26Slider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="5" data-slider-value="0" style='width:225px'
+        data-slider-ticks="[0, 50, 100]"
+        data-slider-ticks-labels='["0%", "50", "100"]'
+    />
+    </div>
+
+    <div class='col-12' style='width: 100%; float: left; margin-left: 30px; display: block'>
+        <div style='display: inline; margin-right 20px; font-size: 120%; font-weight: 700'><b>Total cost to Employer:</b>&nbsp;&nbsp;&nbsp; &nbsp;</div>
+        <input id="ex2" data-slider-id='ex2Slider' type="text" data-slider-min="0" data-slider-max="20000" data-slider-step="1" data-slider-value="5000" style='width:600px'
+        data-slider-ticks="[0, 5000, 10000]"
+        data-slider-ticks-labels='["0", "5000", "10000"]'
+        />
+    </div>
+
+    </div>
+
+
 </div>	
