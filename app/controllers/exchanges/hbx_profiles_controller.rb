@@ -171,7 +171,6 @@ class Exchanges::HbxProfilesController < ApplicationController
       @message.update_attributes(message_read: true)
 
     end
-
   end
 
   # GET /exchanges/hbx_profiles/new

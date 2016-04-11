@@ -74,27 +74,81 @@ RSpec.describe BrokerAgencies::InboxesController, :type => :controller do
     end
   end
 
-  describe "GET show / DELETE destroy" do
-    let(:message){double(to_a: double("to_array"))}
-    let(:inbox_provider){double(id: double("id"),legal_name: double("inbox_provider"))}
-    before do
-      allow(user).to receive(:person).and_return(person)
-      sign_in(user)
-      allow(BrokerAgencyProfile).to receive(:find).and_return(inbox_provider)
-      allow(controller).to receive(:find_message)
-      controller.instance_variable_set(:@message, message)
-      allow(message).to receive(:update_attributes).and_return(true)
-      allow(person).to receive(:_id).and_return('xxx')
+  # describe "GET show / DELETE destroy" do
+  #   # let(:message){double(to_a: double("to_array"))}
+  #   # let(:inbox_provider){double(id: double("id"),legal_name: double("inbox_provider"))}
+  #   before do
+  #     # allow(user).to receive(:person).and_return(person)
+  #     # sign_in(user)
+  #     # allow(BrokerAgencyProfile).to receive(:find).and_return(inbox_provider)
+  #     allow(controller).to receive(:find_message)
+  #     controller.instance_variable_set(:@message, message)
+  #     allow(message).to receive(:update_attributes).and_return(true)
+  #     # allow(person).to receive(:_id).and_return('xxx')
+  #
+  #
+  #     # context "user with hbx staff role" do
+  #     #   let(:user) { FactoryGirl.create(:user, person: person) }
+  #     #   let(:person) { FactoryGirl.create(:person) }
+  #     #   let(:inbox) { FactoryGirl.create(:inbox, recipient: person) }
+  #     #   let(:message){ FactoryGirl.create(:message, inbox: inbox) }
+  #     #
+  #     #
+  #     #   before :each do
+  #     #     sign_in(user)
+  #     #     allow(user).to receive(:has_hbx_staff_role?).and_return(true)
+  #     #   end
+  #     #
+  #     #
+  #     #   it "delete action" do
+  #     #     xhr :delete, :destroy, id: person.id, user: 'admin', message_id: message.id
+  #     #     expect(response).to redirect_to(broker_agencies_profile_path({user: "admin", folder: "inbox"}))
+  #     #   end
+  #     #
+  #     #
+  #     # end
+  #
+  #
+  #
+  #
+  #   end
+  # end
+
+  describe "DELETE destroy" do
+
+    context "broker agency inbox" do
+
+      let(:broker_user) { FactoryGirl.create(:user, person: broker_person, roles: ["broker"]) }
+      let(:broker_person) { FactoryGirl.create(:person, :with_broker_role) }
+      let(:inbox) { FactoryGirl.create(:inbox, recipient: broker_agency_profile) }
+      let(:message){ FactoryGirl.create(:message, inbox: inbox) }
+      let(:broker_agency_profile){ FactoryGirl.create(:broker_agency_profile)}
+
+      before :each do
+        sign_in(broker_user)
+      end
+      it "delete action" do
+        xhr :delete, :destroy, id: broker_agency_profile.id, person_id: broker_agency_profile.id, message_id: message.id, mailbox: 'agency'
+        expect(response).to redirect_to(broker_agencies_profile_path(broker_agency_profile.id, :mailbox=>'agency', :folder=>'inbox'))
+      end
     end
 
-    it "show action" do
-      get :show, id: 1
-      expect(response).to have_http_status(:success)
+    context "broker inbox" do
+
+      let(:broker_user) { FactoryGirl.create(:user, person: broker_person, roles: ["broker"]) }
+      let(:broker_person) { FactoryGirl.create(:person, :with_broker_role) }
+      let(:inbox) { FactoryGirl.create(:inbox, recipient: broker_person) }
+      let(:message){ FactoryGirl.create(:message, inbox: inbox) }
+
+      before :each do
+        sign_in(broker_user)
+      end
+
+      it "delete action" do
+        xhr :delete, :destroy, id: broker_person.id, person_id: broker_person.id, message_id: message.id
+        expect(response).to redirect_to(broker_agencies_profile_path(broker_person.id, :tab=>'inbox', :folder=>'inbox'))
+      end
     end
 
-    it "delete action" do
-      xhr :delete, :destroy, id: 1
-      expect(response).to have_http_status(:success)
-    end
   end
 end

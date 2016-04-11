@@ -70,7 +70,7 @@
       </li>
       <li role="presentation"<%= menu_tab_class(active_tab, "inbox-tab") %>>
         <%= link_to(exchanges_hbx_profiles_path(@provider, tab: 'inbox', folder: 'inbox'), class: 'hidden-xs', "aria-expanded" => "true", "aria-controls" => "inbox", 'id'=>'inbox-tab' ) do  %>
-          <span class="badge message-unread"><%= @unread_messages %></span>
+<span class="badge message-unread"><%= @provider.inbox.unread_messages.try(:count) %></span>
           Inbox
         <% end %>
         <%= link_to(exchanges_hbx_profiles_path(@provider, tab: 'inbox', folder: 'inbox'), class: 'visible-xs', "aria-expanded" => "true", "aria-controls" => "inbox" ) do  %>

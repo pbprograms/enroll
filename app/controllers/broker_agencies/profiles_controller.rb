@@ -57,7 +57,7 @@ class BrokerAgencies::ProfilesController < ApplicationController
      if params.has_key?(:message_id)
        @message = @provider.inbox.messages.where(id: params[:message_id]).first
        @message.update_attributes(message_read: true)
-
+       
      end
 
   end

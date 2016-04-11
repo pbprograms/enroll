@@ -1,0 +1,59 @@
+<% if @profile.inbox.messages.size > 0 %>
+<div id="inbox_form">
+  <span class="inboxes">
+    <% if params[:folder] == 'inbox' %>
+  <%= link_to(exchanges_hbx_profiles_path(provider, tab: 'inbox', folder: 'inbox'), class: 'active') do %>
+    Inbox &nbsp;<span class="badge message-badge pull-right"><%= provider.inbox.unread_messages.size %></span>
+  <% end %> |
+  <% else %>
+  <%= link_to(exchanges_hbx_profiles_path(provider, tab: 'inbox', folder: 'inbox')) do %>
+    Inbox &nbsp;<span class="badge message-badge pull-right"><%= provider.inbox.unread_messages.size %></span>
+  <% end %> |
+    <% end %>
+  <% if @sent_box == true %>
+  <% if params[:folder] == 'sent' %>
+
+    <%= link_to(exchanges_hbx_profiles_path(provider, tab: 'inbox', folder: 'sent'), class: 'active') do %>
+      Sent
+      <% end %> |
+    <% else %>
+    <%= link_to(exchanges_hbx_profiles_path(provider, tab: 'inbox', folder: 'sent')) do %>
+      Sent
+    <% end %> |
+    <% end %>
+  <% end %>
+  <% if params[:folder] == 'deleted' %>
+
+    <%= link_to(exchanges_hbx_profiles_path(provider, tab: 'inbox', folder: 'deleted'), class: 'active') do %>
+      Deleted
+    <% end %>
+    <% else %>
+    <%= link_to(exchanges_hbx_profiles_path(provider, tab: 'inbox', folder: 'deleted')) do %>
+      Deleted
+    <% end %>
+  <% end %>
+  </span>
+</div>
+<%- @folder = (@folder||'Inbox').capitalize %>
+<div class="col-xs-12 table-responsive" id="message_list_form">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th> <%= @folder %>: FROM</th>
+        <th> Date  </th>
+        <th>Subject</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <%- if provider.try(:inbox).try(:messages) %>
+      <%= render partial: "shared/inboxes/individual_message", :collection => provider.inbox.messages.select{|m| @folder == (m.folder.try(:capitalize) || 'Inbox') }, :as => :message, locals: {provider: provider} %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<div id="show_message_form"></div>
+<% else %>
+<h4 class="starter">Your inbox is currently empty.</h4>
+<% end %>
