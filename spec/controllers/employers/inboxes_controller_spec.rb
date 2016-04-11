@@ -47,27 +47,34 @@ RSpec.describe Employers::InboxesController, :type => :controller do
     end
   end
 
-  describe "GET show / DELETE destroy" do
-    let(:message){double(to_a: double("to_array"))}
-    let(:inbox_provider){double(id: double("id"),legal_name: double("inbox_provider"))}
-    before do
-      allow(user).to receive(:person).and_return(person)
-      sign_in(user)
-      allow(EmployerProfile).to receive(:find).and_return(inbox_provider)
-      allow(controller).to receive(:find_message)
-      controller.instance_variable_set(:@message, message)
-      allow(message).to receive(:update_attributes).and_return(true)
+  describe "DELETE destroy" do
+    # let(:message){double(to_a: double("to_array"))}
+    # let(:inbox_provider){double(id: double("id"),legal_name: double("inbox_provider"))}
+    # before do
+    #   sign_in(user)
+      # allow(controller).to receive(:find_message)
+      # controller.instance_variable_set(:@message, message)
+      # allow(message).to receive(:update_attributes).and_return(true)
+    # end
+
+    context "employer profile inbox" do
+
+      let(:employer_user) { FactoryGirl.create(:user, person: employer_person, roles: ["employer_staff"]) }
+      let(:employer_person) { FactoryGirl.create(:person, :with_employer_staff_role) }
+      let(:inbox) { FactoryGirl.create(:inbox, recipient: employer_profile) }
+      let(:message){ FactoryGirl.create(:message, inbox: inbox) }
+      let(:employer_profile){ FactoryGirl.create(:employer_profile) }
+
+      before :each do
+        sign_in(employer_user)
+      end
+
+      it "delete action" do
+        xhr :delete, :destroy, id: employer_profile, message_id: message.id
+        expect(response).to redirect_to(employers_employer_profile_path(employer_profile.id, :tab=>'inbox', :folder=>'inbox'))
+      end
     end
 
-    it "show action" do
-      get :show, id: 1
-      expect(response).to have_http_status(:success)
-    end
-
-    it "delete action" do
-      xhr :delete, :destroy, id: 1
-      expect(response).to have_http_status(:success)
-    end
   end
 
 end

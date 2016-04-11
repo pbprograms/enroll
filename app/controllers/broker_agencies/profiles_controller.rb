@@ -63,6 +63,7 @@ class BrokerAgencies::ProfilesController < ApplicationController
   end
 
   def edit
+    @provider = @broker_agency_profile
     @organization = Forms::BrokerAgencyProfile.find(@broker_agency_profile.id)
   end
 
