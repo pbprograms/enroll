@@ -94,4 +94,12 @@ module Insured::FamiliesHelper
   def has_writing_agent?(employee_role)
     employee_role.employer_profile.active_broker_agency_account.writing_agent rescue false
   end
+
+  def can_make_changes?(person, hbx_enrollment)
+    if hbx_enrollment.coverage_terminated?
+      false
+    else
+      (hbx_enrollment.kind == "individual" && person.consumer_role.present?) || (hbx_enrollment.is_shop? && hbx_enrollment.try(:benefit_group_assignment).census_employee.is_active?)
+    end
+  end
 end

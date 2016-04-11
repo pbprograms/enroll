@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "insured/families/_enrollment.html.erb" do
-  let(:person) { double(id: '31111113') }
+  let(:person) { double(id: '31111113', consumer_role: nil) }
   let(:family) { double(is_eligible_to_enroll?: true) }
 
   before(:each) do
@@ -32,10 +32,14 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
       :sbc_document => Document.new({title: 'sbc_file_name', subject: "SBC",
                       :identifier=>'urn:openhbx:terms:v1:file_storage:s3:bucket:dchbx-enroll-sbc-local#7816ce0f-a138-42d5-89c5-25c5a3408b82'})
     ) }
+
+    let(:census_employee) { double }
+    let(:benefit_group_assignment) { double(census_employee: census_employee)}
     let(:hbx_enrollment) {double(plan: plan, id: "12345", total_premium: 200, kind: 'individual',
                                  subscriber: nil,
                                  covered_members_first_names: ["name"], can_complete_shopping?: false,
                                  enroll_step: 2, coverage_terminated?: false,
+                                 benefit_group_assignment: benefit_group_assignment,
                                  may_terminate_coverage?: true, effective_on: Date.new(2015,8,10), consumer_role: nil, employee_role: nil, status_step: 2, applied_aptc_amount: 23.00, aasm_state: 'coverage_selected')}
     let(:benefit_group) { FactoryGirl.create(:benefit_group) }
 
@@ -47,6 +51,8 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
       allow(hbx_enrollment).to receive(:hbx_id).and_return(true)
       allow(hbx_enrollment).to receive(:benefit_group).and_return(benefit_group)
       allow(hbx_enrollment).to receive(:consumer_role_id).and_return(false)
+      allow(hbx_enrollment).to receive(:is_shop?).and_return(true)
+      allow(census_employee).to receive(:is_active?).and_return(true)
 
 
       render partial: "insured/families/enrollment", collection: [hbx_enrollment], as: :hbx_enrollment
@@ -71,6 +77,8 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
   end
 
   context "with consumer_role" do
+    let(:consumer_role) { double }
+    let(:person) { double(id: '31111113', consumer_role: consumer_role) }
     let(:plan) {FactoryGirl.build(:plan, :created_at =>  TimeKeeper.date_of_record)}
 
     let(:hbx_enrollment) {double(plan: plan, id: "12345", total_premium: 200, kind: 'individual',
@@ -106,6 +114,8 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
   end
 
   context "about covered_members_first_names of hbx_enrollment" do
+    let(:consumer_role) { double }
+    let(:person) { double(id: '31111113', consumer_role: consumer_role) }
     let(:plan) {FactoryGirl.build(:plan, :created_at => TimeKeeper.date_of_record)}
 
     let(:hbx_enrollment) {double(plan: plan, id: "12345", total_premium: 200, kind: 'individual',
