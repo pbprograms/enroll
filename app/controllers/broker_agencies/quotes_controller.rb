@@ -30,7 +30,7 @@ class BrokerAgencies::QuotesController < ApplicationController
           @quote_results[p.name] = detailCost
         end
       end
-    
+
     elsif !params['plans'].nil? && params['plans'].count > 0 && params["commit"].downcase == "compare plans"
       @visit_types = @coverage_kind == "health" ? Products::Qhp::VISIT_TYPES : Products::Qhp::DENTAL_VISIT_TYPES
       standard_component_ids = get_standard_component_ids
@@ -67,14 +67,22 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def update
     @quote = Quote.find(params[:id])
+
     sanitize_quote_roster_params
-    if (@quote.update_attributes(quote_params))
-      redirect_to  broker_agencies_quotes_root_path ,  :flash => { :notice => "Successfully updated the employee roster" }
+
+    update_params = quote_params
+    insert_params = quote_params
+
+    update_params[:quote_households_attributes]= update_params[:quote_households_attributes].select {|k,v| update_params[:quote_households_attributes][k][:id].present?}
+    insert_params[:quote_households_attributes]= insert_params[:quote_households_attributes].select {|k,v| insert_params[:quote_households_attributes][k][:id].blank?}
+
+    if (@quote.update_attributes(update_params) && @quote.update_attributes(insert_params))
+      redirect_to  edit_broker_agencies_quote_path(@quote) ,  :flash => { :notice => "Successfully updated the employee roster" }
     else
-      puts @quote.errors.messages.inspect
+      #puts @quote.errors.messages.inspect
       render "edit" , :flash => {:error => "Unable to update the employee roster" }
     end
-    redirect_to edit_broker_agencies_quote_path(@quote)
+    #redirect_to edit_broker_agencies_quote_path(@quote)
   end
 
   def create
@@ -158,10 +166,21 @@ private
 
  def quote_params
     params.require(:quote).permit(
-                    :quote_name, 
+                    :quote_name,
                     :broker_role_id,
-                    :quote_households_attributes => [ :id, :family_id , 
-                                       :quote_members_attributes => [ :id, :first_name ,:dob, 
+                    :quote_households_attributes => [ :id, :family_id ,
+                                       :quote_members_attributes => [ :id, :first_name ,:dob,
+                                                                      :employee_relationship,:_delete ] ] )
+ end
+
+
+
+ def obj_params(obj)
+    obj.require(:quote).permit(
+                    :quote_name,
+                    :broker_role_id,
+                    :quote_households_attributes => [ :id, :family_id ,
+                                       :quote_members_attributes => [ :id, :first_name ,:dob,
                                                                       :employee_relationship,:_delete ] ] )
  end
 
