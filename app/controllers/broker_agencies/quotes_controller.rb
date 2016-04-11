@@ -7,12 +7,13 @@ class BrokerAgencies::QuotesController < ApplicationController
     @quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
     @plans =  Plan.shop_health_by_active_year(2016)
     @plan_quote_criteria  = []
+    @bp_hash = {'employee':50, 'spouse': 0, 'domestic_partner': 0, 'child_under_26': 0, 'child_26_and_over': 0}
     if !params['plans'].nil? && params['plans'].count > 0
 
       @q =  Quote.find(params[:quote]) #Quote.find(Quote.first.id)
-
+      @benefit_pcts = @q.quote_relationship_benefits
+      @benefit_pcts.each{|bp| @bp_hash[bp.relationship] = bp.premium_pct}
       @quote_results = Hash.new
-
       unless @q.nil?
         params['plans'].each do |plan_id|
           p = Plan.find(plan_id)
@@ -25,29 +26,27 @@ class BrokerAgencies::QuotesController < ApplicationController
           @quote_results[p.name] = detailCost
         end
       end
-    else
-      #CACHE ME PLEASE
-      #TODO
-      @plans.each{|p| @plan_quote_criteria << [p.metal_level, p.carrier_profile.organization.legal_name, p.plan_type,
-       p.deductible.gsub(/\$/,'').gsub(/,/,'').to_i, p.id.to_s, p.carrier_profile.abbrev, p.nationwide, p.dc_in_network]
-      }
-      @metals =      @plan_quote_criteria.map{|p| p[0]}.uniq.append('any')
-      @carriers =    @plan_quote_criteria.map{|p| [ p[1], p[5] ] }.uniq.append(['any','any'])
-      @plan_types =  @plan_quote_criteria.map{|p| p[2]}.uniq.append('any')
-      @dc_network =  ['true', 'false', 'any']
-      @nationwide =  ['true', 'false', 'any']
-      @select_detail = @plan_quote_criteria.to_json
-      @max_deductible = 6000
     end
 
+    #TODO OPTIONAL CACHE/REFACTOR
+    @plans.each{|p| @plan_quote_criteria << [p.metal_level, p.carrier_profile.organization.legal_name, p.plan_type,
+     p.deductible.gsub(/\$/,'').gsub(/,/,'').to_i, p.id.to_s, p.carrier_profile.abbrev, p.nationwide, p.dc_in_network]
+    }
+    @metals =      @plan_quote_criteria.map{|p| p[0]}.uniq.append('any')
+    @carriers =    @plan_quote_criteria.map{|p| [ p[1], p[5] ] }.uniq.append(['any','any'])
+    @plan_types =  @plan_quote_criteria.map{|p| p[2]}.uniq.append('any')
+    @dc_network =  ['true', 'false', 'any']
+    @nationwide =  ['true', 'false', 'any']
+    @select_detail = @plan_quote_criteria.to_json
+    @max_deductible = 6000
+
+    @benefit_pcts_json = @bp_hash.to_json
   end
 
   def edit
     @quote = Quote.find(params[:id])
-
     qhh = QuoteHousehold.new
     qm = QuoteMember.new
-
     qhh.quote_members << qm
     @quote.quote_households << qhh
   end
@@ -108,13 +107,30 @@ class BrokerAgencies::QuotesController < ApplicationController
     end
   end
 
-
   def new_household
     @quote = Quote.new
     @quote.quote_households.build
   end
 
- private
+  def update_benefits
+    q = Quote.find(params['id'])
+    benefits = params['benefits']
+    q.quote_relationship_benefits.each {|b|
+      b.update_attributes!(premium_pct: benefits[b.relationship])
+    }
+
+    @plans =  Plan.shop_health_by_active_year(2016)
+
+    costs= []
+    @plans.each{ |plan|
+    # TODOJF takes 5 seconds, needs caching.
+    #  costs << [plan.id, q.roster_employee_cost(plan.id) ]
+    }
+
+    render json:  costs.to_json
+  end
+
+private
 
  def quote_params
     params.require(:quote).permit(

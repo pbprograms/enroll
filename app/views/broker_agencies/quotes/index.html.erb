@@ -6,15 +6,15 @@
       <%= render partial: 'select_plans' %>
 
       <%= render partial: 'benefit_sliders'%>
-    </div>
-    <div class='col-md-12'>
+
       <br><br>
       <%= form_tag(broker_agencies_quotes_root_path, method: :get) do  %>
 
-     <input name='pct_employer' value='50' type='hidden'>
-     <input name='pct_spouse' value='0' type='hidden'>
-     <input name='pct_partner' value='0' type='hidden'>
-     <input name='pct_child' value='0' type='hidden'>
+     <input name='employee' value='50' type='hidden'>
+     <input name='spouse' value='0' type='hidden'>
+     <input name='domestic_partner' value='0' type='hidden'>
+     <input name='child_under_26' value='0' type='hidden'>
+     <input name='child_26_and_over' value='0' type='hidden'>
     <%= hidden_field_tag(rb_emp: '777') %>
       <%= select_tag "quote", options_from_collection_for_select(@quotes, "id", "quote_name"), { } %>
 
@@ -31,10 +31,6 @@
       <br>
       <%= submit_tag "Submit", class: 'btn btn-primary', id: 'QuoteCalculation' %>
       <% end %>
-    </div>
-  </div>
-
-  <br>
 
   <% if @quote_results %>
 
@@ -139,17 +135,14 @@ $(document).on('ready page:load', function () {
     $('.plan_selectors .criteria').on('click', function() {
       toggle_plans()
     })
-    $('#ex1').bootstrapSlider({});
-    $('#ex2').bootstrapSlider({});
-    $('#pct_employee').bootstrapSlider({});
-    $('#pct_spouse').bootstrapSlider({});
-    $('#pct_partner').bootstrapSlider({});
-    $('#under_26').bootstrapSlider({});
-    $('#over_26').bootstrapSlider({});
+    window.relationship_benefits = <%= raw @benefit_pcts_json %>
+    slider_listeners()
 
-    $('#ex1').on('slideStop', function(){deductible_value = this.value; 
-      toggle_plans();
-      console.log(this.value, 'v')})
+     $('#pct_employee').bootstrapSlider('setValue',window.relationship_benefits['employee']);
+     $('#pct_spouse').bootstrapSlider('setValue', window.relationship_benefits['spouse']);
+     $('#pct_domestic_partner').bootstrapSlider('setValue', window.relationship_benefits['domestic_partner']);
+     $('#under_26').bootstrapSlider('setValue', window.relationship_benefits['child_under_26']);
+     $('#over_26').bootstrapSlider('setValue', window.relationship_benefits['child_26_and_over']);
 })
 
 </script>
