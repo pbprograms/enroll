@@ -490,7 +490,7 @@ class Family
   end
 
   def enrolled_hbx_enrollments
-    latest_household.try(:enrolled_hbx_enrollments)
+    latest_household.try(:enrolled_hbx_enrollments).select{|enr| enr.has_active_benefit_group_assignment? }
   end
 
   def enrolled_including_waived_hbx_enrollments

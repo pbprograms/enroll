@@ -128,7 +128,10 @@ class HbxEnrollment
   scope :canceled, -> { where(:aasm_state.in => CANCELED_STATUSES) }
   #scope :terminated, -> { where(:aasm_state.in => TERMINATED_STATUSES, :terminated_on.gte => TimeKeeper.date_of_record.beginning_of_day) }
   scope :terminated, -> { where(:aasm_state.in => TERMINATED_STATUSES) }
-  scope :show_enrollments, -> { any_of([enrolled.selector, renewing.selector, terminated.selector, canceled.selector]) }
+  scope :show_enrollments, -> {
+    any_of([enrolled.selector, renewing.selector, terminated.selector, canceled.selector])
+    .order(effective_on: :desc, submitted_at: :desc, coverage_kind: :desc)
+   }
   scope :show_enrollments_sans_canceled, -> { any_of([enrolled.selector, renewing.selector, terminated.selector, waived.selector]).order(created_at: :desc) }
   scope :with_plan, -> { where(:plan_id.ne => nil) }
   scope :coverage_selected_and_waived, -> {where(:aasm_state.in => SELECTED_AND_WAIVED).order(created_at: :desc)}
@@ -797,6 +800,10 @@ class HbxEnrollment
     families.inject([]) do |enrollments, family|
       enrollments += family.active_household.hbx_enrollments.where(:benefit_group_id.in => id_list).enrolled.to_a
     end
+  end
+
+  def has_active_benefit_group_assignment?
+    is_shop? && BenefitGroupAssignment::ACTIVE_STATUSES.include?(benefit_group_assignment.aasm_state)
   end
 
   def self.find_shop_and_health_by_benefit_group_assignment(benefit_group_assignment)

@@ -44,7 +44,8 @@ RSpec.describe Insured::FamiliesController do
   let(:household) { double("HouseHold", hbx_enrollments: hbx_enrollments) }
   let(:addresses) { [double] }
   let(:family_members){[double("FamilyMember")]}
-  let(:employee_roles) { [double("EmployeeRole")] }
+  let(:census_employee) { double("CensusEmployee", employee_role_linked?: true) }
+  let(:employee_roles) { [double("EmployeeRole", census_employee: census_employee)] }
   let(:consumer_role) { double("ConsumerRole") }
   # let(:coverage_wavied) { double("CoverageWavied") }
   let(:qle) { FactoryGirl.create(:qualifying_life_event_kind, pre_event_sep_in_days: 30, post_event_sep_in_days: 0) }
@@ -94,7 +95,8 @@ RSpec.describe Insured::FamiliesController do
     context "for SHOP market" do
 
       let(:employee_roles) { double }
-      let(:employee_role) { [double("EmployeeRole")] }
+      let(:census_employee) { double("CensusEmployee", employee_role_linked?: true) }
+      let(:employee_role) { double("EmployeeRole", census_employee: census_employee) }
 
       before :each do
         sign_in user
@@ -173,7 +175,8 @@ RSpec.describe Insured::FamiliesController do
 
   describe "GET manage_family" do
     let(:employee_roles) { double }
-    let(:employee_role) { [double("EmployeeRole")] }
+    let(:census_employee) { double("CensusEmployee", employee_role_linked?: true) }
+    let(:employee_role) { double("EmployeeRole", census_employee: census_employee) }
 
     before :each do
       allow(person).to receive(:active_employee_roles).and_return([employee_role])
@@ -260,15 +263,16 @@ RSpec.describe Insured::FamiliesController do
 
   describe "GET find_sep" do
     let(:user) { double(identity_verified?: true, idp_verified?: true) }
-    let(:employee_roles) { double }
-    let(:employee_role) { [double("EmployeeRole")] }
+    let(:employee_roles) { [employee_role] }
+    let(:census_employee) { double("CensusEmployee", employee_role_linked?: true) }
+    let(:employee_role) { double("EmployeeRole", census_employee: census_employee) }
 
     before :each do
       allow(person).to receive(:user).and_return(user)
       allow(person).to receive(:has_active_employee_role?).and_return(false)
       allow(person).to receive(:has_active_consumer_role?).and_return(true)
       allow(person).to receive(:has_multiple_roles?).and_return(true)
-      allow(person).to receive(:active_employee_roles).and_return(employee_role)
+      allow(person).to receive(:active_employee_roles).and_return(employee_roles)
       get :find_sep, hbx_enrollment_id: "2312121212", change_plan: "change_plan"
     end
 

@@ -11,7 +11,7 @@ class Insured::FamiliesController < FamiliesController
 
     log("#3717 person_id: #{@person.id}, params: #{params.to_s}, request: #{request.env.inspect}", {:severity => "error"}) if @family.blank?
 
-    @hbx_enrollments = @family.enrollments.order(effective_on: :desc, submitted_at: :desc, coverage_kind: :desc) || []
+    @hbx_enrollments = @family.enrollments || []
 
     @enrollment_filter = @family.enrollments_for_display
 
@@ -43,7 +43,7 @@ class Insured::FamiliesController < FamiliesController
     @waived_hbx_enrollments = @waived_hbx_enrollments.select {|h| !hbx_enrollment_kind_and_years[h.coverage_kind].include?(h.effective_on.year) }
     @waived = @family.coverage_waived? && @waived_hbx_enrollments.present?
 
-    @employee_role = @person.active_employee_roles.first
+    # @employee_role = @person.active_employee_roles.first
     @tab = params['tab']
     respond_to do |format|
       format.html
@@ -187,6 +187,12 @@ class Insured::FamiliesController < FamiliesController
 
   def check_employee_role
     @employee_role = @person.active_employee_roles.first
+    if @employee_role.present?
+      if @employee_role.census_employee.employee_role_linked?
+      else
+        redirect_to search_insured_employee_index_path and return
+      end
+    end
   end
 
   def init_qualifying_life_events

@@ -196,7 +196,8 @@ class Insured::EmployeeRolesController < ApplicationController
 
   def check_employee_role
     set_current_person(required: false)
-    if @person.try(:employee_roles).try(:last)
+    if @person.try(:active_employee_roles).try(:last).present? &&
+      @person.try(:active_employee_roles).try(:last).try(:census_employee).try(:employee_role_linked?)
       redirect_to @person.employee_roles.last.bookmark_url || family_account_path
     else
       current_user.last_portal_visited = search_insured_employee_index_path

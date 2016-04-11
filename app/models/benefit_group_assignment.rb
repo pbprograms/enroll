@@ -5,6 +5,8 @@ class BenefitGroupAssignment
 
   RENEWING = %w(coverage_renewing)
 
+  ACTIVE_STATUSES = %w(initialized coverage_selected coverage_renewing)
+
   embedded_in :census_employee
 
   field :benefit_group_id, type: BSON::ObjectId
