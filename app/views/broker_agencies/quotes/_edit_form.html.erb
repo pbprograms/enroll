@@ -28,7 +28,7 @@
 			<div class="form-group col-sm-4">DOB: <%= qm.text_field :dob , {:class => "uidatepicker" } %></div>
 			<div class="form-group col-sm-4">Name: <%= qm.text_field :first_name %></div>
 			<div class="form-group col-sm-3"><%= qm.select(:employee_relationship, [['Employee','employee'], ['Spouse','spouse'], ['Domestic partner','domestic_partner'],['Child','child_under_26']], {}, {:class => "floatlabel"})  %></div>
-			<div class="form-group col-sm-1"><button type="button" id="remove_member_button"  class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+			<div class="form-group col-sm-1"><button type="button" data-household-id="<%=qhh.object.id%>" data-quote-id="<%=@quote.id%>" data-member-id="<%=qm.object.id%>" id="remove_member_button"  class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
 		</div>
 		<% end %>
 	</div>
@@ -44,21 +44,29 @@
 
 $(".uidatepicker").datepicker();
 var remove_member_handler = function(){
-	    $(this).parent().parent().remove();
-	  };
+	if(this.getAttribute("data-member-id") != undefined){
+	 $.ajax({
+        type: "POST",
+        url: "/broker_agencies/quotes/" + this.getAttribute("data-quote-id")  +"/delete_member/?member_id=" +this.getAttribute("data-member-id")+"&household_id="+this.getAttribute("data-household-id"),
+        dataType: "js",
+        data: {"_method":"delete"},
+        complete: function(){
+          console.log("Deleted successfully");
+        }
+    });
+	}
+  $(this).parent().parent().remove();
+	};
 $('button#remove_member_button').click(remove_member_handler);
 
 function addEmployeeRowToFamily(family, idx) {
-	console.log('family called ' + family);
 	var relation_options = '<select name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][employee_relationship]"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child_under_26">child</option></select>';
 	table_row = $('<div class="row form-inline">'
 	+ '<div class="form-group col-sm-4">DOB: <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][dob]"/></div><div class="form-group col-sm-4">Name: <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][first_name]"  /></div><div class="form-group col-sm-3">' + relation_options + '</div>' + 
-		'<div class="form-group col-sm-1"><button type="button" id="close_button" data-quote-id="" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
+		'<div class="form-group col-sm-1"><button type="button" id="remove_member_button" data-quote-id="" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
 	+ '</div>');
-
-	console.log(table_row);
-
 	$('#family-' + family).append(table_row);
+	$('button#remove_member_button').click(remove_member_handler);
 	$('select').selectric('refresh');
 }
 </script>

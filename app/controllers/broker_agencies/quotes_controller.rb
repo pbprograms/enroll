@@ -1,18 +1,22 @@
 class BrokerAgencies::QuotesController < ApplicationController
 
-  before_action :find_quote , :only => [:destroy ,:show]
+  before_action :find_quote , :only => [:destroy ,:show, :delete_member]
 
 
   def index
     @quotes = Quote.where("broker_role_id" => current_user.person.broker_role.id)
-    @plans =  Plan.shop_health_by_active_year(2016)
+    active_year = Date.today.year
+    @coverage_kind = "health"
+    @plans =  Plan.shop_health_by_active_year(active_year)
     @plan_quote_criteria  = []
     @bp_hash = {'employee':50, 'spouse': 0, 'domestic_partner': 0, 'child_under_26': 0, 'child_26_and_over': 0}
-    if !params['plans'].nil? && params['plans'].count > 0
+    # if !params['plans'].nil? && params['plans'].count > 0
 
+    #   @q =  Quote.find(params[:quote]) #Quote.find(Quote.first.id)
+    #   @benefit_pcts = @q.quote_relationship_benefits
+    #   @benefit_pcts.each{|bp| @bp_hash[bp.relationship] = bp.premium_pct}
+    if !params['plans'].nil? && params['plans'].count > 0 && params["commit"].downcase == "submit"
       @q =  Quote.find(params[:quote]) #Quote.find(Quote.first.id)
-      @benefit_pcts = @q.quote_relationship_benefits
-      @benefit_pcts.each{|bp| @bp_hash[bp.relationship] = bp.premium_pct}
       @quote_results = Hash.new
       unless @q.nil?
         params['plans'].each do |plan_id|
@@ -26,8 +30,13 @@ class BrokerAgencies::QuotesController < ApplicationController
           @quote_results[p.name] = detailCost
         end
       end
+    
+    elsif !params['plans'].nil? && params['plans'].count > 0 && params["commit"].downcase == "compare plans"
+      @visit_types = @coverage_kind == "health" ? Products::Qhp::VISIT_TYPES : Products::Qhp::DENTAL_VISIT_TYPES
+      standard_component_ids = get_standard_component_ids
+      @qhps = Products::QhpCostShareVariance.find_qhp_cost_share_variances(standard_component_ids, active_year, "Health")
     end
-
+    else
     #TODO OPTIONAL CACHE/REFACTOR
     @plans.each{|p| @plan_quote_criteria << [p.metal_level, p.carrier_profile.organization.legal_name, p.plan_type,
      p.deductible.gsub(/\$/,'').gsub(/,/,'').to_i, p.id.to_s, p.carrier_profile.abbrev, p.nationwide, p.dc_in_network]
@@ -107,6 +116,17 @@ class BrokerAgencies::QuotesController < ApplicationController
     end
   end
 
+  def delete_member
+    @qh = @quote.quote_households.find(params[:household_id])
+    if @qh
+      if @qh.quote_members.find(params[:member_id]).delete
+        respond_to do |format|
+          format.js { render :nothing => true }
+        end
+      end
+    end
+  end
+
   def new_household
     @quote = Quote.new
     @quote.quote_households.build
@@ -131,6 +151,10 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
 private
+
+ def get_standard_component_ids
+  Plan.where(:_id => { '$in': params[:plans] } ).map(&:hios_id)
+ end
 
  def quote_params
     params.require(:quote).permit(
