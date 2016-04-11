@@ -326,7 +326,30 @@
 .fa-question-circle {
     color: #007bc4;
 }
-
+#inbox_form {
+  .inboxes {
+    display: inline-block;
+    float: right;
+  }
+  a {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 6px 4px;
+    &.active {
+      font-weight: 600;
+      &>span {
+      }
+    }
+  }
+}
+#inbox-messages, #message_list_form, #hbx_inbox {
+  tr {
+    cursor: pointer;
+    td {
+      font-weight: 600;
+    }
+  }
+}
 
 .asc::before {
   font-family: FontAwesome;
