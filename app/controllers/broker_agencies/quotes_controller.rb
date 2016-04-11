@@ -175,15 +175,6 @@ private
 
 
 
- def obj_params(obj)
-    obj.require(:quote).permit(
-                    :quote_name,
-                    :broker_role_id,
-                    :quote_households_attributes => [ :id, :family_id ,
-                                       :quote_members_attributes => [ :id, :first_name ,:dob,
-                                                                      :employee_relationship,:_delete ] ] )
- end
-
  def sanitize_quote_roster_params
    params[:quote][:quote_households_attributes].each do |key, fid|
      params[:quote][:quote_households_attributes].delete(key) if fid['family_id'].blank?
