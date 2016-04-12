@@ -317,6 +317,7 @@ RSpec.describe Insured::EmployeeRolesController, :dbclean => :after_each do
       allow(user).to receive(:save!).and_return(true)
       sign_in(user)
       allow(user).to receive(:person).and_return(person)
+      allow(person).to receive(:has_active_employee_role?).and_return(false)
       get :welcome
       expect(response).to have_http_status(:success)
       expect(response).to render_template("welcome")
@@ -325,6 +326,7 @@ RSpec.describe Insured::EmployeeRolesController, :dbclean => :after_each do
     it "renders the 'my account' template when user has employee role" do
       allow(user).to receive(:has_employee_role?).and_return(true)
       allow(user).to receive(:person).and_return(person)
+      allow(person).to receive(:has_active_employee_role?).and_return(true)
       allow(user).to receive(:last_portal_visited=).and_return(family_account_path)
 
       allow(user).to receive(:save!).and_return(true)
