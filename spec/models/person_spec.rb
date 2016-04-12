@@ -258,11 +258,12 @@ describe Person do
       context "has_active_employee_role?" do
         let(:person) {FactoryGirl.build(:person)}
         let(:employee_roles) {double(active: true)}
-        let(:census_employee) { double }
+        let(:census_employee) { double("CensusEmployee") }
 
         before do
           allow(employee_roles).to receive(:census_employee).and_return(census_employee)
           allow(census_employee).to receive(:is_active?).and_return(true)
+          allow(census_employee).to receive(:employee_role_linked?).and_return(true)
         end
 
         it "should return true" do
