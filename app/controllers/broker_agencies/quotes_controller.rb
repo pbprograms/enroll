@@ -15,14 +15,14 @@ class BrokerAgencies::QuotesController < ApplicationController
     #   @q =  Quote.find(params[:quote]) #Quote.find(Quote.first.id)
     #   @benefit_pcts = @q.quote_relationship_benefits
     #   @benefit_pcts.each{|bp| @bp_hash[bp.relationship] = bp.premium_pct}
-    if !params['plans'].nil? && params['plans'].count > 0 && params["commit"].downcase == "submit"
+    if !params['plans'].nil? && params['plans'].count > 0 && params["commit"].downcase == "compare costs"
       @q =  Quote.find(params[:quote]) #Quote.find(Quote.first.id)
       @quote_results = Hash.new
       unless @q.nil?
         params['plans'].each do |plan_id|
           p = Plan.find(plan_id)
           detailCost = Array.new
-
+          @q.quote_relationship_benefits.each{|bp| @bp_hash[bp.relationship] = bp.premium_pct}
           @q.quote_households.each do |hh|
             pcd = PlanCostDecorator.new(p, hh, @q, p)
             detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employee_contribution]] }
