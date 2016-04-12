@@ -44,8 +44,7 @@ RSpec.describe Insured::FamiliesController do
   let(:household) { double("HouseHold", hbx_enrollments: hbx_enrollments) }
   let(:addresses) { [double] }
   let(:family_members){[double("FamilyMember")]}
-  let(:census_employee) { double("CensusEmployee", employee_role_linked?: true) }
-  let(:employee_roles) { [double("EmployeeRole", census_employee: census_employee)] }
+  let(:employee_roles) { [double("EmployeeRole")] }
   let(:consumer_role) { double("ConsumerRole") }
   # let(:coverage_wavied) { double("CoverageWavied") }
   let(:qle) { FactoryGirl.create(:qualifying_life_event_kind, pre_event_sep_in_days: 30, post_event_sep_in_days: 0) }
@@ -59,6 +58,7 @@ RSpec.describe Insured::FamiliesController do
     allow(person).to receive(:primary_family).and_return(family)
     allow(person).to receive(:consumer_role).and_return(consumer_role)
     allow(person).to receive(:active_employee_roles).and_return(employee_roles)
+    allow(person).to receive(:has_active_employee_role?).and_return(true)
     allow(consumer_role).to receive(:bookmark_url=).and_return(true)
     sign_in(user)
   end
@@ -95,8 +95,7 @@ RSpec.describe Insured::FamiliesController do
     context "for SHOP market" do
 
       let(:employee_roles) { double }
-      let(:census_employee) { double("CensusEmployee", employee_role_linked?: true) }
-      let(:employee_role) { double("EmployeeRole", census_employee: census_employee) }
+      let(:employee_role) { double("EmployeeRole") }
 
       before :each do
         sign_in user
@@ -175,11 +174,11 @@ RSpec.describe Insured::FamiliesController do
 
   describe "GET manage_family" do
     let(:employee_roles) { double }
-    let(:census_employee) { double("CensusEmployee", employee_role_linked?: true) }
-    let(:employee_role) { double("EmployeeRole", census_employee: census_employee) }
+    let(:employee_role) { double("EmployeeRole") }
 
     before :each do
       allow(person).to receive(:active_employee_roles).and_return([employee_role])
+      allow(person).to receive(:has_active_employee_role?).and_return(true)
       allow(family).to receive(:coverage_waived?).and_return(true)
       allow(family).to receive(:active_family_members).and_return(family_members)
     end
@@ -264,12 +263,11 @@ RSpec.describe Insured::FamiliesController do
   describe "GET find_sep" do
     let(:user) { double(identity_verified?: true, idp_verified?: true) }
     let(:employee_roles) { [employee_role] }
-    let(:census_employee) { double("CensusEmployee", employee_role_linked?: true) }
-    let(:employee_role) { double("EmployeeRole", census_employee: census_employee) }
+    let(:employee_role) { double("EmployeeRole") }
 
     before :each do
       allow(person).to receive(:user).and_return(user)
-      allow(person).to receive(:has_active_employee_role?).and_return(false)
+      allow(person).to receive(:has_active_employee_role?).and_return(true)
       allow(person).to receive(:has_active_consumer_role?).and_return(true)
       allow(person).to receive(:has_multiple_roles?).and_return(true)
       allow(person).to receive(:active_employee_roles).and_return(employee_roles)

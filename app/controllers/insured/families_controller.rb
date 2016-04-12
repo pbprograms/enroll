@@ -188,7 +188,7 @@ class Insured::FamiliesController < FamiliesController
   def check_employee_role
     @employee_role = @person.active_employee_roles.first
     if @employee_role.present?
-      if @employee_role.census_employee.employee_role_linked?
+      if @person.has_active_employee_role?
       else
         redirect_to search_insured_employee_index_path and return
       end
