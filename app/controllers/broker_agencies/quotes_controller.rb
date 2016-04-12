@@ -54,10 +54,10 @@ class BrokerAgencies::QuotesController < ApplicationController
 
   def edit
     @quote = Quote.find(params[:id])
-    qhh = QuoteHousehold.new
-    qm = QuoteMember.new
-    qhh.quote_members << qm
-    @quote.quote_households << qhh
+    # qhh = QuoteHousehold.new
+    # qm = QuoteMember.new
+    # qhh.quote_members << qm
+    # @quote.quote_households << qhh
   end
 
   def new
