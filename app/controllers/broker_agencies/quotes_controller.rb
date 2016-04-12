@@ -73,16 +73,15 @@ class BrokerAgencies::QuotesController < ApplicationController
     update_params = quote_params
     insert_params = quote_params
 
-    update_params[:quote_households_attributes]= update_params[:quote_households_attributes].select {|k,v| update_params[:quote_households_attributes][k][:id].present?}
-    insert_params[:quote_households_attributes]= insert_params[:quote_households_attributes].select {|k,v| insert_params[:quote_households_attributes][k][:id].blank?}
+
+    update_params[:quote_households_attributes] = update_params[:quote_households_attributes].select {|k,v| update_params[:quote_households_attributes][k][:id].present?}
+    insert_params[:quote_households_attributes] = insert_params[:quote_households_attributes].select {|k,v| insert_params[:quote_households_attributes][k][:id].blank?}
 
     if (@quote.update_attributes(update_params) && @quote.update_attributes(insert_params))
-      redirect_to  edit_broker_agencies_quote_path(@quote) ,  :flash => { :notice => "Successfully updated the employee roster" }
+      redirect_to edit_broker_agencies_quote_path(@quote) ,  :flash => { :notice => "Successfully updated the employee roster" }
     else
-      #puts @quote.errors.messages.inspect
       render "edit" , :flash => {:error => "Unable to update the employee roster" }
     end
-    #redirect_to edit_broker_agencies_quote_path(@quote)
   end
 
   def create

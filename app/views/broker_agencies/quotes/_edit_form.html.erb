@@ -4,9 +4,28 @@
 
 <%= form_for @quote, url: {action: "update"}, method: "put", class: "form-inline" do |f| %>
 
-	<%=label_tag 'Name of the Quote'%> <%= text_field_tag name="quote_name"%> <br>
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+
+	<div class="panel panel-default">
+		<div class="panel-heading" role="tab" id="headingOne">
+			<h3 class="panel-title">
+				<a role="button" data-toggle="collapse" data-parent="#accordion" href="#quote-group" aria-expanded="true" aria-controls="quote-group">
+					Quote Information
+				</a>
+			</h3>
+		</div>
+	<div id="quote-group" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingQuoteGroup">
+		<div class="panel-body" id="quote-info">
+			<div class="row form-inline">
+				<div class="form-group col-sm-6">Quote Name: <%= f.text_field :quote_name%></div>
+				<div class="form-group col-sm-6">Quote Effective Date: <%= f.text_field :start_on%></div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<div>&nbsp;</div>
+
 
 	<%= f.fields_for :quote_households do |qhh| %>
 		  <div class="panel panel-default">
@@ -62,7 +81,7 @@ $('button#remove_member_button').click(remove_member_handler);
 function addEmployeeRowToFamily(family, idx) {
 	var relation_options = '<select name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][employee_relationship]"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child_under_26">child</option></select>';
 	table_row = $('<div class="row form-inline">'
-	+ '<div class="form-group col-sm-4">DOB: <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][dob]"/></div><div class="form-group col-sm-4">Name: <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][first_name]"  /></div><div class="form-group col-sm-3">' + relation_options + '</div>' + 
+	+ '<div class="form-group col-sm-4">DOB: <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][dob]"/></div><div class="form-group col-sm-4">Name: <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][first_name]"  /></div><div class="form-group col-sm-3">' + relation_options + '</div>' +
 		'<div class="form-group col-sm-1"><button type="button" id="remove_member_button" data-quote-id="" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
 	+ '</div>');
 	$('#family-' + family).append(table_row);

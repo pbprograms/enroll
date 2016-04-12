@@ -2,7 +2,7 @@
 <div class="container" id="inbox_provider_form">
   <div class="row">
     <div class="col-md-12">
-      <h4>Compare Quotes</h4>
+      <h3>Compare Quotes</h3>
       <%= render partial: 'select_plans' %>
 
       <%= render partial: 'benefit_sliders'%>
@@ -32,9 +32,9 @@
       <%= submit_tag "Submit", class: 'btn btn-primary', id: 'QuoteCalculation' %>
       <%= submit_tag "Compare Plans", class: 'btn btn-primary', id: 'comparePlans' %>
       <% end %>
-      
-    </div>
-  </div>
+
+
+
   <br>
   <%unless @qhps.blank? %>
     <%=render "plan_comparision" , qhps: @qhps %>
@@ -63,9 +63,12 @@
         <% end %>
       </table>
       <br><%=link_to "New Quote" , new_broker_agencies_quote_path , method: :get, class: "btn btn-trans", id: "new_quote"%>
-      <br>
-</div>
 
+    </div>
+  </div>
+
+      </div>
+  </div>
 
 
 <script type="text/javascript">
