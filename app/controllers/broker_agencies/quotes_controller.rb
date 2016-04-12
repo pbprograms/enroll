@@ -53,11 +53,14 @@ class BrokerAgencies::QuotesController < ApplicationController
   end
 
   def edit
+    #find quote to edit
     @quote = Quote.find(params[:id])
-    # qhh = QuoteHousehold.new
-    # qm = QuoteMember.new
-    # qhh.quote_members << qm
-    # @quote.quote_households << qhh
+
+    # Create place holder for a new household and new member for the roster
+    qhh = QuoteHousehold.new
+    qm = QuoteMember.new
+    qhh.quote_members << qm
+    @quote.quote_households << qhh
   end
 
   def new
