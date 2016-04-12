@@ -32,9 +32,8 @@
       <%= submit_tag "Submit", class: 'btn btn-primary', id: 'QuoteCalculation' %>
       <%= submit_tag "Compare Plans", class: 'btn btn-primary', id: 'comparePlans' %>
       <% end %>
-
-
-
+    </div>
+  </div>
   <br>
   <%unless @qhps.blank? %>
     <%=render "plan_comparision" , qhps: @qhps %>
@@ -45,30 +44,7 @@
   <% end %>
 
   <h3>My Quotes</h3>
-
-  <div class="col-md-12 col-sm-12 col-xs-12">
-    <div class="table-responsive">
-      <table class="table table-wrapper" style="opacity: 1;">
-        <tr>
-          <th>Quote ID</th>
-          <th>Quote Name</th>
-          <th></th>
-        </tr>
-         <% @quotes.each do |q| %>
-        <tr>
-           <td><%=link_to "#{q.id}" , "/broker_agencies/quotes/#{q.id}/edit" %></td>
-           <td><%= q.quote_name %></td>
-           <td><button type="button" id="close_button" data-quote-id="<%=q.id%>" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
-        </tr>
-        <% end %>
-      </table>
-      <br><%=link_to "New Quote" , new_broker_agencies_quote_path , method: :get, class: "btn btn-trans", id: "new_quote"%>
-
-    </div>
-  </div>
-
-      </div>
-  </div>
+  <%=render "my_quotes" , quote_results: @quote_results %>
 
 
 <script type="text/javascript">
