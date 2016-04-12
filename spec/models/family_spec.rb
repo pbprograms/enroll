@@ -19,6 +19,7 @@ describe Family, "given a primary applicant and a dependent" do
     let(:mock_hbx_enrollment) { instance_double(HbxEnrollment) }
     before do
       allow(household).to receive(:enrolled_hbx_enrollments).and_return([mock_hbx_enrollment])
+      allow(mock_hbx_enrollment).to receive(:has_active_benefit_group_assignment?).and_return(true)
     end
 
     it "enrolled hbx enrollments should come from latest household" do
