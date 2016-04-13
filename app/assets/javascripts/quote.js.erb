@@ -28,17 +28,16 @@ function toggle_plans(){
   }
 }
 
-
 window.relationships = ['employee', 'spouse', 'domestic_partner', 'child_under_26', 'child_26_and_over']
+
 function slider_listeners () {
     $('#ex1').bootstrapSlider({});
     $('#total_plan_cost').bootstrapSlider({});
     $('#pct_employee').bootstrapSlider({});
     $('#pct_spouse').bootstrapSlider({});
     $('#pct_domestic_partner').bootstrapSlider({});
-    $('#under_26').bootstrapSlider({});
-    $('#over_26').bootstrapSlider({});
-
+    $('#pct_child_under_26').bootstrapSlider({});
+    $('#employees_on_roster').bootstrapSlider({});
     $('#ex1').on('slideStop', function(){deductible_value = this.value; 
       toggle_plans();
       console.log(this.value, 'v')
@@ -55,14 +54,18 @@ function slider_listeners () {
           val =$('#pct_domestic_partner').bootstrapSlider('getValue')
           set_relationship_pct('domestic_partner', val)
          })
-    $('#under_26').on('slideStop', function() {
-          val =$('#under_26').bootstrapSlider('getValue')
+    $('#pct_child_under_26').on('slideStop', function() {
+          val =$('#pct_child_under_26').bootstrapSlider('getValue')
           set_relationship_pct('child_under_26', val)
          })
-    $('#over_26').on('slideStop', function() {
-          val =$('#over_26').bootstrapSlider('getValue')
-          set_relationship_pct('child_26_and_over', val)
-         })
+    $('#employees_on_roster').on('slideStop', function(){
+       $('#employee_count').val($('#employees_on_roster').bootstrapSlider('getValue'))
+    })
+
+    $('#pct_employee').bootstrapSlider('setValue',window.relationship_benefits['employee']);
+    $('#pct_spouse').bootstrapSlider('setValue', window.relationship_benefits['spouse']);
+    $('#pct_domestic_partner').bootstrapSlider('setValue', window.relationship_benefits['domestic_partner']);
+    $('#pct_child_under_26').bootstrapSlider('setValue', window.relationship_benefits['child_under_26']);
 
 }
 function set_relationship_pct(relationship, val) {

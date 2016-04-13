@@ -1,11 +1,18 @@
 <div class ="container">
-  <h3>My Quotesx</h3>
+  <h3>My Quotes</h3>
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12" style="border: 1px solid gray">
 
     <div style='float:left; margin-left:30px; '>
-      slider for 0-100 employees
+         <div style='float: left; width: 255px; margin-left:30px'>
+              Employees on Roster:
+              <input id="employees_on_roster" data-slider-id='employees_on_rosterSlider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="5" data-slider-value="0" style='width:225px'
+                 data-slider-ticks="[0, 50, 100]"
+                 data-slider-ticks-labels='["0%", "50", "100"]'
+               />
+          </div>
       </div>
+     <input name='employee_count' id='employee_count' value='0' type='hidden'>
 
       <div style='float:left; margin-left: 30px'>
         dropdown for the four family types
