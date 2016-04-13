@@ -12,6 +12,7 @@
 						<button id="btn_add_emp" onclick="addFamilyMemberRow(this)" data-index="<%=index%>" type="button" class="btn btn-default" aria-label="Left Align">
 							<span class="glyphicon glyphicon-user" aria-hidden="true"></span> Add member to this family
 						</button>
+						<button type="button" href="#" id="remove_household_button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					</h4>
 				</div>
 				<div id="col" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading">
@@ -38,6 +39,24 @@ var date_handler = function() {
 var remove_member_handler = function(){
 	$(this).parent().parent().remove();
 }
+
+var remove_household_handler = function(){
+	if(this.getAttribute("data-household-id") != undefined){
+	 $.ajax({
+        type: "POST",
+        url: "/broker_agencies/quotes/" + this.getAttribute("data-quote-id")  +"/delete_household/?household_id=" +this.getAttribute("data-household-id"),
+        dataType: "js",
+        data: {"_method":"delete"},
+        success: function(){
+          console.log("Deleted successfully");
+        }
+    });
+	}
+  $(this).parent().parent().parent().remove();
+};
+	
+$('button#remove_household_button').click(remove_household_handler);
+
 var addFamilyMemberRow= function(button){
 		var idx = $(button).attr("data-index");
 		var relation_options = '<select name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][employee_relationship]"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child_under_26">child</option></select>';

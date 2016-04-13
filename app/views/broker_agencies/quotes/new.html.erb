@@ -15,7 +15,8 @@
 	<hr/>
 	<%=render "quote_household_fields" , f: f %>
 	<hr/>
-	<input type="button" onclick="history.back();" class="btn btn-trans" value="Back">
-	<input type="submit" class= "btn btn-trans" value="Save Quote" id="submit"/>
+	<%= link_to 'Back' , broker_agencies_quotes_root_path , class: "btn btn-primary" %>
+		<%= submit_tag "Update Roster", class: 'btn btn-primary' %>
+	<input type="submit" class= "btn btn-primary" value="Save Quote" id="submit"/>
 	<% end %>
 </div>

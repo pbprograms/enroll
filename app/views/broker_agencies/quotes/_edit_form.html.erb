@@ -6,7 +6,6 @@
 
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
-
 	<div class="panel panel-default">
 		<div class="panel-heading" role="tab" id="headingOne">
 			<h3 class="panel-title">
@@ -28,6 +27,7 @@
 
 
 	<%= f.fields_for :quote_households do |qhh| %>
+		<div id="family-panel">
 		  <div class="panel panel-default">
 				<div class="panel-heading" role="tab" id="headingOne">
 					<h4 class="panel-title">
@@ -38,22 +38,25 @@
 						<button type="button" class="btn btn-default" aria-label="Left Align" onclick="addEmployeeRowToFamily('<%=qhh.object.id.to_s%>','<%= qhh.index %>')">
 							<span class="glyphicon glyphicon-user" aria-hidden="true"></span> Add member to this family
 						</button>
+						<button type="button" data-household-id="<%=qhh.object.id%>" data-quote-id="<%=@quote.id%>" id="remove_household_button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					</h4>
 				</div>
 				<div id="col<%= qhh.object.id.to_s %>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading<%= qhh.object.id.to_s %>">
 					<div class="panel-body" id="family-<%= qhh.object.id.to_s %>">
-		<%= qhh.fields_for :quote_members do |qm| %>
-		<div class="row form-inline">
-			<div class="form-group col-sm-4">DOB: <%= qm.text_field :dob , {:class => "uidatepicker" } %></div>
-			<div class="form-group col-sm-4">Name: <%= qm.text_field :first_name %></div>
-			<div class="form-group col-sm-3"><%= qm.select(:employee_relationship, [['Employee','employee'], ['Spouse','spouse'], ['Domestic partner','domestic_partner'],['Child','child_under_26']], {}, {:class => "floatlabel"})  %></div>
-			<div class="form-group col-sm-1"><button type="button" data-household-id="<%=qhh.object.id%>" data-quote-id="<%=@quote.id%>" data-member-id="<%=qm.object.id%>" id="remove_member_button"  class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+						<%= qhh.fields_for :quote_members do |qm| %>
+						<div class="row form-inline">
+							<div class="form-group col-sm-4">DOB: <%= qm.text_field :dob , {:class => "uidatepicker" } %></div>
+							<div class="form-group col-sm-4">Name: <%= qm.text_field :first_name %></div>
+							<div class="form-group col-sm-3"><%= qm.select(:employee_relationship, [['Employee','employee'], ['Spouse','spouse'], ['Domestic partner','domestic_partner'],['Child','child_under_26']], {}, {:class => "floatlabel"})  %></div>
+							<div class="form-group col-sm-1"><button type="button" data-household-id="<%=qhh.object.id%>" data-quote-id="<%=@quote.id%>" data-member-id="<%=qm.object.id%>" id="remove_member_button"  class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+						</div>
+						<% end %>
+					</div>
+				</div>
+			</div>
 		</div>
 		<% end %>
-	</div>
-</div>
-			</div>
-		<% end %>
+		<%= link_to 'Back' , broker_agencies_quotes_root_path , class: "btn btn-primary" %>
 		<%= submit_tag "Update Roster", class: 'btn btn-primary' %>
 		<%= link_to "Back to Quote Cost/Comparison", broker_agencies_quotes_root_path, class: 'btn btn-primary' %>
 		<% end %>
@@ -83,6 +86,23 @@ var remove_member_handler = function(){
   $(this).parent().parent().remove();
 	};
 $('button#remove_member_button').click(remove_member_handler);
+
+var remove_household_handler = function(){
+	if(this.getAttribute("data-household-id") != undefined){
+	 $.ajax({
+        type: "POST",
+        url: "/broker_agencies/quotes/" + this.getAttribute("data-quote-id")  +"/delete_household/?household_id=" +this.getAttribute("data-household-id"),
+        dataType: "js",
+        data: {"_method":"delete"},
+        success: function(){
+          console.log("Deleted successfully");
+        }
+    });
+	}
+  $(this).parent().parent().parent().remove();
+};
+	
+$('button#remove_household_button').click(remove_household_handler);
 
 function addEmployeeRowToFamily(family, idx) {
 	var relation_options = '<select name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][employee_relationship]"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child_under_26">child</option></select>';

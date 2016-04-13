@@ -1,6 +1,6 @@
 class BrokerAgencies::QuotesController < ApplicationController
 
-  before_action :find_quote , :only => [:destroy ,:show, :delete_member]
+  before_action :find_quote , :only => [:destroy ,:show, :delete_member, :delete_household]
 
 
   def index
@@ -137,6 +137,16 @@ class BrokerAgencies::QuotesController < ApplicationController
       end
     end
   end
+
+  def delete_household
+    @qh = @quote.quote_households.find(params[:household_id])
+    if @qh.destroy
+      respond_to do |format|
+        format.js { render :nothing => true }
+      end
+    end
+  end
+
 
   def new_household
     @quote = Quote.new

@@ -274,6 +274,7 @@ Rails.application.routes.draw do
       member do 
         post :download_employee_roster
         delete :delete_member
+        delete :delete_household
       end
     end
 
