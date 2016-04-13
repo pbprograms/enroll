@@ -803,7 +803,7 @@ class HbxEnrollment
   end
 
   def has_active_benefit_group_assignment?
-    is_shop? && BenefitGroupAssignment::ACTIVE_STATUSES.include?(benefit_group_assignment.aasm_state)
+    is_shop? && BenefitGroupAssignment::ACTIVE_STATUSES.include?(benefit_group_assignment.try(:aasm_state))
   end
 
   def self.find_shop_and_health_by_benefit_group_assignment(benefit_group_assignment)

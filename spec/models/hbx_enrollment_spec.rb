@@ -960,6 +960,12 @@ describe HbxEnrollment, dbclean: :after_each do
       allow(shop_enrollment).to receive(:employee_role).and_return(employee_role)
     end
 
+    context "has_active_benefit_group_assignment" do
+      it "should return hbx enrollments that has active benefit group assignments" do
+        expect(shop_enrollment.has_active_benefit_group_assignment?).to be_truthy
+      end
+    end
+
     context 'under open enrollment' do
       before do
         TimeKeeper.set_date_of_record_unprotected!(open_enrollment_start_on)
