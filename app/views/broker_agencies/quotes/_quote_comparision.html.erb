@@ -2,28 +2,34 @@
   <h3>Quote Results</h3>
 
   <div class="mygrid-wrapper-div">
-    <table width="100%">
+    <table class="quote_cost">
     <tr>
-      <td colspan="2">&nbsp;</td>
+      <td colspan="3" class="quote_detail_plan_header">
+        <span  class="btn btn-info btn-sm">Employee Cost</span>
+        <span  class="btn btn-danger btn-sm">Employer Cost</span>
+      </td>
     <%
     @quote_results.each do |qr| %>
-      <td width="350" colspan="3" class="quote_detail_plan_header"><%= qr[0] %></td>
+      <td width="350" colspan="3" class="quote_detail_plan_header">
+        <%= qr[0] %><br>
+        <span  class="btn btn-info btn-sm">$<%= qr[1][:total_employee_cost] %></span>
+        <span  class="btn btn-danger btn-sm">$<%= qr[1][:total_employer_cost] %></span>
+      </td>
     <% end %>
     </tr>
 
     <tr style="font-weight: bolder; ">
       <td class="quote_detail_results_header">Name</td>
+      <td class="quote_detail_results_header">Relationship</td>
       <td class="quote_detail_results_header">Age</td>
       <% @quote_results.keys.each do |de| %>
         <td class="quote_detail_results_header">Employee Cost</td>
         <td class="quote_detail_results_header">Employer Contr</td>
-        <td class="quote_detail_results_header">Premium</td>
+        <td class="quote_detail_results_header">Total Premium</td>
       <% end %>
     </tr>
-    <% @quote_results.first[1].flatten.each_with_index do |qr, index| %>
-    <% #binding.pry
-      if index != 0  && @quote_results.first[1].flatten[index][:family_id] != @quote_results.first[1].flatten[index-1][:family_id]
-    %>
+    <% @quote_results.first[1][:detail].flatten.each_with_index do |qr, index| %>
+    <% if index != 0  && @quote_results.first[1][:detail].flatten[index][:family_id] != @quote_results.first[1][:detail].flatten[index-1][:family_id] %>
       <tr><td>&nbsp;</td></tr>
     <% end %>
 
@@ -32,12 +38,15 @@
           <%= qr[:first_name] %>
         </td>
         <td class="quote_detail_results">
+          <%= qr[:employee_relationship] %> (<%= qr[:employer_contribution_percent]%>%)
+        </td>
+        <td class="quote_detail_results">
           <%= qr[:age] %>
         </td>
         <% @quote_results.keys.each do |de| %>
-          <td class="quote_detail_results"><%= @quote_results[de].flatten[index][:employee_cost] %></td>
-          <td class="quote_detail_results"><%= @quote_results[de].flatten[index][:employee_contribution] %></td>
-          <td class="quote_detail_results"><b><%= @quote_results[de].flatten[index][:total_premium].round(2) %></b></td>
+          <td class="quote_detail_results"><%= @quote_results[de][:detail].flatten[index][:employee_cost] %></td>
+          <td class="quote_detail_results"><%= @quote_results[de][:detail].flatten[index][:employee_contribution] %></td>
+          <td class="quote_detail_results"><b><%= @quote_results[de][:detail].flatten[index][:total_premium].round(2) %></b></td>
         <% end %>
       </tr>
     <% end %>

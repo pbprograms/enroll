@@ -15,22 +15,20 @@ class BrokerAgencies::QuotesController < ApplicationController
     #   @q =  Quote.find(params[:quote]) #Quote.find(Quote.first.id)
     #   @benefit_pcts = @q.quote_relationship_benefits
     #   @benefit_pcts.each{|bp| @bp_hash[bp.relationship] = bp.premium_pct}
-    if !params['plans'].nil? && params['plans'].count > 0 && params["commit"].downcase == "submit"
-      @q =  Quote.find(params[:quote]) #Quote.find(Quote.first.id)
+    if !params['plans'].nil? && params['plans'].count > 0 && params["commit"].downcase == "cost comparison"
+      @q =  Quote.find(params[:quote])
       @quote_results = Hash.new
       unless @q.nil?
         params['plans'].each do |plan_id|
           p = Plan.find(plan_id)
           detailCost = Array.new
-
           @q.quote_households.each do |hh|
             pcd = PlanCostDecorator.new(p, hh, @q, p)
             detailCost << pcd.get_family_details_hash.sort_by { |m| [m[:family_id], -m[:age], -m[:employee_contribution]] }
           end
-          @quote_results[p.name] = detailCost
+          @quote_results[p.name] = {:detail => detailCost, :total_employee_cost => @q.roster_employee_cost(p), :total_employer_cost => @q.roster_employeer_contribution(p)}
         end
       end
-
     elsif !params['plans'].nil? && params['plans'].count > 0 && params["commit"].downcase == "compare plans"
       @visit_types = @coverage_kind == "health" ? Products::Qhp::VISIT_TYPES : Products::Qhp::DENTAL_VISIT_TYPES
       standard_component_ids = get_standard_component_ids
