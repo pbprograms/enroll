@@ -1,5 +1,5 @@
 <div class="container">
-  <h3>Quote Results</h3>
+  <h3>Quote Cost Comparison</h3>
 
   <div class="mygrid-wrapper-div">
     <table class="quote_cost">
@@ -38,7 +38,7 @@
           <%= qr[:first_name] %>
         </td>
         <td class="quote_detail_results">
-          <%= qr[:employee_relationship] %> (<%= qr[:employer_contribution_percent]%>%)
+          <%= qr[:employee_relationship] %> <b class="small"><%= qr[:employer_contribution_percent].to_i%></b>%
         </td>
         <td class="quote_detail_results">
           <%= qr[:age] %>
