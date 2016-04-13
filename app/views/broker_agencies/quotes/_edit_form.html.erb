@@ -55,12 +55,13 @@
 			</div>
 		<% end %>
 		<%= submit_tag "Update Roster", class: 'btn btn-primary' %>
+		<%= link_to "Back to Quote Cost/Comparison", broker_agencies_quotes_root_path, class: 'btn btn-primary' %>
 		<% end %>
 
 		</div>
 
 <script>
-var counter= 1;
+var counter= 1000;
 $(".uidatepicker").datepicker();
 var date_handler = function() {
 	    $(this).datepicker();
@@ -84,9 +85,9 @@ var remove_member_handler = function(){
 $('button#remove_member_button').click(remove_member_handler);
 
 function addEmployeeRowToFamily(family, idx) {
-	var relation_options = '<select name="quote[quote_households_attributes]['+idx+'][quote_members_attributes][999][employee_relationship]"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child_under_26">child</option></select>';
+	var relation_options = '<select name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][employee_relationship]"><option value="employee">Employee</option><option value="spouse">Spouse</option><option value="domestic_partner">Domestic partner</option><option value="child_under_26">child</option></select>';
 	table_row = $('<div class="row form-inline">'
-								+ '<div class="form-group col-sm-4">DOB: <input type="text" class="uidatepicker" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][dob]"/></div><div class="form-group col-sm-4">Name: <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][first_name]"  /></div><div class="form-group col-sm-3">' + relation_options + '</div>' + 
+								+ '<div class="form-group col-sm-4">DOB: <input type="text" class="uidatepicker" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][dob]"/></div><div class="form-group col-sm-4">Name: <input type="text" name="quote[quote_households_attributes]['+idx+'][quote_members_attributes]['+counter+'][first_name]"  /></div><div class="form-group col-sm-3">' + relation_options + '</div>' +
 									'<div class="form-group col-sm-1"><button type="button" id="remove_member_button" data-quote-id="" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
 								   + '</div>');
 									counter += 1 ;
