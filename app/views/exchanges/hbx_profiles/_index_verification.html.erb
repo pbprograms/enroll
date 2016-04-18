@@ -46,15 +46,6 @@
     </table>
   </div>
 
- <script type="text/javascript" charset="utf-8">
-   $(document).ready(function() {
-     $('#verification-dataTable').DataTable( {
-       "order": [[ 0, "asc" ]]
-     } );
-     $('select').on('selectric-init', function(element){
-       $('.selectric').closest('.small-6').find('span').remove();
-       $('.selectric').closest('label').after('<span></span>');
-     });
-   } );
- </script>
+ <%= paginate @families, remote: true %>
+
 
