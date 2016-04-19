@@ -210,7 +210,9 @@ class BrokerAgencies::ProfilesController < ApplicationController
             send_general_agency_assign_msg(general_agency_profile, employer_profile, 'Hire')
           end
         end
-        notice = "Assign successful."
+        employers # calling this method as the latest copy of objects are needed.
+        flash.now[:notice] ="Assign successful."
+        render "update_assign" and return
       end
     end
     redirect_to broker_agencies_profile_path(@broker_agency_profile), flash: {notice: notice}
