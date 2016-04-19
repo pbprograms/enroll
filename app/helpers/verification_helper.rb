@@ -105,4 +105,8 @@ module VerificationHelper
   def all_family_members_verified
     @family_members.all?{|member| member.person.consumer_role.aasm_state == "fully_verified"}
   end
+
+  def review_status(family)
+    "in_review"
+  end
 end
